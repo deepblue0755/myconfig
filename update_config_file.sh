@@ -17,9 +17,9 @@ if [ $? != 0 ];then
 fi
 
 
-diff $dir/d/cygwin64/home/$USER/.tmux.conf ./.tmux.conf-$HOSTNAME
+diff $dir/d/cygwin64/home/$USER/.tmux.conf ./_tmux.conf-$HOSTNAME
 
 if [  $? != 0 ];then
     echo copy tmux .tmux.conf ...
-    cp $dir/d/cygwin64/home/$USER/.tmux.conf ./.tmux.conf-$HOSTNAME
+    cp $dir/d/cygwin64/home/$USER/.tmux.conf ./_tmux.conf-$HOSTNAME
 fi
