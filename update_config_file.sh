@@ -8,10 +8,18 @@ else
     dir=
 fi
 
-echo copy vim _vimrc ...
-cp $dir/d/Vim/_vimrc ./_vimrc-$HOSTNAME
+
+diff $dir/d/Vim/_vimrc ./_vimrc-$HOSTNAME
+
+if [ $? != 0 ];then
+    echo copy vim _vimrc ...
+    cp $dir/d/Vim/_vimrc ./_vimrc-$HOSTNAME
+fi
 
 
+diff $dir/d/cygwin64/home/$USER/.tmux.conf ./.tmux.conf-$HOSTNAME
 
-echo copy tmux .tmux.conf ...
-cp $dir/d/cygwin64/home/$USER/.tmux.conf ./.tmux.conf-$HOSTNAME
+if [  $? != 0 ];then
+    echo copy tmux .tmux.conf ...
+    cp $dir/d/cygwin64/home/$USER/.tmux.conf ./.tmux.conf-$HOSTNAME
+fi
