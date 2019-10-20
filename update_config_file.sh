@@ -29,3 +29,12 @@ if [  $? != 0 ];then
     echo copy cygwin64 .bash_profile ...
     cp  $dir/d/cygwin64/home/mianb/.bash_profile ./_bash_profile-$HOSTNAME
 fi
+
+
+
+diff $dir/d/cygwin64/home/mianb/.gitconfig ./_gitconfig-$HOSTNAME
+
+if [  $? != 0 ];then
+    echo copy cygwin64 .gitconfig ...
+    cp  $dir/d/cygwin64/home/mianb/.gitconfig ./_gitconfig-$HOSTNAME
+fi

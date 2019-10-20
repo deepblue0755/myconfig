@@ -69,16 +69,31 @@ function _SumatraPDF()
 
 function set_path()
 {
-    if [ "$SHELL" == "/usr/bin/bash" ];then
-        test -f $dir/d/Batch-Gigabyte/09-1-setup-git-bash-path-environment.sh && \
-        source  $dir/d/Batch-Gigabyte/09-1-setup-git-bash-path-environment.sh 
+
+    PATH=$dir/d/emacs-26.2-x86_64/bin:$PATH
+    PATH=$dir/c/Windows/System32:$PATH
+    PATH=$dir/d/7-Zip-18.05-x64:$PATH
+    PATH=$dir/d/Beyond\ Compare\ 3/:$PATH
+    PATH=$dir/d/ES-1.1.0.10:$PATH
+    PATH=$dir/d/Python27-64:$PATH
+    PATH=$dir/d/Python37-64:$PATH
+    PATH=$dir/d/VLC-3.0.6:$PATH
+    PATH=$dir/d/Wireshark-3.0.1:$PATH
+    PATH=$dir/d/ffmpeg-4.1.1/bin:$PATH
+    PATH=$dir/d/gnuplot-5.2.6/bin:$PATH
+    PATH=$dir/d/texlive/2018/bin/win32:$PATH
+    PATH=$dir/d/vim/vim81/:$PATH
+    PATH=$dir/d/SumatraPDF/:$PATH
+    PATH=$dir/d/Git/bin:$PATH
+    PATH=$dir/d/Git:$PATH
+
+    # do not add cygwin/bin to $PATH
+    if [ "$SHELL" == "/bin/bash" ];then
+        PATH=$dir/d/cygwin64/bin/:$PATH
     fi
 
-    if [ "$SHELL" == "/bin/bash" ];then
-        test -f $dir/cygdrive/d/Batch-Gigabyte/09-2-setup-cygwin-bash-path-environment.sh && \
-        source  $dir/cygdrive/d/Batch-Gigabyte/09-2-setup-cygwin-bash-path-environment.sh
-    fi
-    export PATH=$dir/d/SumatraPDF/:$PATH
+    export PATH
+
 }
 
 function set_alias()
