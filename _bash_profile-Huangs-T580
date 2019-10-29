@@ -1,0 +1,324 @@
+# To the extent possible under law, the author(s) have dedicated all 
+# copyright and related and neighboring rights to this software to the 
+# public domain worldwide. This software is distributed without any warranty. 
+# You should have received a copy of the CC0 Public Domain Dedication along 
+# with this software. 
+# If not, see <http://creativecommons.org/publicdomain/zero/1.0/>. 
+
+# base-files version 4.3-2
+
+# ~/.bash_profile: executed by bash(1) for login shells.
+
+# The latest version as installed by the Cygwin Setup program can
+# always be found at /etc/defaults/etc/skel/.bash_profile
+
+# Modifying /etc/skel/.bash_profile directly will prevent
+# setup from updating it.
+
+# The copy in your home directory (~/.bash_profile) is yours, please
+# feel free to customise it to create a shell
+# environment to your liking.  If you feel a change
+# would be benifitial to all, please feel free to send
+# a patch to the cygwin mailing list.
+
+# User dependent .bash_profile file
+
+# source the users bashrc if it exists
+if [ -f "${HOME}/.bashrc" ] ; then
+  source "${HOME}/.bashrc"
+fi
+
+# Set PATH so it includes user's private bin if it exists
+# if [ -d "${HOME}/bin" ] ; then
+#   PATH="${HOME}/bin:${PATH}"
+# fi
+
+# Set MANPATH so it includes users' private man if it exists
+# if [ -d "${HOME}/man" ]; then
+#   MANPATH="${HOME}/man:${MANPATH}"
+# fi
+
+# Set INFOPATH so it includes users' private info if it exists
+# if [ -d "${HOME}/info" ]; then
+#   INFOPATH="${HOME}/info:${INFOPATH}"
+# fi
+
+######################################################################
+# User Defined Setting # 
+######################################################################
+export TERM=xterm-256color
+if [ "$SHELL" == "/bin/bash" ];then
+    export dir=/cygdrive
+else
+    export dir=
+fi
+
+function _cplinux()
+{
+    scp $1 root@cbpos:~/tmp/
+    if [ "$?" != 0 ];then
+        scp $1 root@192.168.0.2:~/tmp/
+    fi
+}
+
+function _getlinux()
+{
+    scp root@cbpos:$1 ./
+}
+
+function _md2pdf()
+{
+    file=$1
+    pdffile=${file/.md/.pdf}
+
+    if [ ! -f "$file" ];then
+        echo "error: there is no such file $1"
+        return -1
+    fi
+
+    pandoc --pdf-engine=pdflatex $file -o $pdffile
+}
+
+function _cpvm()
+{
+    if [ ! -f "$1" ];then
+        echo "file $1 does not exist !!"
+        return -1
+    fi
+    scp $1 huangmianbo@vmware:~/tmp/
+}
+
+function _getvm()
+{
+    scp huangmianbo@vmware:$1 ./
+}
+
+function _cpvb()
+{
+    if [ ! -f "$1" ];then
+        echo "file $1 does not exist !!"
+        return -1
+    fi
+    scp $1 huangmianbo@virtualbox:~/tmp/
+}
+
+function _cbpos()
+{
+    ping -n 1 192.168.0.2 > /dev/null
+    if [ "$?" == "0" ];then
+        echo login 192.168.0.2 ...
+        ssh root@192.168.0.2
+        return 0
+    fi
+
+    ping -n 1 cpbos > /dev/null
+    if [ "$?" == "0" ];then
+        echo login cbpos ...
+        ssh root@cbpos
+        return 0
+    fi
+
+
+    return 1
+
+}
+
+function _getvb()
+{
+    scp huangmianbo@virtualbox:$1 ./
+}
+
+function _gvim()
+{
+    gvim $* > /dev/null &
+}
+
+function _vlc()
+{
+    vlc $1 &> /dev/null &
+}
+
+function _backup_doc()
+{
+    pushd . > /dev/null
+    cd  $dir/d/documents/RTAI
+
+    flag=0
+    comment=""
+
+    check=`git diff 00-rtai-x86-ubuntu-1404.md | wc -c`
+    if [ "$check" != "0" ];then
+        echo git add 00-rtai-x86-ubuntu-1404.md ...
+        git add 00-rtai-x86-ubuntu-1404.md
+        flag=1
+        comment=$comment" 00-rtai-x86-ubuntu-1404.md"
+    fi
+
+    check=`git diff Makefile | wc -c`
+    if [ "$check" != "0" ];then
+        echo git add Makefile ...
+        git add Makefile
+        flag=1
+        comment=$comment" Makefile"
+    fi
+
+    check=`git diff .gitignore | wc -c`
+    if [ "$check" != "0" ];then
+        echo git add .gitignore ...
+        git add .gitignore
+        flag=1
+        comment=$comment" .gitignore"
+    fi
+
+    if [ "$flag" == "1" ];then
+        echo commit change to local 
+        git  commit -m "update $comment from $USER@$HOSTNAME"
+        git push -u local master
+    else
+        echo "no update ,nothing to backup"
+    fi
+
+    popd > /dev/null
+}
+
+function _backup_task()
+{
+    pushd .  > /dev/null
+    flag=0
+    
+    cd ~
+    check=`git diff .taskrc | wc -c`
+    if [ "$check" != "0" ];then
+        echo git add .taskrc ...
+        git add .taskrc
+        flag=1
+    fi
+
+    check=`git diff .task | wc -c`
+    if [ "$check" != "0" ];then
+        echo git add .task ...
+        git add .task
+        flag=1
+    fi
+
+    if [ "$flag" == "1" ];then
+        echo commit change to local 
+        git  commit -m "update taskwarrior from $USER@$HOSTNAME"
+        git push -u local master
+    else
+        echo "no update ,nothing to backup"
+    fi
+    
+    popd > /dev/null
+}
+
+function _backup_bash()
+{
+    pushd .  > /dev/null
+    flag=0
+    
+    cd ~
+    check=`git diff .bash_profile | wc -c`
+    if [ "$check" != "0" ];then
+        echo git add .bash_profile ...
+        git add .bash_profile
+        flag=1
+    fi
+
+    if [ "$flag" == "1" ];then
+        echo commit change to local 
+        git  commit -m "update .bash_profile from $USER@$HOSTNAME"
+        git push -u local master
+    else
+        echo "no update ,nothing to backup"
+    fi
+    
+    popd > /dev/null
+}
+
+function _done_102()
+{
+    the_date=`date +%Y%m%d`
+    pushd . &> /dev/null
+
+    cd $dir/d/102-delivery/
+
+    mkdir -p done_$the_date
+
+    for file in *
+    do
+        if [ -f "$file" ];then
+            mv "$file" done_$the_date
+        fi
+    done
+
+    popd  &> /dev/null
+}
+
+function set_alias()
+{
+    alias rm='rm -iv'
+    alias vim='_gvim'
+    alias linux='ssh googole@cbpos'
+    alias linux='ssh googole@192.168.0.2'
+    alias cbpos='_cbpos'
+    alias vb='ssh huangmianbo@virtualbox'
+    alias vm='ssh huangmianbo@vmware'
+    alias vmware='vm'
+    alias t580='ssh mianb@Huangs-T580'
+    alias t430='ssh huangmianbo@ThinkPad-T430'
+    alias gigabyte='ssh mianb@gigabyte-brix'
+    alias mac='ssh huangmianbo@Huangs-MBP'
+    alias reload='source ~/.bash_profile'
+    alias config='gvim --remote-silent D:\\cygwin64\\home\\mianb\\\.bash_profile &'
+    alias googol='ssh googol@cbpos'
+    alias tl='task list'
+    alias cpvb='_cpvb'
+    alias cpvm='_cpvm'
+    alias cplinux='_cplinux'
+    alias getlinux='_getlinux'
+    alias getvm='_getvm'
+    alias getvb='_getvb'
+    alias pdf='SumatraPDF'
+    alias md2pdf='_md2pdf'
+    alias ..='cd ../'
+    alias iperf2s='iperf -u -s -m -i 1'
+    alias cgdb='cgdb -q'
+    alias gdb='gdb -q'
+    alias vlc='_vlc'
+    alias bcomp='BCompare'
+    alias rtai='cd ~/documents/RTAI'
+    alias doc='cd ~/documents/RTAI'
+    alias grep='grep --color=auto'
+    alias ~='cd ~'
+    alias src='cd $dir/d/Source'
+    alias expl='explorer'
+    alias bdoc='_backup_doc'
+    alias btask='_backup_task'
+    alias bbash='_backup_bash'
+}
+
+function set_path()
+{
+    export PATH=$dir/d/Vim/vim81:$PATH
+    export PATH=$dir/d/Git/bin:$PATH
+    export PATH=$dir/d/texlive/2018/bin/win32:$PATH
+    export PATH=$dir/d/SumatraPDF:$PATH
+    export PATH=$dir/d/pandoc:$PATH
+    export PATH=$dir/d/VLC:$PATH
+    export PATH=$dir/d/PUTTY:$PATH
+    export PATH=$dir/d/Beyond\ Compare\ 3:$PATH
+    export PATH=$dir/C/Program\ Files\ \(x86\)/Google/Chrome/Application:$PATH
+}
+
+
+set_path
+set_alias
+
+set -o vi
+
+if [ "$SHELL" == "/bin/bash" ];then
+    export PATH=$dir/d/cygwin64/bin:$PATH
+    task list
+fi
+

@@ -1,0 +1,129 @@
+# remap prefix from 'C-b' to 'C-a'
+unbind C-b
+set-option -g prefix C-a
+bind-key C-a send-prefix
+
+# split panes using | and -
+bind | split-window -h
+bind - split-window -v
+unbind '"'
+unbind %
+
+# reman key tab to next-window
+bind-key C-Tab next-window
+
+# reman key tab to cycle panes
+bind Tab select-pane -t :.+ 
+
+# prefix+q panes # display duration ms
+set -g display-panes-time 10000 
+
+# reload config file (change file location to your the tmux.conf you want to use)
+bind r source-file ~/.tmux.conf \; display-message "Config Reload !!" 
+
+# switch panes using Alt-arrow without prefix
+bind -n M-Left select-pane -L
+bind -n M-Right select-pane -R
+bind -n M-Up select-pane -U
+bind -n M-Down select-pane -D
+
+# switch panes using prefix+key 
+bind h select-pane -L
+bind j select-pane -D
+bind k select-pane -U
+bind l select-pane -R
+
+# Enable mouse mode (tmux 2.1 and above)
+set -g mouse on
+
+# Set Repspones Time ms
+set -sg escape-time 10
+
+# Set the Color 
+set -g default-terminal "screen-256color"
+
+# set windows base index
+set -g base-index 1
+
+# set pane base index
+setw -g pane-base-index 1
+
+# set renumber window when close 
+# set -g renumber-windows   on  
+
+# set keys mode vi 
+setw -g mode-keys vi 
+######################
+## DESIGN CHANGES ###
+######################
+
+# # loud or quiet?
+# set-option -g visual-activity off
+# set-option -g visual-bell off
+# set-option -g visual-silence off
+# set-window-option -g monitor-activity off
+# set-option -g bell-action none
+
+# #  modes
+# setw -g clock-mode-colour colour5
+# setw -g mode-attr bold
+# setw -g mode-fg colour1
+# setw -g mode-bg colour18
+
+# # panes
+# set -g pane-border-bg colour0
+# set -g pane-border-fg colour19
+# set -g pane-active-border-bg colour0
+# set -g pane-active-border-fg colour9
+
+# # statusbar
+# set -g status-position bottom
+# set -g status-justify left
+# set -g status-bg colour18
+# set -g status-fg colour137
+# set -g status-attr dim
+# set -g status-left "#[fg=black]#S #[fg=black]#I:#W:#F #[fg=black]#P"
+# set -g status-right '#[fg=colour233,bg=colour19,bold] %d/%m #[fg=colour233,bg=colour8,bold] %H:%M:%S '
+# set -g status-right-length 50
+# set -g status-left-length 50
+
+# setw -g window-status-current-fg colour1
+# setw -g window-status-current-bg colour19
+# setw -g window-status-current-attr bold
+# setw -g window-status-current-format ' #I#[fg=colour249]:#[fg=colour255]#W#[fg=colour249]#F '
+
+# setw -g window-status-fg colour9
+# setw -g window-status-bg colour18
+# setw -g window-status-attr none
+# setw -g window-status-format ' #I#[fg=colour237]:#[fg=colour250]#W#[fg=colour244]#F '
+
+# setw -g window-status-bell-attr bold
+# setw -g window-status-bell-fg colour255
+# setw -g window-status-bell-bg colour1
+
+# # messages
+# set -g message-attr bold
+# set -g message-fg colour232
+# set -g message-bg colour16
+
+# ------ status theme -------------------------------
+set -g message-style "bg=#00346e, fg=#ffffd7"        # tomorrow night blue, base3
+
+set -g status-style "bg=#00346e, fg=#ffffd7"   # tomorrow night blue, base3
+set -g status-style "bg=#00aa00, fg=#ffffd7"   # tomorrow night blue, base3
+set -g status-left "#[bg=#0087ff] ❐ #S "       # blue
+set -g status-left-length 400
+set -g status-right "#{?client_prefix, ⌨ , } #[bg=#0087ff] #(whoami)@#h #[bg=yellow,fg=black] %Y-%m-%d %H:%M "
+set -g status-right-length 600
+
+set -g set-clipboard off
+set -g history-limit 8000
+
+set -wg window-status-format " #I #W "
+set -wg window-status-current-format " #I #W "
+set -wg window-status-separator ""
+set -wg window-status-current-style "bg=red" # red
+set -wg window-status-last-style "fg=red"
+
+set -wg pane-active-border-style "fg=blue"
+set -wg pane-border-style "fg=#585858"       # base01
