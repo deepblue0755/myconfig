@@ -47,6 +47,7 @@ fi
 # User Defined Setting # 
 ######################################################################
 export TERM=xterm-256color
+export OUTPUT_CHARSET="cp936"
 if [ "$SHELL" == "/bin/bash" ];then
     export dir=/cygdrive
 else
@@ -104,14 +105,14 @@ function _cpvb()
 
 function _cbpos()
 {
-    ping -n 1 192.168.0.2 > /dev/null
+    ping -c 1 192.168.0.2 > /dev/null
     if [ "$?" == "0" ];then
         echo login 192.168.0.2 ...
         ssh root@192.168.0.2
         return 0
     fi
 
-    ping -n 1 cpbos > /dev/null
+    ping -c 1 cpbos > /dev/null
     if [ "$?" == "0" ];then
         echo login cbpos ...
         ssh root@cbpos
@@ -236,6 +237,34 @@ function _backup_bash()
     popd > /dev/null
 }
 
+function _backup_config()
+{
+    pushd . > /dev/null
+
+    cd $dir/d/myconfig
+
+    ./update_config_file.sh
+
+    files=`git status | grep modified | awk -F: '{print $2}'`
+
+    if [ -z "$files" ];then
+        echo no file need to git add 
+        popd > /dev/null
+        return 0
+    fi
+
+    for file in $files
+    do
+        git add $file
+    done
+
+    git commit -m "udpate config file from $USER@$HOSTNAME"
+
+    git push -u origin master
+
+    popd > /dev/null
+}
+
 function _done_102()
 {
     the_date=`date +%Y%m%d`
@@ -255,9 +284,58 @@ function _done_102()
     popd  &> /dev/null
 }
 
+function _start()
+{
+    if [ $# -lt 1 ];then
+        echo "error: please specify which virtual machine to start"
+        return 1
+    fi
+
+    case $1 in
+        vm)
+            echo start vmware machine ... 
+            vmrun start "D:\\Virtual Machines\\Ubuntu-14.04-Kylin\\\Ubuntu.vmx"  nogui
+        ;;
+        vb)
+            echo start virtual box machine ... 
+            VBoxManage startvm "Ubuntu-14.04" --type headless
+        ;;
+        list)
+            echo list virtual machines ...
+            echo vmware:
+            vmrun list
+            echo
+            echo virtualbox:
+            VBoxManage list runningvms
+        ;;
+    esac
+    
+}
+
+function _stop()
+{
+    if [ $# -lt 1 ];then
+        echo "error: please specify which virtual machine to start"
+        return 1
+    fi
+
+    case $1 in
+        vm)
+            echo stop vmware machine ...  
+            vmrun stop "D:\\Virtual Machines\\Ubuntu-14.04-Kylin\\\Ubuntu.vmx" nogui
+        ;;
+        vb)
+            echo stop virtual box machine ... 
+            VBoxManage controlvm "Ubuntu-14.04" poweroff
+        ;;
+    esac
+    
+}
+
 function set_alias()
 {
     alias rm='rm -iv'
+    alias ls='ls --color=auto'
     alias vim='_gvim'
     alias linux='ssh googole@cbpos'
     alias linux='ssh googole@192.168.0.2'
@@ -292,10 +370,14 @@ function set_alias()
     alias grep='grep --color=auto'
     alias ~='cd ~'
     alias src='cd $dir/d/Source'
+    alias tmp='cd ~/tmp'
     alias expl='explorer'
     alias bdoc='_backup_doc'
     alias btask='_backup_task'
     alias bbash='_backup_bash'
+    alias bconfig='_backup_config'
+    alias start='_vstart'
+    alias stop='_vstop'
 }
 
 function set_path()
@@ -309,6 +391,8 @@ function set_path()
     export PATH=$dir/d/PUTTY:$PATH
     export PATH=$dir/d/Beyond\ Compare\ 3:$PATH
     export PATH=$dir/C/Program\ Files\ \(x86\)/Google/Chrome/Application:$PATH
+    export PATH=$dir/d/VMware/VMware\ Workstation:$PATH
+    export PATH=$dir/D/Oracle/VirtualBox:$PATH
 }
 
 
