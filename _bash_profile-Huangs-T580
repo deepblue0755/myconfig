@@ -265,6 +265,14 @@ function _backup_config()
     popd > /dev/null
 }
 
+function _backup_all()
+{
+    _backup_doc
+    _backup_bash
+    _backup_task
+    _backup_config
+}
+
 function _done_102()
 {
     the_date=`date +%Y%m%d`
@@ -381,6 +389,7 @@ function set_alias()
     alias btask='_backup_task'
     alias bbash='_backup_bash'
     alias bconfig='_backup_config'
+    alias ball='_backup_all'
     alias start='_start'
     alias stop='_stop'
     alias mydate='_mydate'
