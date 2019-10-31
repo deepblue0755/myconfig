@@ -332,6 +332,11 @@ function _stop()
     
 }
 
+function _mydate()
+{
+    date +%y%m%d%H%M%S
+}
+
 function set_alias()
 {
     alias rm='rm -iv'
@@ -376,8 +381,9 @@ function set_alias()
     alias btask='_backup_task'
     alias bbash='_backup_bash'
     alias bconfig='_backup_config'
-    alias start='_vstart'
-    alias stop='_vstop'
+    alias start='_start'
+    alias stop='_stop'
+    alias mydate='_mydate'
 }
 
 function set_path()
