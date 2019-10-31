@@ -258,7 +258,7 @@ function _backup_config()
         git add $file
     done
 
-    git commit -m "udpate config file from $USER@$HOSTNAME"
+    git commit -m "udpate config file from $USER @ $HOSTNAME "
 
     git push -u origin master
 
