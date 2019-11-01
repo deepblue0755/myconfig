@@ -1,0 +1,26 @@
+set smoothscroll
+let scrollstep = 100
+let blacklists = [""]
+let barposition = "bottom"
+let searchengine google = "http://www.google.com/search/web?q=%s"
+" Key Mapping 
+map <C-f> scrollPageDown
+map <C-b> scrollPageUp
+map <C-d> scrollPageDown
+map <C-e> scrollPageUp
+unmap w s a d
+unmap H S D L
+map k scrollUp
+map j scrollDown
+map h scrollLeft
+map l scrollRight
+map ]] goForward
+map [[ goBack
+map > moveTabRight
+map < moveTabLeft
+command google tabnew www.google.com
+command bp tabprevious
+command bn tabnext 
+command edit tabnew
+set localconfig
+"let configpath='~/cvimrc'
