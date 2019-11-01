@@ -20,6 +20,7 @@ set -g display-panes-time 10000
 
 # reload config file (change file location to your the tmux.conf you want to use)
 bind r source-file ~/.tmux.conf \; display-message "Config Reload !!" 
+bind b save-buffer /dev/clipboard \; display-message "Save Buffer To Clipboard!!"
 
 # switch panes using Alt-arrow without prefix
 bind -n M-Left select-pane -L
