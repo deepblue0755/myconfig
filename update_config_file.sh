@@ -38,3 +38,11 @@ if [  $? != 0 ];then
     echo copy cygwin64 .gitconfig ...
     cp  $dir/d/cygwin64/home/mianb/.gitconfig ./_gitconfig-$HOSTNAME
 fi
+
+
+diff $dir/d/Batch/_cvimrc ./_cvimrc-$HOSTNAME
+
+if [  $? != 0 ];then
+    echo copy _cvimrc ...
+    cp  $dir/d/Batch/_cvimrc ./_cvimrc-$HOSTNAME
+fi

@@ -106,6 +106,9 @@ function set_alias()
     alias mac='ssh huangmianbo@Huangs-MBP'
     alias ls='ls --color=auto'
     alias rasp3='ssh huangmianbo@raspberry3'
+    alias rasp4='ssh huangmianbo@raspberrypi4'
+    alias pi3='ssh huangmianbo@raspberry3'
+    alias pi4='ssh pi@raspberrypi4'
     alias rm='rm -iv -d'
     alias mv='mv -iv'
     alias aspell-tex='aspell --mode=tex --list'
@@ -120,6 +123,13 @@ function set_alias()
     alias uptask='_update_task'
     alias find='/d/cygwin64/bin/find'
     alias md2pdf='_md2pdf'
+    alias doc='cd ~/documents'
+    alias videos='cd ~/videos'
+    alias ..='cd ..'
+    alias ...='cd ../../'
+    alias ....='cd ../../../'
+    alias ~='cd ~'
+    alias mdkir='mkdir'
 }
 
 
