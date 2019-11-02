@@ -271,6 +271,7 @@ function _backup_all()
     _backup_bash
     _backup_task
     _backup_config
+
 }
 
 function _done_102()
@@ -342,7 +343,7 @@ function _stop()
 
 function _mydate()
 {
-    date +%y%m%d%H%M%S
+    date +%Y%m%d%H%M%S
 }
 
 function set_alias()
