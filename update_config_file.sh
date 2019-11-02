@@ -2,8 +2,9 @@
 
 function copy_config_from_macosx()
 {
-    diff ~/.bash_profile ./_bash_profile-$HOSTNAME
     flag=0
+
+    diff ~/.bash_profile ./_bash_profile-$HOSTNAME &> /dev/null
 
     if [  $? != 0 ];then
         echo copy MacOSx .bash_profile ...
@@ -14,6 +15,7 @@ function copy_config_from_macosx()
     if [ $flag = 0 ];then
         echo nothing to update from MacOSx
     fi
+
 
     return 0
 
