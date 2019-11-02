@@ -109,7 +109,7 @@ function _evince()
 }
 
 # back document
-function _back_documents()
+function _backup_documents()
 {
     pushd . > /dev/null
     
@@ -132,7 +132,30 @@ function _back_documents()
         git push -u github master
     fi
 
+    popd > /dev/null
+}
 
+function _backup_config()
+{
+    pushd . > /dev/null
+
+    cd ~/Documents/11-configs-from-github
+    
+    ./update_config_file.sh
+
+    check=`git status | grep "modified:"`
+
+    if [ -z "$check" ];then
+        echo nothing to commit from macosx to github !!
+    else
+        files=`echo $check | awk -F":" '{print $2}'`
+        for file in $files
+        do
+            git add $file
+        done
+        git commit -m "update config files from $HOSTNAME"
+        git push -u github master
+    fi
 
     popd > /dev/null
 }
@@ -229,7 +252,8 @@ function config_alias()
     alias v2ray='V2RayX &> /dev/null &'
     alias cpptags='ctags -R --c++-kinds=+p --fields=+iaS --extra=+q'
     alias mv='mv -iv'
-    alias bdoc='_back_documents'
+    alias bdoc='_backup_documents'
+    alias bconfig='_backup_config'
     alias doc='cd ~/documents'
 }
 
