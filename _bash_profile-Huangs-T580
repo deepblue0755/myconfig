@@ -119,6 +119,12 @@ function _cbpos()
         return 0
     fi
 
+    ping -c 1 192.168.50.213 > /dev/null
+    if [ "$?" == "0" ];then
+        echo login 192.168.50.213 ...
+        ssh root@192.168.50.213
+        return 0
+    fi
 
     return 1
 
