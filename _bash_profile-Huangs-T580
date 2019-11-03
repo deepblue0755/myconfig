@@ -181,7 +181,7 @@ function _backup_doc()
         echo commit change to local  ...
         git  commit -m "update $comment from $USER@$HOSTNAME"
         git push -u local master
-       ./07-github-documents/update_documents_from_local.sh 
+       ../10-github-documents/update_documents_from_local.sh 
     else
         echo "no update ,nothing to backup"
     fi
@@ -248,7 +248,7 @@ function _backup_config()
 {
     pushd . > /dev/null
 
-    cd $dir/d/documents/11-configs-from-github
+    cd $dir/d/myconfig
 
     ./update_config_file.sh
 
