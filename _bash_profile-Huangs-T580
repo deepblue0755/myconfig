@@ -274,9 +274,21 @@ function _backup_config()
 
 function _backup_all()
 {
+    echo 
+    echo "--------------------------------------"
+    echo 
     _backup_doc
+    echo 
+    echo "--------------------------------------"
+    echo 
     _backup_bash
+    echo 
+    echo "--------------------------------------"
+    echo 
     _backup_task
+    echo 
+    echo "--------------------------------------"
+    echo 
     _backup_config
 
 }
