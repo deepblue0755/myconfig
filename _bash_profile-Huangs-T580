@@ -178,9 +178,10 @@ function _backup_doc()
     fi
 
     if [ "$flag" == "1" ];then
-        echo commit change to local 
+        echo commit change to local  ...
         git  commit -m "update $comment from $USER@$HOSTNAME"
         git push -u local master
+       ./07-github-documents/update_documents_from_local.sh 
     else
         echo "no update ,nothing to backup"
     fi
@@ -280,12 +281,19 @@ function _backup_all()
 
 }
 
+function _tmux_new()
+{
+    let tmux_cnt=`tmux list-sessions 2>&1 | grep -v "no server running" | grep ":" | wc -l`
+    let tmux_cnt=$tmux_cnt+1
+
+    tmux new -s session-$tmux_cnt -n cygwin
+}
+
 function _done_102()
 {
     the_date=`date +%Y%m%d`
     pushd . &> /dev/null
 
-    cd $dir/d/102-delivery/
 
     mkdir -p done_$the_date
 
@@ -380,6 +388,8 @@ function set_alias()
     alias pdf='SumatraPDF'
     alias md2pdf='_md2pdf'
     alias ..='cd ../'
+    alias ...='cd ../../'
+    alias ....='cd ../../../'
     alias iperf2s='iperf -u -s -m -i 1'
     alias cgdb='cgdb -q'
     alias gdb='gdb -q'
@@ -400,6 +410,7 @@ function set_alias()
     alias start='_start'
     alias stop='_stop'
     alias mydate='_mydate'
+    alias t='_tmux_new'
 }
 
 function set_path()
