@@ -1,21 +1,76 @@
 #!/bin/bash
 
+function print_result()
+{
+    flag=$1
+    if [ "$flag" == "1" ];then
+        echo update $HOSTNAME documents !!
+        return 0
+    else
+        echo nothing to update from $HOSTNAME
+        return 0
+    fi
+}
+
+function upload_to_github()
+{
+
+    check=`git status | grep "modified:"`
+
+    files=`echo $check | awk -F":" '{print $2}'`
+
+    if [ -z "$files" ];then
+        echo "nothing to git commit"
+        return 0
+    fi
+
+    for file in $files
+    do
+        echo git add $file ...
+        comment=$file $comment
+        git add $file
+    done
+
+    echo git commit -m "update file $comment from $HOSTNAME"  ...
+
+    git commit -m "update file $comment from $HOSTNAME"
+
+    git push -u git@github.com:deepblue0755/documents.git master
+    
+}
+
+function copy_files()
+{
+    from=$1
+    to=$2
+
+    if [ ! -f $fome ];then
+        echo "error ,there's no such file $from !!"
+        return 0
+    fi
+
+    diff $from $to 
+    if [ "$?" != "0" ];then
+        cp -f "$from" "$to"
+        return 1
+    fi
+
+    return 0
+}
+
 function copy_config_from_macosx()
 {
     flag=0
 
-    diff ~/.bash_profile ./_bash_profile-$HOSTNAME &> /dev/null
+    copy_files ~/.bash_profile ./_bash_profile-$HOSTNAME 
+    flag=$?
 
-    if [  $? != 0 ];then
-        echo copy MacOSx .bash_profile ...
-        cp  ~/.bash_profile ./_bash_profile-$HOSTNAME
-        flag=1
-    fi
+    copy_files ~/.tmux.conf  ./_tmux.conf-$HOSTNAME 
+    flag=$?
 
-    if [ $flag = 0 ];then
-        echo nothing to update from MacOSx
-    fi
+    print_result $flag
 
+    upload_to_github
 
     return 0
 
