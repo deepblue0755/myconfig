@@ -248,7 +248,7 @@ function _backup_config()
 {
     pushd . > /dev/null
 
-    cd $dir/d/myconfig
+    cd $dir/d/documents/11-configs-from-github
 
     ./update_config_file.sh
 
