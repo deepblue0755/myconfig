@@ -206,6 +206,13 @@ function _gvim()
     gvim $* &> /dev/null &
 }
 
+# check other task warrior
+function _other_task()
+{
+    export TASKDATA=~/Documents/12-cygwin64-config-t580/.task
+    task rc:~/Documents/12-cygwin64-config-t580/.task $*
+    export TASKDATA="~/.task"
+}
 
 # Config for Alias
 function config_alias()
@@ -213,6 +220,7 @@ function config_alias()
     alias c='clear'
     alias vi='vim --noplugin'
     alias gvim='_gvim'
+    alias rm='rm -iv'
     alias reload='source ~/.bash_profile'
     alias config='vim ~/.bash_profile'
     # alias t430='ssh huangmianbo@192.168.50.28'
@@ -255,6 +263,7 @@ function config_alias()
     alias bdoc='_backup_documents'
     alias bconfig='_backup_config'
     alias doc='cd ~/documents'
+    alias task2='_other_task'
 }
 
 set completion-ignore-case On
