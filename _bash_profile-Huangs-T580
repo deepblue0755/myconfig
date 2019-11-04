@@ -185,7 +185,12 @@ function _backup_doc()
 
         echo
         echo update to common folder
-       ../10-github-documents/update_documents_from_local.sh 
+
+        pushd . > /dev/null
+        cd $dir/d/documents/10-github-documents/ 
+        ./update_documents_from_local.sh 
+        popd > /dev/null
+
     else
         echo "no update ,nothing to backup"
     fi
@@ -242,9 +247,12 @@ function _backup_bash()
         git  commit -m "update .bash_profile from $USER@$HOSTNAME"
         git push -u local master
 
-        echo 
-        echo update to github private
-        bash $dir/d/documents/11-configs-from-github/update_config_file.sh
+        echo update to common config folders ...
+        echo
+        pushd . > /dev/null
+        cd $dir/d/documents/11-configs-from-github/
+        ./update_config_file.sh
+        popd > /dev/null
     else
         echo "no update ,nothing to backup"
     fi
