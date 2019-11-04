@@ -320,7 +320,7 @@ function _tmux_new()
     let tmux_cnt=`tmux list-sessions 2>&1 | grep -v "no server running" | grep ":" | wc -l`
     let tmux_cnt=$tmux_cnt+1
 
-    tmux new -s session-$tmux_cnt -n cygwin
+    tmux new -s session-$tmux_cnt -n cygwin 
 }
 
 function _done_102()
