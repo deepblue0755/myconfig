@@ -241,9 +241,14 @@ function _backup_bash()
         echo commit change to local 
         git  commit -m "update .bash_profile from $USER@$HOSTNAME"
         git push -u local master
+
+        echo 
+        echo update to github private
+        bash $dir/d/documents/11-configs-from-github/update_config_file.sh
     else
         echo "no update ,nothing to backup"
     fi
+
     
     popd > /dev/null
 }
