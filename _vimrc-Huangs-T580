@@ -245,6 +245,7 @@ imap <F6> <ESC>:NeoCompleteToggle<RETURN><ESC><i>
 nmap <F7> <ESC>:NERDTreeToggle<RETURN>
 nmap <F8> <ESC>:TlistToggle<RETURN>
 nmap <F9> <ESC>:WMToggle<RETURN>
+nmap <F5> <ESC>:!make <RETURN>
 noremap <Up> <Nop>
 noremap <Down> <Nop>
 noremap <Left> <Nop>
