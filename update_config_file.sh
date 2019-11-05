@@ -136,7 +136,10 @@ function copy_config_from_cygwin()
 
 function main()
 {
+    echo --------------------------------------------------------
     echo Running Scripts $0 At $HOSTNAME !!
+    echo --------------------------------------------------------
+
     case $HOSTNAME in 
 
         Gigabyte-Brix)
