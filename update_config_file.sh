@@ -60,6 +60,11 @@ function copy_files()
 
 function copy_config_from_macosx()
 {
+    echo 
+    echo pull update from github ...
+    git pull origin master
+    echo 
+
     flag=0
 
     copy_files ~/.bash_profile ./_bash_profile-$HOSTNAME 
