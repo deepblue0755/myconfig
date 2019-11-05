@@ -11,15 +11,17 @@ unbind %
 
 # reman key tab to next-window
 bind-key C-Tab next-window
-bind-key Tab   next-window
 
-# reload config file (change file location to your the tmux.conf you want to use)
-bind r source-file ~/.tmux.conf
+# reman key tab to cycle panes
+bind Tab select-pane -t :.+ 
+
+# prefix+q panes # display duration ms
+set -g display-panes-time 10000 
 
 # reload config file (change file location to your the tmux.conf you want to use)
 bind r source-file ~/.tmux.conf \; display-message "Config Reload !!" 
-bind b save-buffer /dev/clipboard \; display-message "Save Buffer To Clipboard!!"
-bind v run "tmux set-buffer \"$(xclip)\"  \; tmux paste-buffer" \; display-message "Paste System Clipboard"
+# bind b save-buffer | xclip -i \; display-message "Save Buffer To Clipboard!!"
+# bind v set-buffer \"$(xclip -o)\" \; tmux paste-buffer \; display-message "Paste System Clipboard" 
 
 # switch panes using Alt-arrow without prefix
 bind -n M-Left select-pane -L
@@ -27,9 +29,36 @@ bind -n M-Right select-pane -R
 bind -n M-Up select-pane -U
 bind -n M-Down select-pane -D
 
+# switch panes using prefix+key 
+bind h select-pane -L
+bind j select-pane -D
+bind k select-pane -U
+bind l select-pane -R
+
+# kill window
+bind k confirm kill-window
+bind K confirm kill-server
+
 # Enable mouse mode (tmux 2.1 and above)
 set -g mouse on
 
+# Set Repspones Time ms
+set -sg escape-time 10
+
+# Set the Color 
+set -g default-terminal "screen-256color"
+
+# set windows base index
+set -g base-index 1
+
+# set pane base index
+setw -g pane-base-index 1
+
+# set renumber window when close 
+# set -g renumber-windows   on  
+
+# set keys mode vi 
+setw -g mode-keys vi 
 ######################
 ## DESIGN CHANGES ###
 ######################
@@ -59,10 +88,10 @@ set -g mouse on
 # set -g status-bg colour18
 # set -g status-fg colour137
 # set -g status-attr dim
-# set -g status-left ''
+# set -g status-left "#[fg=black]#S #[fg=black]#I:#W:#F #[fg=black]#P"
 # set -g status-right '#[fg=colour233,bg=colour19,bold] %d/%m #[fg=colour233,bg=colour8,bold] %H:%M:%S '
 # set -g status-right-length 50
-# set -g status-left-length 20
+# set -g status-left-length 50
 
 # setw -g window-status-current-fg colour1
 # setw -g window-status-current-bg colour19
