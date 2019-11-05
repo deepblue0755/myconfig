@@ -16,6 +16,11 @@ bind-key Tab   next-window
 # reload config file (change file location to your the tmux.conf you want to use)
 bind r source-file ~/.tmux.conf
 
+# reload config file (change file location to your the tmux.conf you want to use)
+bind r source-file ~/.tmux.conf \; display-message "Config Reload !!" 
+bind b save-buffer /dev/clipboard \; display-message "Save Buffer To Clipboard!!"
+bind v run "tmux set-buffer \"$(xclip)\"  \; tmux paste-buffer" \; display-message "Paste System Clipboard"
+
 # switch panes using Alt-arrow without prefix
 bind -n M-Left select-pane -L
 bind -n M-Right select-pane -R
@@ -77,3 +82,25 @@ set -g mouse on
 # set -g message-attr bold
 # set -g message-fg colour232
 # set -g message-bg colour16
+
+# ------ status theme -------------------------------
+set -g message-style "bg=#00346e, fg=#ffffd7"        # tomorrow night blue, base3
+
+set -g status-style "bg=#00346e, fg=#ffffd7"   # tomorrow night blue, base3
+set -g status-style "bg=#00aa00, fg=#ffffd7"   # tomorrow night blue, base3
+set -g status-left "#[bg=#0087ff] ❐ #S "       # blue
+set -g status-left-length 400
+set -g status-right "#{?client_prefix, ⌨ , } #[bg=#0087ff] #(whoami)@#h #[bg=yellow,fg=black] %Y-%m-%d %H:%M "
+set -g status-right-length 600
+
+set -g set-clipboard off
+set -g history-limit 8000
+
+set -wg window-status-format " #I #W "
+set -wg window-status-current-format " #I #W "
+set -wg window-status-separator ""
+set -wg window-status-current-style "bg=red" # red
+set -wg window-status-last-style "fg=red"
+
+set -wg pane-active-border-style "fg=blue"
+set -wg pane-border-style "fg=#585858"       # base01
