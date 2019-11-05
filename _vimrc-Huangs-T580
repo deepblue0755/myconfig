@@ -250,8 +250,10 @@ noremap <Up> <Nop>
 noremap <Down> <Nop>
 noremap <Left> <Nop>
 noremap <Right> <Nop>
+noremap <C-tab> <ESC>:bn<RETURN>
 nmap <Space> :<Cr>
 nmap <C-c> :qa!<RETURN>
+nmap <C-a> <Nop>
 
 
 
