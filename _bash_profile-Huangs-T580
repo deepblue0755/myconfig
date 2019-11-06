@@ -347,7 +347,7 @@ function _done_102()
 {
     the_date=`date +%Y%m%d`
     pushd . &> /dev/null
-
+    cd  $dir/d/102-delivery/
 
     mkdir -p done_$the_date
 
