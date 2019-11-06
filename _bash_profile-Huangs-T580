@@ -432,7 +432,7 @@ function set_alias()
     alias reload='source ~/.bash_profile'
     alias config='gvim --remote-silent D:\\cygwin64\\home\\mianb\\\.bash_profile &'
     alias googol='ssh googol@cbpos'
-    alias tl='task list'
+    alias tl='task list $*'
     alias cpvb='_cpvb'
     alias cpvm='_cpvm'
     alias cplinux='_cplinux'
