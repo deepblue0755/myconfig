@@ -40,10 +40,60 @@ EDITOR=$dir/d/Vim/vim81/gvim;export EDITOR
 
 function _update_task()
 {
-    cd $HOME &&  \
-    git add .task && \
-    git commit -m "update task from $HOSTNAME : $1" && \
-    git push -u local master
+    pushd . > /dev/null
+    cd $HOME 
+    files=`git status | grep modified: | grep .task | awk -F":" '{print $2}'`
+    if [ -z "$files" ];then
+        echo no task to update ...
+        return 0
+    else
+        git add .task 
+        git commit -m "update task from $HOSTNAME : $1" 
+        git push -u git@github.com:deepblue0755/cygwin64_config_gigabyte.git master
+    fi
+    popd > /dev/null
+}
+
+function _backup_config()
+{
+    pushd . > /dev/null
+
+    cd ~
+
+    git pull git@github.com:deepblue0755/cygwin64_config_gigabyte.git master
+
+    comment=""
+
+    files=`git status | grep modified: | awk -F":" '{print $2}'`
+    if [ -z "$files" ];then
+        echo no task to update ...
+        return 0
+    fi
+
+    echo ""
+    for file in $files
+    do
+        echo git add $file ...
+        git add $file
+        comment="$comment $file"
+    done
+
+    echo "git commit -m \"update file $comment from $USER $HOSTNAME\""
+    echo ""
+
+    git commit -m "update file $comment from $USER $HOSTNAME"
+
+    git push -u git@github.com:deepblue0755/cygwin64_config_gigabyte.git master
+
+    echo
+    echo "now synchronous to all-config folder .."
+
+    cd $dir/d/documents/11-configs-from-github
+    
+    ./update_config_file.sh
+
+    popd > /dev/null
+    
 }
 
 function _gvim()
@@ -102,6 +152,8 @@ function set_alias()
     alias ...='cd ../../'
     alias ..='cd ..'
     alias aspell-tex='aspell --mode=tex --list'
+    alias bconfig='_backup_config'
+    alias btask='_update_task'
     alias config='vim D:\\cygwin64\\home\\mianb\\.bash_profile' 
     alias doc='cd ~/documents'
     alias es='es -highlight'
@@ -124,7 +176,6 @@ function set_alias()
     alias synctask='pushd . && cd $HOME && git pull origin master && popd'
     alias tc='task cale'
     alias tl='task list'
-    alias uptask='_update_task'
     alias vi='vim'
     alias videos='cd ~/videos'
     alias vim='_gvim'
