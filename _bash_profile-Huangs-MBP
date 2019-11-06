@@ -135,6 +135,7 @@ function _backup_documents()
     popd > /dev/null
 }
 
+
 function _backup_config()
 {
     pushd . > /dev/null
