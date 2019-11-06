@@ -35,7 +35,7 @@ function upload_to_github()
 
     git commit -m "update file $comment from $HOSTNAME"
 
-    git push -u github master
+    git push -u git@github.com:deepblue0755/myconfig.git master
     
 }
 
