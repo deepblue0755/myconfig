@@ -84,6 +84,11 @@ function copy_config_from_macosx()
 
 function copy_config_from_cygwin()
 {
+    echo 
+    echo pull update from github ...
+    git pull origin master
+    echo 
+
     flag=0
 
     if [ "$shell" == "/usr/bin/bash" ];then
@@ -134,9 +139,9 @@ function copy_config_from_cygwin()
         flag=1
     fi
 
-    if [ "$flag" == "0" ];then
-        echo no update from $HOSTNAME
-    fi
+    print_result $flag
+
+    upload_to_github
 }
 
 function main()
