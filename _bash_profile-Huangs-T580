@@ -347,7 +347,16 @@ function _tmux_new()
     let tmux_cnt=`tmux list-sessions 2>&1 | grep -v "no server running" | grep ":" | wc -l`
     let tmux_cnt=$tmux_cnt+1
 
-    tmux new -s session-$tmux_cnt -n cygwin 
+    if [ "$1" == "m" ];then
+        tmux new-session -d -s session-$tmux_cnt 
+        tmux new-window -d -n cygwin 
+        tmux new-window -d -n vmware
+        tmux new-window -d -n cbpos
+        tmux attach-session -d -t session-$tmux_cnt
+    else
+        tmux new -s session-$tmux_cnt -n cygwin
+    fi
+
 }
 
 function _done_102()
