@@ -20,8 +20,8 @@ set -g display-panes-time 10000
 
 # reload config file (change file location to your the tmux.conf you want to use)
 bind r source-file ~/.tmux.conf \; display-message "Config Reload !!" 
-# bind b save-buffer | xclip -i \; display-message "Save Buffer To Clipboard!!"
-# bind v set-buffer \"$(xclip -o)\" \; tmux paste-buffer \; display-message "Paste System Clipboard" 
+bind b run "tmux show-buffer | pbcopy" \; display-message "Save Buffer To Clipboard!!"
+bind v run "tmux set-buffer \"$(pbpaste)\"  \; tmux paste-buffer" \; display-message "Paste System Clipboard"
 
 # switch panes using Alt-arrow without prefix
 bind -n M-Left select-pane -L
