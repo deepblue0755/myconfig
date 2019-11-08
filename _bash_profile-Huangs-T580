@@ -289,24 +289,31 @@ function _backup_config()
 
     git push -u origin master
 
-    cd ~
     echo 
     echo ---------------------------------------------------------
-    echo Now,Git Backup Config File In ~
+    echo Now,Git Backup Config File In $home
     echo ---------------------------------------------------------
+    cd ~
+    comment=""
 
     files=`git status | grep modified | awk -F: '{print $2}'`
     files=`echo $files | grep ".bash_profile \| .tmux.conf \| .taskrc \| .task"`
     if [ -z "$files" ];then
-        echo no file in ~ need to git add 
+        echo no file in $HOME need to git add 
         popd > /dev/null
         return 0
     fi
+    echo
     for file in $files
     do
         echo git add $file ...
-        # git add $file
+        git add $file
     done
+    echo "git commit -m \"update files $comment from $USER @ $HOSTNAME\""
+    git commit -m "update files $comment from $USER @ $HOSTNAME"
+    git push -u git@github.com:deepblue0755/cygwin64_config_t580.git
+    echo
+
 
     popd > /dev/null
 }
