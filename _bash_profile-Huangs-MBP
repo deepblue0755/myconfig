@@ -22,6 +22,22 @@ function cp2rasp4()
     fi
 }
 
+# TMUX NEW SESSION
+function _tmux_new()
+{
+    let tmux_cnt=`tmux list-sessions 2>&1 | grep -v "no server running" | grep ":" | wc -l`
+    let tmux_cnt=$tmux_cnt+1
+
+    if [ x"$1" == x"m" ]; then
+        tmux new-session -d -s session-$tmux_cnt 
+        tmux new-window -d -n bash-2
+        tmux new-window -d -n bash-3
+        tmux attach-session -d -t session-$tmux_cnt
+    else
+        tmux new -s session-$tmux_cnt -n cygwin
+    fi
+}
+
 # PATH SETTING
 function config_path()
 {
@@ -265,6 +281,7 @@ function config_alias()
     alias bconfig='_backup_config'
     alias doc='cd ~/documents'
     alias task2='_other_task'
+    alias t='_tmux_new'
 }
 
 set completion-ignore-case On
