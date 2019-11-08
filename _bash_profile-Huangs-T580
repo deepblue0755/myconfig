@@ -461,6 +461,7 @@ function set_alias()
     alias src='cd $dir/d/Source'
     alias start='_start'
     alias stop='_stop'
+    alias svn='svn --username huang.mb --password huang.mb'
     alias t430='ssh huangmianbo@ThinkPad-T430'
     alias t580='ssh mianb@Huangs-T580'
     alias t='_tmux_new'
@@ -487,6 +488,7 @@ function set_path()
     export PATH=$dir/C/Program\ Files\ \(x86\)/Google/Chrome/Application:$PATH
     export PATH=$dir/d/VMware/VMware\ Workstation:$PATH
     export PATH=$dir/D/Oracle/VirtualBox:$PATH
+    export PATH=$dir/D/TortoiseSVN/bin:$PATH
 }
 
 
