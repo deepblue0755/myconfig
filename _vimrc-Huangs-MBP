@@ -224,40 +224,6 @@ execute pathogen#infect()
 syntax on  
 filetype plugin indent on 
 
-
-" -----------------------------------------------------------------------------
-"  < Vundle Setting >
-" -----------------------------------------------------------------------------
-" set nocompatible                                      "
-" filetype off                                          "
-
-" set rtp+=~/.vim/bundle/vundle/
-" call vundle#rc()
-
-" Bundle 'gmarik/vundle'
-" Bundle 'a.vim'
-" Bundle 'C.vim'
-" Bundle 'auto-pairs'
-" Bundle 'ctrlp.vim'
-" Bundle 'minibufexpl.vim'
-" Bundle 'nerdtree'
-" " Bundle 'neocomplete.vim' "need lua support
-" Bundle 'OmniCppComplete'
-" Bundle 'supertab'
-" Bundle 'syntastic'
-" Bundle 'taglist.vim'
-" Bundle 'The-NERD-Commenter'
-" Bundle 'vim-airline'
-" Bundle 'vim-latex-suite'
-" Bundle 'winmanager'
-" Bundle 'vim-repeat'
-" Bundle 'vim-surround'
-" Bundle 'vim-commentary'
-
-" call vundle#end()
-" filetype plugin indent on
-
-
 " -----------------------------------------------------------------------------
 "  < The TagList Plugin Setting >
 " -----------------------------------------------------------------------------
