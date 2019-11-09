@@ -16,7 +16,6 @@ vim-commentary
 vim-latex-suite
 vim-repeat
 vim-surround
-vim-todo-lists
 winmanager
 xterm-color-table.vim
 YouCompleteMe
