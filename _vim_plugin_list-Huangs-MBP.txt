@@ -1,14 +1,15 @@
+C.vim
+The-NERD-Commenter
+YouCompleteMe
 a.vim
 ale
 auto-pairs
-C.vim
 ctrlp.vim
 minibufexpl.vim
 neocomplete.vim
 nerdtree
 supertab
 taglist.vim
-The-NERD-Commenter
 vim-airline
 vim-commentary
 vim-latex-live-preview
@@ -17,4 +18,3 @@ vim-repeat
 vim-surround
 winmanager
 xterm-color-table.vim
-YouCompleteMe
