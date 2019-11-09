@@ -16,7 +16,5 @@ vim-latex-live-preview
 vim-latex-suite
 vim-repeat
 vim-surround
-vim-todo-lists
-vundle
 winmanager
 xterm-color-table.vim
