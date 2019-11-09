@@ -474,7 +474,7 @@ function set_alias()
     alias t430='ssh huangmianbo@ThinkPad-T430'
     alias t580='ssh mianb@Huangs-T580'
     alias t='_tmux_new'
-    alias tl='task list $*'
+    alias tl='task list proj:RTAI'
     alias tmp='cd ~/tmp'
     alias vb='ssh huangmianbo@virtualbox'
     alias vim='_gvim'
