@@ -76,7 +76,7 @@ function copy_config_from_macosx()
     copy_files ~/.vimrc  ./_vimrc-$HOSTNAME 
     flag=$?
 
-    ls ~/.vim/bundle/ | sort > ./_vim_plugin_list-Huangs-MBP.txt
+    ls ~/.vim/bundle/ | sort -f > ./_vim_plugin_list-Huangs-MBP.txt
 
     print_result $flag
 
