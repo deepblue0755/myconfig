@@ -1,0 +1,517 @@
+" -----------------------------------------------------------------------------
+"  < Selft Define Global >
+" -----------------------------------------------------------------------------
+let g:MyHiSyntax=1
+
+
+" -----------------------------------------------------------------------------
+"  < Is Vim a Terminal or Gvim >
+" -----------------------------------------------------------------------------
+if has("gui_running")
+    let g:isGUI = 1
+else
+    let g:isGUI = 0
+endif
+
+
+
+" =============================================================================
+" =============================================================================
+" =============================================================================
+"                          << User Setting >>
+" =============================================================================
+" =============================================================================
+" =============================================================================
+
+set nocompatible    " do not use vi mode
+filetype on         " detect type of file 
+filetype indent on
+set showcmd         " display incomplete commands 
+set showmode        " display current modes
+set t_Co=256
+"set nobackup 
+"set magic
+"set noerrorbells
+"set novisualvell
+"set history = 300
+set scrolloff=3
+
+
+" -----------------------------------------------------------------------------
+"  < Set the Menu Language >
+" -----------------------------------------------------------------------------
+if(g:isGUI)
+    set langmenu=en_US "set the menu & the message to English
+    let $LANG= 'en_US'
+    set guifont=Monaco:h16
+endif
+
+
+" -----------------------------------------------------------------------------
+"  < Enable displaying line number >
+" -----------------------------------------------------------------------------
+set number                  " show line number 
+set relativenumber
+set ruler                   " show the current row and column
+set hidden
+ 
+
+" -----------------------------------------------------------------------------
+"  < Color Schemen Setting >
+" -----------------------------------------------------------------------------
+set background=dark
+colorscheme murphy
+
+
+" -----------------------------------------------------------------------------
+"  < Mouse Setting >
+" -----------------------------------------------------------------------------
+"set mouse-=a
+set mouse=a
+set autochdir
+
+
+" -----------------------------------------------------------------------------
+"  < file save setting >
+" -----------------------------------------------------------------------------
+set autoread "Set to auto read when a file is changed from the outside 
+set encoding=utf-8 
+set modifiable "set file modifiable by default
+
+
+" -----------------------------------------------------------------------------
+"  < Search Setting >
+" -----------------------------------------------------------------------------
+set hlsearch            " highlight searches
+set incsearch           " do incremental searching
+" set ingnorecase       " ignore case when searching
+set matchtime=1
+set smartcase           "do not ignorecase if uppercase char present
+
+
+" -----------------------------------------------------------------------------
+"  < Indent Setting >
+" -----------------------------------------------------------------------------
+set tabstop=4     " tab width = 4 space:
+set expandtab     " Turn Tab into blank
+set autoindent    " enable auto indent,when edit in a new line,indent is same with the previous one
+set shiftwidth=4  " 
+set smarttab      " 
+set smartindent   " 
+set cindent
+
+
+" -----------------------------------------------------------------------------
+"  < Undo Setting>
+" -----------------------------------------------------------------------------
+
+" --------------------------------------------------------------------------------   
+" undo file directory
+set undofile
+set undodir=~/backup/vim/
+set undolevels=1000
+set undoreload=100 "number of lines to save for undo
+
+" --------------------------------------------------------------------------------   
+" backup file directory
+set backup
+set backupext=.bak
+set backupdir=~/backup/vim/
+
+" --------------------------------------------------------------------------------   
+" swap file directory 
+set directory=~/backup/vim/
+
+
+" -----------------------------------------------------------------------------
+"  < Code Fold Setting >
+" -----------------------------------------------------------------------------
+"code fold method setting:
+"set foldmethod=indent
+"set foldmethod=marker
+"set foldmethod=syntax
+set foldmethod=manual   
+set foldlevel=3
+set foldcolumn=2 
+set nofoldenable
+"set foldenable
+
+
+" -----------------------------------------------------------------------------
+"  < Syntax Setting >
+" -----------------------------------------------------------------------------
+syntax enable
+syntax on
+set syntax=c
+
+
+" -----------------------------------------------------------------------------
+"  < The Ctags Setting >
+" -----------------------------------------------------------------------------
+set tags=./tags
+
+
+" -----------------------------------------------------------------------------
+"  < remove some gui feature>
+" -----------------------------------------------------------------------------
+"  stop blinking cursor in gui
+set gcr=a:block-blinkon0
+
+"  disable rolling bar
+set guioptions-=l
+set guioptions-=L
+set guioptions-=r
+set guioptions-=L
+
+" disable menu and tool box 
+set guioptions-=m
+set guioptions-=T
+
+" column and line num display setting
+"set cursorline
+"set cursorcolumn
+
+
+" -----------------------------------------------------------------------------
+"  < abbreviation setting >
+" -----------------------------------------------------------------------------
+source ~/.vim/abbreviation/abbreviation.vim
+
+
+
+" -----------------------------------------------------------------------------
+"  < spell checking set  >
+" -----------------------------------------------------------------------------
+set nospell
+"set spell
+set spelllang=en_us
+
+
+" -----------------------------------------------------------------------------
+"  < short key mapping >
+" -----------------------------------------------------------------------------
+nnoremap <silent> <F12> :A<CR>
+nmap wm :WMToggle<cr>
+nnoremap <silent> <F3> :Grep<CR>
+nmap <F5> <ESC>:NeoCompleteToggle<RETURN>
+nmap <F6> <ESC>:NeoComplCacheToggle<RETURN>
+imap <F6> <ESC>:NeoComplCacheToggle<RETURN><ESC><i>
+nmap <F7> <ESC>:NERDTreeToggle<RETURN>
+nmap <F8> <ESC>:TlistToggle<RETURN>
+nmap <F9> <ESC>:WMToggle<RETURN>
+noremap <Up> <Nop>
+noremap <Down> <Nop>
+noremap <Left> <Nop>
+noremap <Right> <Nop>
+nmap <Space> :<Cr>
+nmap <C-C> :qa!<CR>
+imap <C-C> <ESC>:qa!<CR>
+
+
+
+
+"=============================================================================
+"=============================================================================
+"=============================================================================
+"                       Plugin Setting
+"=============================================================================
+"=============================================================================
+"=============================================================================
+" -----------------------------------------------------------------------------
+"  < Pathogen Setting >
+" -----------------------------------------------------------------------------
+execute pathogen#infect()
+syntax on  
+filetype plugin indent on 
+
+
+" -----------------------------------------------------------------------------
+"  < Vundle Setting >
+" -----------------------------------------------------------------------------
+" set nocompatible                                      "
+" filetype off                                          "
+
+" set rtp+=~/.vim/bundle/vundle/
+" call vundle#rc()
+
+" Bundle 'gmarik/vundle'
+" Bundle 'a.vim'
+" Bundle 'C.vim'
+" Bundle 'auto-pairs'
+" Bundle 'ctrlp.vim'
+" Bundle 'minibufexpl.vim'
+" Bundle 'nerdtree'
+" " Bundle 'neocomplete.vim' "need lua support
+" Bundle 'OmniCppComplete'
+" Bundle 'supertab'
+" Bundle 'syntastic'
+" Bundle 'taglist.vim'
+" Bundle 'The-NERD-Commenter'
+" Bundle 'vim-airline'
+" Bundle 'vim-latex-suite'
+" Bundle 'winmanager'
+" Bundle 'vim-repeat'
+" Bundle 'vim-surround'
+" Bundle 'vim-commentary'
+
+" call vundle#end()
+" filetype plugin indent on
+
+
+" -----------------------------------------------------------------------------
+"  < The TagList Plugin Setting >
+" -----------------------------------------------------------------------------
+let Tlist_Auto_Open=0 
+let Tlist_Show_One_File=1                   
+" let Tlist_Enable_Fold_Column=0            
+let Tlist_Exit_OnlyWindow=1                 
+let Tlist_File_Fold_Auto_Close=1            
+let Tlist_WinWidth=30                       
+let Tlist_Use_Right_Window=0                
+let Tlist_Sort_Type = "name"                
+let Tlist_Compart_Format = 1                
+let Tlist_File_Fold_Auto_Close = 0          
+let Tlist_Enable_Fold_Column = 1           
+let Tlist_Ctags_Cmd="/usr/local/ctags58/bin/ctags"
+let Tlist_Use_SingleClick=1
+let Tlist_GainFocus_On_ToggleOpen = 1     "when open taglist set focus to it
+let Tlist_Close_On_Select = 0             "close taglist after selecting tag or file
+let Tlist_Auto_Update = 1                 "auto update after adding file or modifying file
+let Tlist_Auto_Highlight_tag = 1
+let Tlist_Highlight_Tag_On_Buffer = 0    
+let Tlist_Show_Menu = 1                   "display the tags menu 
+let Tlist_Display_Tag_Scope = 1           "show tag scope next to the tag name
+let Tlist_Process_File_Alway = 0
+
+
+" -----------------------------------------------------------------------------
+"  < The NerdTree Plugin Setting >
+" -----------------------------------------------------------------------------
+" let NERDTreeWinPos = "right"
+" let NERDTreeWinSize = 31
+" let NERDChristmasTree=0
+" let NERDTreeWinSize=30
+" let NERDTreeChDirMode=2
+  let NERDTreeIgnore=['\~$', '\.pyc$', '\.swp$']
+" let NERDTreeSortOrder=['^__\.py$', '\/$', '*', '\.swp$',  '\~$']
+" let NERDTreeShowBookmarks=1
+
+
+" -----------------------------------------------------------------------------
+"  < The NerdCommenter Plugin Setting >
+" -----------------------------------------------------------------------------
+let NERDSpaceDelims = 1                         "  
+let NERDRemoveExtraSpaces = 1  
+
+
+" -----------------------------------------------------------------------------
+"  < The omnicppcomplete Plugin Setting >
+" -----------------------------------------------------------------------------
+filetype plugin indent on
+" set completeopt=menu                        
+" let OmniCpp_GlobalScopeSearch
+" let OmniCpp_NamespaceSearch
+" let OmniCpp_DisplayMode = 1
+" let OmniCpp_ShowScopeInAbbr
+" let OmniCpp_ShowPrototypeInAbbr
+" let OmniCpp_ShowAccess
+" let OmniCpp_DefaultNamespaces
+  let OmniCpp_MayCompleteDot=1    
+  let OmniCpp_MayCompleteArray=1  
+  let OmniCpp_MayCompleteScope=1   
+" let OmniCpp_SelectFirstItem
+" let OmniCpp_LocalSearchDecl
+
+
+" -----------------------------------------------------------------------------
+"  < The SupperTab Plugin Setting >
+" -----------------------------------------------------------------------------
+"  let g:SuperTabDefaultCompletionType="context"   
+"  let g:SuperTabRetainCompletionType=2
+"  let g:SuperTabDefaultCompletionType="<C-X><C-O>"
+
+
+" -----------------------------------------------------------------------------
+"  < The winManager Plugin Setting>
+" -----------------------------------------------------------------------------
+let g:winManagerWindowLayout='FileExplorer|TagList'
+let g:winManagerWidth = 25
+let g:defaultExplorer = 0 
+
+
+" -----------------------------------------------------------------------------
+"  < MiniBufExpl Setting >
+" -----------------------------------------------------------------------------
+let g:miniBufExplMapCTabSwitchBufs = 0
+let g:miniBufExplMapWindowNavVim = 0
+let g:miniBufExplMapWindowNavArrows = 0
+let g:miniBufExplorerMoreThanOne = 0
+let g:miniBufExplModSelTarget = 1   
+let g:miniBufExplMinSize=1 
+"value 0 mean the window gets as big as needed to fit to all your buffers
+let g:miniBufExplMaxSize=1 
+let g:miniBufExplUseSingleClick=1
+
+
+" -----------------------------------------------------------------------------
+"  < syntastic Setting >
+" -----------------------------------------------------------------------------
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+let g:syntastic_error_symbol = ">>"	"set error or warning signs
+let g:syntastic_warning_symbol = ">"
+let syntastic_ignore_files =['.tex','_vimrc']
+let g:syntastic_enable_highlighting = 0
+let g:syntastic_loc_list_height = 5
+let g:syntastic_filetype_map = {
+        \ "latex": "tex",
+        \ "gentoo-metadata": "xml" }
+ let g:syntastic_quiet_messages = {
+        \ "!level":  "errors",
+        \ "type":    "style",
+        \ "regex":   '\m\[C03\d\d\]',
+        \ "file:p":  ['\m^/usr/include/', '\m\c\.h$'] }
+let g:syntastic_agrregate_errors = 0
+let g:syntastic_id_checkers = 0
+let g:syntastic_always_populate_loc_list = 0
+let g:syntastic_sort_aggregated_errors = 0
+let g:syntastic_echo_current_error = 1
+let g:syntastic_auto_jump = 0 
+let g:syntastic_cursor_columns = 0
+let g:syntastic_extra_filetypes = [ "make", "gitcommit" ]
+let g:syntastic_auto_loc_list = 0
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+let g:syntastic_enable_signs = 0
+let g:syntastic_stl_format = '[%E{Err: %fe #%e}%B{, }%W{Warn: %fw #%w}]'
+
+
+
+let b:syntastic_skip_checks = 0
+
+
+" -----------------------------------------------------------------------------
+"  < Vim-Latex-Suite Setting >
+" -----------------------------------------------------------------------------
+" REQUIRED. This makes vim invoke Latex-Suite when you open a tex file.
+filetype plugin on
+
+" IMPORTANT: win32 users will need to have 'shellslash' set so that latex
+" can be called correctly.
+set shellslash
+
+" IMPORTANT: grep will sometimes skip displaying the file name if you
+" search in a singe file. This will confuse Latex-Suite. Set your grep
+" program to always generate a file-name.
+set grepprg=grep\ -nH\ $*
+
+" OPTIONAL: This enables automatic indentation as you type.
+filetype indent on
+
+" OPTIONAL: Starting with Vim 7, the filetype of empty .tex files defaults to
+" 'plaintex' instead of 'tex', which results in vim-latex not being loaded.
+" The following changes the default filetype back to 'tex':
+let g:tex_flavor='latex'
+
+
+"--------------------------------------------------------------------------
+" < vim-airline >
+"--------------------------------------------------------------------------
+"let g:airline_theme="molokai" 
+let g:airline_powerline_fonts = 0   
+let g:airline#extensions#tabline#enabled = 0
+let g:airline#extensions#tabline#buffer_nr_show = 0
+
+nnoremap <C-tab> :bn<CR>
+nnoremap <C-s-tab> :bp<CR>
+ 
+let g:airline#extensions#whitespace#enabled = 0
+let g:airline#extensions#whitespace#symbol = '!'
+if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+endif
+let g:airline_left_sep = ' '
+let g:airline_left_alt_sep = ' '
+let g:airline_right_sep = ' '
+let g:airline_right_alt_sep = ' '
+let g:airline_symbols.branch = ' '
+let g:airline_symbols.readonly = ' '
+
+
+"--------------------------------------------------------------------------
+" < NeoComplCache setting >
+"--------------------------------------------------------------------------
+if(has('lua'))
+    let g:neocomplete#enable_at_startup=1 "enable list" 
+    " disable list
+    autocmd FileType c,cpp let g:neocomplete#enable_at_startup=0 
+    autocmd FileType c,cpp let g:neocomplete#auto_completion_start_length=100
+    autocmd FileType text  let g:neocomplete#auto_completion_start_length=4
+    autocmd FileType tex   let g:neocomplete#auto_completion_start_length=2
+    let g:neocomplete#sources#dictionary#dictionaries = {
+    \ 'text'  : '~/.vim/dictionary/en_dictionary_tiny.dic', 
+    \ 'tex'   : '~/.vim/dictionary/en_dictionary_tiny_tex.dic',
+    \}
+endif
+
+"--------------------------------------------------------------------------
+" <vim-latex-preview setting>
+"--------------------------------------------------------------------------
+let g:loaded_vim_live_preview = 1
+autocmd Filetype tex setl updatetime=5
+let g:livepreview_previewer='evince'
+
+
+
+"--------------------------------------------------------------------------
+" < YCM setting >
+"--------------------------------------------------------------------------
+let g:ycm_global_ycm_extra_conf='~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
+let g:ycm_python_binary_path='/usr/bin/python'
+let g:ycm_server_python_interpreter='/usr/bin/python'
+
+let g:ycm_error_symbol='>>'
+let g:ycm_warning_symbol='>'
+let g:ycm_min_num_of_chars_for_completion=3
+let g:ycm_autoclose_preview_window_after_insertion=1
+let g:ycm_auto_start_csharp_server=0
+let g:ycm_collect_identifiers_from_tags_files=1
+let g:ycm_filetype_whitelist={ 
+    \ 'c' : 1,
+    \ 'cpp' : 1,
+    \}
+let g:ycm_filetype_blacklist={
+    \ 'text' : 1,
+    \ 'tex' : 1,
+    \ 'python' : 1,
+    \ 'make' : 1,
+    \ 'sh' : 1,
+    \ 'vim' : 1,
+    \}
+let g:ycm_filetype_specific_completion_to_disable={
+    \ 'text' : 1,
+    \ 'tex' : 1,
+    \ 'python' : 1,
+    \ 'make' : 1,
+    \ 'sh' : 1,
+    \ 'vim' : 1,
+    \}
+" -----------------------------------------------------------------------------
+"  <  Setting Put At the End To Take Effect >
+" -----------------------------------------------------------------------------
+" set lines=100
+" set columns=100
+set clipboard+=unnamed
+set nowrap
+set dictionary+=~/.vim/dictionary/en_dictionary_tiny.dic
+set complete+=k
+set showcmd
+set backspace=start
+set iskeyword+=_
+set iskeyword+=-
+set nowrapscan
+set nowrap
+" -----------------------------------------------------------------------------
+"  < end of vim config file >
+" -----------------------------------------------------------------------------
