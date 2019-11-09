@@ -255,6 +255,7 @@ function config_alias()
     alias grep='grep --color=auto'
     alias temp='/usr/local/bin/osx-cpu-temp'
     alias gigabyte='ssh mianb@gigabyte-brix'
+    alias giga='gigabyte'
     # alias gigabyte='ssh mianb@192.168.50.116'
     alias rasp3='ssh huangmianbo@192.168.50.102'
     alias rasp3-xeno3='ssh pi@raspberrypi3-xeno3'
@@ -282,6 +283,7 @@ function config_alias()
     alias doc='cd ~/documents'
     alias task2='_other_task'
     alias t='_tmux_new'
+    alias src='cd ~/Source'
 }
 
 set completion-ignore-case On
