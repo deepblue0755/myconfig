@@ -386,17 +386,28 @@ function _start()
 
     case $1 in
         vm)
+            if [ x"$VM_START" != x"1" ];then
+                echo "vmware machine is already starting"
+                return 0
+            fi
             check=`vmrun list | grep "Ubuntu-14.04-Kylin"` 
             if [ ! -z "$check" ];then
+                echo ""
                 echo "vmware machine is already starting"
                 return 0
             fi
             echo start vmware machine ... 
             vmrun start "D:\\Virtual Machines\\Ubuntu-14.04-Kylin\\\Ubuntu.vmx"  nogui
+            VM_START=1
         ;;
         vb)
+            if [ x"$VB_START" == x"1" ];then
+                echo "vmware machine is already starting"
+                return 0
+            fi
             echo start virtual box machine ... 
             VBoxManage startvm "Ubuntu-14.04" --type headless
+            VB_START=1
         ;;
         list)
             echo list virtual machines ...
@@ -421,10 +432,12 @@ function _stop()
         vm)
             echo stop vmware machine ...  
             vmrun stop "D:\\Virtual Machines\\Ubuntu-14.04-Kylin\\\Ubuntu.vmx" nogui
+            VM_START=0
         ;;
         vb)
             echo stop virtual box machine ... 
             VBoxManage controlvm "Ubuntu-14.04" poweroff
+            VB_START=0
         ;;
     esac
     
@@ -448,7 +461,7 @@ function set_alias()
     alias btask='_backup_task'
     alias cbpos='_cbpos'
     alias cgdb='cgdb -q'
-    alias config='gvim --remote-silent D:\\cygwin64\\home\\mianb\\\.bash_profile &'
+    alias config='gvim --remote-silent D:\\cygwin64\\home\\mianb\\\.bash_profile \&'
     alias cplinux='_cplinux'
     alias cpvb='_cpvb'
     alias cpvm='_cpvm'
@@ -503,17 +516,42 @@ function set_path()
     export PATH=$dir/d/VMware/VMware\ Workstation:$PATH
     export PATH=$dir/D/Oracle/VirtualBox:$PATH
     export PATH=$dir/D/TortoiseSVN/bin:$PATH
+
+    if [ "$SHELL" == "/bin/bash" ];then
+        export PATH=$dir/d/cygwin64/bin:$PATH
+    fi
 }
 
+function set_lang()
+{
+ export LANG=en_US.UTF-8
+ export LANGUAGE=en_US.utf8
+ export LC_CTYPE="en_US.utf8"
+ export LC_NUMERIC="en_US.utf8"
+ export LC_TIME="en_US.utf8"
+ export LC_COLLATE="en_US.utf8"
+ export LC_MONETARY="en_US.utf8"
+ export LC_MESSAGES="en_US.utf8"
+ export LC_PAPER="en_US.utf8"
+ export LC_NAME="en_US.utf8"
+ export LC_ADDRESS="en_US.utf8"
+ export LC_TELEPHONE="en_US.utf8"
+ export LC_MEASUREMENT="en_US.utf8"
+ export LC_IDENTIFICATION="en_US.utf8"
+ export LC_ALL=en_US.utf8
+}
 
 set_path
 set_alias
+set_lang
 
 set -o vi
 
 if [ "$SHELL" == "/bin/bash" ];then
-    export PATH=$dir/d/cygwin64/bin:$PATH
     task list
 fi
+
+export TIME_STYLE="+%Y/%m/%d %H:%M:%S"
+export TZ=Asia/Shanghai
 
 start vm
