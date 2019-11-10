@@ -386,6 +386,11 @@ function _start()
 
     case $1 in
         vm)
+            check=`vmrun list | grep "Ubuntu-14.04-Kylin"` 
+            if [ ! -z "$check" ];then
+                echo "vmware machine is already starting"
+                return 0
+            fi
             echo start vmware machine ... 
             vmrun start "D:\\Virtual Machines\\Ubuntu-14.04-Kylin\\\Ubuntu.vmx"  nogui
         ;;
@@ -511,3 +516,4 @@ if [ "$SHELL" == "/bin/bash" ];then
     task list
 fi
 
+start vm
