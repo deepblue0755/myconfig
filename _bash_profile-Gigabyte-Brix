@@ -208,13 +208,14 @@ function set_path()
     PATH=$dir/d/texlive/2018/bin/win32:$PATH
     PATH=$dir/d/vim/vim81/:$PATH
     PATH=$dir/d/SumatraPDF/:$PATH
-    PATH=$dir/d/Git/bin:$PATH
-    PATH=$dir/d/Git:$PATH
 
     # do not add cygwin/bin to $PATH
     if [ "$SHELL" == "/bin/bash" ];then
         PATH=$dir/d/cygwin64/bin/:$PATH
     fi
+
+    PATH=$dir/d/Git/bin:$PATH
+    PATH=$dir/d/Git:$PATH
 
     export PATH
 
@@ -262,6 +263,9 @@ function set_alias()
 
 set_path
 set_alias
-task list
+
+if [ "$SHELL" == "/bin/bash" ];then
+    task list
+fi
 
 set -o vi
