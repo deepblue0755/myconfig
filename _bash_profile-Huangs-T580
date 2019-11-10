@@ -386,10 +386,6 @@ function _start()
 
     case $1 in
         vm)
-            if [ x"$VM_START" != x"1" ];then
-                echo "vmware machine is already starting"
-                return 0
-            fi
             check=`vmrun list | grep "Ubuntu-14.04-Kylin"` 
             if [ ! -z "$check" ];then
                 echo ""
@@ -398,16 +394,16 @@ function _start()
             fi
             echo start vmware machine ... 
             vmrun start "D:\\Virtual Machines\\Ubuntu-14.04-Kylin\\\Ubuntu.vmx"  nogui
-            VM_START=1
         ;;
         vb)
-            if [ x"$VB_START" == x"1" ];then
-                echo "vmware machine is already starting"
+            check=`VBoxManage list runningvms | grep "Ubuntu-14.04"` 
+            if [ ! -z "$check" ];then
+                echo ""
+                echo "virtualbox machine is already starting"
                 return 0
             fi
             echo start virtual box machine ... 
             VBoxManage startvm "Ubuntu-14.04" --type headless
-            VB_START=1
         ;;
         list)
             echo list virtual machines ...
