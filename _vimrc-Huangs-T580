@@ -567,10 +567,10 @@ endif
 "  <  Setting Put At the End To Take Effect >
 " -----------------------------------------------------------------------------
 let g:miniBufExplorerMoreThanOne=0
-set guifont=Consolas:h12
+set guifont=Consolas:h14
 set fileformat=unix
 set lines=100
-set columns=150
+set columns=180
 set clipboard+=unnamed
 autocmd Filetype text set dictionary+=$VIMRUNTIME/dictionary/en_dictionary_mediate.dic
 autocmd Filetype tex  set dictionary+=$VIMRUNTIME/dictionary/latex_command_dictionary.dic
