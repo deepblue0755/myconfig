@@ -457,7 +457,7 @@ function set_alias()
     alias btask='_backup_task'
     alias cbpos='_cbpos'
     alias cgdb='cgdb -q'
-    alias config='gvim --remote-silent D:\\cygwin64\\home\\mianb\\\.bash_profile \&'
+    alias config='gvim --remote-silent D:\\cygwin64\\home\\mianb\\\.bash_profile &'
     alias cplinux='_cplinux'
     alias cpvb='_cpvb'
     alias cpvm='_cpvm'
