@@ -444,6 +444,25 @@ function _mydate()
     date +%Y%m%d%H%M%S
 }
 
+function _task_list()
+{
+    if [ -z "$1" ];then
+        task list proj:RTAI
+        return 0
+    fi
+
+    if [ "$1" == "2" ];then
+        task list proj:infra
+        return 0
+    fi
+
+    if [ "$1" == "a" ];then
+        task list
+        return 0
+    fi
+    
+}
+
 function set_alias()
 {
     alias ....='cd ../../../'
@@ -488,7 +507,7 @@ function set_alias()
     alias t430='ssh huangmianbo@ThinkPad-T430'
     alias t580='ssh mianb@Huangs-T580'
     alias t='_tmux_new'
-    alias tl='task list proj:RTAI'
+    alias tl='_task_list'
     alias tmp='cd ~/tmp'
     alias vb='ssh huangmianbo@virtualbox'
     alias vim='_gvim'
