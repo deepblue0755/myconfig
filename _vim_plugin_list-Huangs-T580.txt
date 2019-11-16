@@ -21,4 +21,3 @@ vim-repeat
 vim-surround
 winmanager
 xterm-color-table.vim
-YouCompleteMe
