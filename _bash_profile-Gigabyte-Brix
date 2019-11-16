@@ -119,7 +119,7 @@ function _gvim()
         echo vim $(_win_dir $1)
         $dir/d/Vim/vim81/gvim "$(_win_dir $1)" &
     else
-        $dir/d/Vim/vim81/gvim $* &
+        $dir/d/Vim/vim81/gvim --remote-silent $* &
     fi
 
     return  0
@@ -235,6 +235,7 @@ function set_alias()
     alias es='es -highlight'
     alias find='/d/cygwin64/bin/find'
     alias gbash='git-bash'
+    alias gitlab='ssh huangmianbo@192.168.56.102'
     alias grep='grep --color=auto'
     alias ls='ls --color=auto'
     alias mac='ssh huangmianbo@Huangs-MBP'
