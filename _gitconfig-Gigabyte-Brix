@@ -7,7 +7,7 @@
 [http]
 	; proxy = 139.24.192.8:8080
 [user]
-	name = deepblue0755
+	name = mianbo.huang.gigabyte
 	email = mianbo.huang@hotmail.com
 [core]
     autocrlf = false
