@@ -396,14 +396,14 @@ function _start()
             vmrun start "D:\\Virtual Machines\\Ubuntu-14.04-Kylin\\\Ubuntu.vmx"  nogui
         ;;
         vb)
-            check=`VBoxManage list runningvms | grep "Ubuntu-14.04"` 
+            check=`VBoxManage list runningvms | grep "Ubuntu-1804"` 
             if [ ! -z "$check" ];then
                 echo ""
                 echo "virtualbox machine is already starting"
                 return 0
             fi
             echo start virtual box machine ... 
-            VBoxManage startvm "Ubuntu-14.04" --type headless
+            VBoxManage startvm "Ubuntu-1804" --type headless
         ;;
         list)
             echo list virtual machines ...
@@ -515,6 +515,7 @@ function set_alias()
     alias vm='ssh huangmianbo@vmware'
     alias vmware='vm'
     alias ~='cd ~'
+    alias gitlab='ssh huangmianbo@192.168.56.103'
 }
 
 function set_path()
@@ -568,5 +569,7 @@ fi
 
 export TIME_STYLE="+%Y/%m/%d %H:%M:%S"
 export TZ=Asia/Shanghai
+export EDITOR=vim
+export SVN_EDITOR=vim
 
 start vm
