@@ -101,13 +101,22 @@ function _backup_all()
     pushd . > /dev/null
 
     cd $dir/d/documents/10-github-document
-    ./update_documents_from_local.sh
+    git pull origin master
+    if [ $? == 0 ];then
+        ./update_documents_from_local.sh
+    fi
 
     cd $dir/d/documents/11-configs-from-github
-    ./update_config_file.sh
+    git pull origin master
+    if [ $? == 0 ];then
+        ./update_config_file.sh
+    fi
 
     cd $dir/d/documents/12-cygwin64-config-t580
-    git push -u origin master
+    git pull origin master
+
+    cd ~
+    
 
     popd 
     
