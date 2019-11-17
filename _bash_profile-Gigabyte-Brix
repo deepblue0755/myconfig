@@ -154,7 +154,7 @@ function _backup_all()
         do
             echo 
             if [ -f "$file" ];then
-                echo "git add $file"
+                echo "git add $file ..."
                 git add $file
                 comment=$comment $file
             fi
