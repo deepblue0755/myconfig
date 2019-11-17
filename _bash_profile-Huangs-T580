@@ -232,7 +232,7 @@ function _backup_task()
 
 function _backup_bash()
 {
-    pushd .  > /dev/null
+    pushd .  &> /dev/null
     flag=0
     
     cd ~
@@ -259,12 +259,12 @@ function _backup_bash()
     fi
 
     
-    popd > /dev/null
+    popd &> /dev/null
 }
 
 function _backup_config()
 {
-    pushd . > /dev/null
+    pushd . &> /dev/null
 
     cd $dir/d/documents/11-configs-from-github
 
@@ -315,7 +315,7 @@ function _backup_config()
     echo
 
 
-    popd > /dev/null
+    popd &> /dev/null
 }
 
 function _backup_all()
