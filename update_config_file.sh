@@ -26,9 +26,11 @@ function upload_to_github()
 
     for file in $files
     do
-        echo git add $file ...
-        comment=$file $comment
-        git add $file
+        if [ -f "$file" ];then
+            echo "git add $file ..."
+            comment=$file $comment
+            git add $file
+        fi
     done
 
     echo git commit -m "update file $comment from $HOSTNAME"  ...
@@ -107,7 +109,7 @@ function copy_config_from_cygwin()
     diff $dir/d/Vim/_vimrc ./_vimrc-$HOSTNAME
 
     if [ $? != 0 ];then
-        echo copy vim _vimrc ...
+        echo "copy vim _vimrc ..."
         cp $dir/d/Vim/_vimrc ./_vimrc-$HOSTNAME
         flag=1
     fi
