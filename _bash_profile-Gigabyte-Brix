@@ -152,6 +152,7 @@ function _backup_all()
     else
         for file in $files
         do
+            echo 
             if [ -f "$file" ];then
                 echo "git add $file"
                 git add $file
@@ -160,7 +161,8 @@ function _backup_all()
         done
         echo "git commit -m \"update $comment from $USER @ $HOSTNAME\""
         git commit -m "update $comment from $USER @ $HOSTNAME"
-        git push -u origin master
+        echo "git push -u $(git remote) master"
+        git push -u $(git remote) master
     fi
     
 
