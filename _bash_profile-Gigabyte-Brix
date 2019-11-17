@@ -107,9 +107,9 @@ function _backup_all()
     echo -------------------------------------------
     cd $dir/d/documents/10-github-document
     echo
-    echo "git pull origin master ..."
+    echo "git pull $(git remote) master ..."
     echo
-    git pull origin master
+    git pull $(git remote) master
 
     if [ $? == 0 ];then
         echo 
@@ -123,9 +123,9 @@ function _backup_all()
     echo -------------------------------------------
     cd $dir/d/documents/11-configs-from-github
     echo 
-    echo "git pull origin master ... "
+    echo "git pull $(git remote) master ... "
     echo
-    git pull origin master
+    git pull $(git remote) master
 
     if [ $? == 0 ];then
         echo 
@@ -139,9 +139,9 @@ function _backup_all()
     echo -------------------------------------------
     cd $dir/d/documents/12-cygwin64-config-t580
     echo 
-    echo "git pull origin master ... "
+    echo "git pull $(git remote) master ... "
     echo
-    git pull origin master
+    git pull $(git remote) master
 
     echo -------------------------------------------
     echo 4, update config files from gigabyte-brix
