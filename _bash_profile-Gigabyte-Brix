@@ -251,6 +251,7 @@ function set_alias()
     alias rm='rm -iv -d'
     alias syncbash='cp -iv $HOME/.bash_profile /cygdrive/f/05-To-From-Gigabyte-MiniComputer/'
     alias synctask='pushd . && cd $HOME && git pull origin master && popd'
+    alias t580='ssh mianb@Huangs-T580'
     alias tc='task cale'
     alias tl='task list'
     alias t='_tmux_new'
