@@ -60,7 +60,7 @@ function _backup_config()
 
     cd ~
 
-    git pull git@github.com:deepblue0755/cygwin64_config_gigabyte.git master
+    git pull $(git remote) master
 
     comment=""
 
@@ -73,20 +73,20 @@ function _backup_config()
     echo ""
     for file in $files
     do
-        echo git add $file ...
+        echo "git add $file ... "
         git add "$file"
         comment="$comment $file"
     done
 
     echo "git commit -m \"update file $comment from $USER $HOSTNAME\""
-    echo ""
 
     git commit -m "update file $comment from $USER $HOSTNAME"
 
-    git push -u git@github.com:deepblue0755/cygwin64_config_gigabyte.git master
+    git push -u $(git remote) master
 
-    echo
-    echo "now synchronous to all-config folder .."
+    echo ""
+
+    echo "now synchronous to all-config folder ..."
 
     cd $dir/d/documents/11-configs-from-github
     
