@@ -98,7 +98,7 @@ function _backup_config()
 
 function _backup_all()
 {
-    pushd . > /dev/null
+    pushd . &> /dev/null
 
     echo -------------------------------------------
     echo 1, update document
@@ -166,7 +166,7 @@ function _backup_all()
     fi
     
 
-    popd 
+    popd  &> /dev/null
     
 }
 
