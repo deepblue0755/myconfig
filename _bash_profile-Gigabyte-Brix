@@ -100,19 +100,45 @@ function _backup_all()
 {
     pushd . > /dev/null
 
+    echo -------------------------------------------
+    echo update document
+    echo -------------------------------------------
     cd $dir/d/documents/10-github-document
+    echo
+    echo "git pull origin master ..."
+    echo
     git pull origin master
+
     if [ $? == 0 ];then
+        echo 
+        echo "running updating script ..."
+        echo
         ./update_documents_from_local.sh
     fi
 
+    echo -------------------------------------------
+    echo update config files
+    echo -------------------------------------------
     cd $dir/d/documents/11-configs-from-github
+    echo 
+    echo "git pull origin master ... "
+    echo
     git pull origin master
+
     if [ $? == 0 ];then
+        echo 
+        echo "running updating script ..."
+        echo
         ./update_config_file.sh
     fi
 
+    echo -------------------------------------------
+    echo update config files from T580
+    echo -------------------------------------------
     cd $dir/d/documents/12-cygwin64-config-t580
+    echo 
+    echo "git pull origin master ... "
+    echo
     git pull origin master
 
     cd ~
