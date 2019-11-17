@@ -101,7 +101,7 @@ function _backup_all()
     pushd . > /dev/null
 
     echo -------------------------------------------
-    echo update document
+    echo 1, update document
     echo -------------------------------------------
     cd $dir/d/documents/10-github-document
     echo
@@ -117,7 +117,7 @@ function _backup_all()
     fi
 
     echo -------------------------------------------
-    echo update all config files
+    echo 2, update all config files
     echo -------------------------------------------
     cd $dir/d/documents/11-configs-from-github
     echo 
@@ -133,7 +133,7 @@ function _backup_all()
     fi
 
     echo -------------------------------------------
-    echo update config files from T580
+    echo 3, update config files from T580
     echo -------------------------------------------
     cd $dir/d/documents/12-cygwin64-config-t580
     echo 
@@ -142,7 +142,7 @@ function _backup_all()
     git pull origin master
 
     echo -------------------------------------------
-    echo update config files from gigabyte-brix
+    echo 4, update config files from gigabyte-brix
     echo -------------------------------------------
     comment=
     cd ~
