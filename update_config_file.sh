@@ -112,7 +112,7 @@ function copy_config_from_cygwin()
         flag=1
     fi
 
-    ls $dir/d/Vim/vimfiles/bundle | sort -f > ./_vim_plugin_list-$HOSTNAME.txt 
+    ls $dir/d/Vim/vimfiles/bundle | sort > ./_vim_plugin_list-$HOSTNAME.txt 
 
     diff $dir/d/cygwin64/home/$USER/.tmux.conf ./_tmux.conf-$HOSTNAME
 
