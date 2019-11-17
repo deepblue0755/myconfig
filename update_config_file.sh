@@ -15,9 +15,7 @@ function print_result()
 function upload_to_github()
 {
 
-    check=`git status | grep "modified:"`
-
-    files=`echo $check | awk -F":" '{print $2}'`
+    files=`git status | grep "modified:" | awk -F":" '{print $2}'`
 
     if [ -z "$files" ];then
         echo "nothing to git commit"
@@ -28,16 +26,16 @@ function upload_to_github()
     do
         if [ -f "$file" ];then
             echo "git add $file ..."
-            comment=$file $comment
-            git add $file
+            comment="$comment $file"
+            git add "$file"
         fi
     done
 
-    echo git commit -m "update file $comment from $HOSTNAME"  ...
+    echo "git commit -m \"update file $comment from $HOSTNAME\"  ... "
 
     git commit -m "update file $comment from $HOSTNAME"
 
-    git push -u git@github.com:deepblue0755/myconfig.git master
+    git push -u $(git remote) master
     
 }
 
