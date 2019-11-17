@@ -73,15 +73,17 @@ function _backup_config()
     echo ""
     for file in $files
     do
-        echo "git add $file ... "
-        git add "$file"
-        comment="$comment $file"
+        if [ -f "$file" ];then
+            echo "git add $file ... "
+            git add "$file"
+            comment="$comment $file"
+        fi
     done
 
     echo "git commit -m \"update file $comment from $USER $HOSTNAME\""
-
     git commit -m "update file $comment from $USER $HOSTNAME"
 
+    echo "git push -u $(git remote) master ... "
     git push -u $(git remote) master
 
     echo ""
