@@ -31,9 +31,9 @@ function upload_to_github()
         fi
     done
 
-    echo "git commit -m \"update file $comment from $HOSTNAME\"  ... "
+    echo "git commit -m \"update file $comment from $USER @ $HOSTNAME\"  ... "
 
-    git commit -m "update file $comment from $HOSTNAME"
+    git commit -m "update file $comment from $USER @ $HOSTNAME"
 
     git push -u $(git remote) master
     
