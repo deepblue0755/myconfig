@@ -436,7 +436,7 @@ function _stop()
         ;;
         vb)
             echo stop virtual box machine ... 
-            VBoxManage controlvm "Ubuntu-14.04" poweroff
+            VBoxManage controlvm "Ubuntu-1804" poweroff
             VB_START=0
         ;;
     esac
@@ -491,6 +491,7 @@ function set_alias()
     alias getvb='_getvb'
     alias getvm='_getvm'
     alias gigabyte='ssh mianb@gigabyte-brix'
+    alias gitlab='ssh huangmianbo@192.168.56.103'
     alias googol='ssh googol@cbpos'
     alias grep='grep --color=auto'
     alias iperf2s='iperf -u -s -m -i 1'
@@ -519,7 +520,6 @@ function set_alias()
     alias vm='ssh huangmianbo@vmware'
     alias vmware='vm'
     alias ~='cd ~'
-    alias gitlab='ssh huangmianbo@192.168.56.103'
 }
 
 function set_path()
