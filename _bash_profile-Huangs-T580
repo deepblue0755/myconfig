@@ -311,7 +311,7 @@ function _backup_config()
     done
     echo "git commit -m \"update files $comment from $USER @ $HOSTNAME\""
     git commit -m "update files $comment from $USER @ $HOSTNAME"
-    git push -u git@github.com:deepblue0755/cygwin64_config_t580.git
+    git push -u $(git remote | sed -n 1p) master
     echo
 
 
