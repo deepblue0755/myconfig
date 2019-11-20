@@ -417,6 +417,9 @@ function _start()
             echo virtualbox:
             VBoxManage list runningvms
         ;;
+        *)
+            echo error,unknown virtual machine
+        ;;
     esac
     
 }
@@ -438,6 +441,9 @@ function _stop()
             echo stop virtual box machine ... 
             VBoxManage controlvm "Ubuntu-1804" poweroff
             VB_START=0
+        ;;
+        *)
+            echo error,unknown virtual machine
         ;;
     esac
     
