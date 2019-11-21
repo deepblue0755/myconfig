@@ -105,30 +105,32 @@ function _cpvb()
 
 function _cbpos()
 {
-    
-    ping -c 1 192.168.0.2 > /dev/null
-    if [ "$?" == "0" ];then
-        echo login 192.168.0.2 ...
-        ssh root@192.168.0.2
-        return 0
-    fi
-
-    ping -c 1 cpbos > /dev/null
-    if [ "$?" == "0" ];then
-        echo login cbpos ...
-        ssh root@cbpos
-        return 0
-    fi
-
-    ping -c 1 192.168.50.213 > /dev/null
-    if [ "$?" == "0" ];then
-        echo login 192.168.50.213 ...
-        ssh root@192.168.50.213
-        return 0
-    fi
-
-    return 1
-
+    case $1 in
+    1)
+        ping -c 1 cpbos > /dev/null
+        if [ "$?" == "0" ];then
+            echo login cbpos ...
+            ssh root@cbpos
+            return 0
+        fi
+    ;;
+    2)
+        ping -c 1 -W 1 192.168.50.213 > /dev/null
+        if [ "$?" == "0" ];then
+            echo login 192.168.50.213 ...
+            ssh root@192.168.50.213
+            return 0
+        fi
+    ;;
+    *)
+        ping -c 1 -W 1 192.168.0.2 > /dev/null
+        if [ "$?" == "0" ];then
+            echo login 192.168.0.2 ...
+            ssh root@192.168.0.2
+            return 0
+        fi
+    ;;
+    esac
 }
 
 function _getvb()
