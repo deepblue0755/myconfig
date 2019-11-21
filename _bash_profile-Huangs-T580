@@ -248,7 +248,7 @@ function _backup_bash()
     if [ "$flag" == "1" ];then
         echo commit change to local 
         git  commit -m "update .bash_profile from $USER@$HOSTNAME"
-        git push -u local master
+        git push -u $(git remote | sed -n 1p) master
 
         echo update to common config folders ...
         echo
