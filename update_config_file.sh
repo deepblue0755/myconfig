@@ -35,7 +35,7 @@ function upload_to_github()
 
     git commit -m "update file $comment from $USER @ $HOSTNAME"
 
-    git push -u $(git remote) master
+    git push -u $(git remote | sed -n 1p) master
     
 }
 
@@ -91,7 +91,7 @@ function copy_config_from_cygwin()
 {
     echo 
     echo pull update from github ...
-    git pull origin master
+    git pull 
     echo 
 
     flag=0
