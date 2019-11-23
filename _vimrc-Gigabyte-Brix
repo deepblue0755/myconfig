@@ -567,7 +567,7 @@ endif
 "  <  Setting Put At the End To Take Effect >
 " -----------------------------------------------------------------------------
 let g:miniBufExplorerMoreThanOne=0
-set guifont=Consolas:h12
+set guifont=Consolas:h14
 set fileformat=unix
 set lines=100
 set columns=150
