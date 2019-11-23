@@ -461,6 +461,7 @@ function _mydate()
     date +%Y%m%d%H%M%S
 }
 
+
 function _task_list()
 {
     if [ -z "$1" ];then
@@ -478,6 +479,40 @@ function _task_list()
         return 0
     fi
     
+}
+
+function _update_all()
+{
+    pushd . > /dev/null
+
+    echo
+    echo -------------------------------------------------
+    echo 1, update $dir/d/documents/10-github-documents 
+    echo -------------------------------------------------
+    echo 
+
+    cd $dir/d/documents/10-github-documents
+    git pull
+
+    echo
+    echo -------------------------------------------------
+    echo 2, $dir/d/documents/11-configs-from-github
+    echo -------------------------------------------------
+    echo
+
+    cd $dir/d/documents/11-configs-from-github
+    git pull
+
+    echo
+    echo -------------------------------------------------
+    echo 3,$dir/d/documents/09-latex-tikz-demo
+    echo -------------------------------------------------
+    echo
+
+    cd $dir/d/documents/09-latex-tikz-demo
+    git pull
+
+    popd
 }
 
 function set_alias()
@@ -527,6 +562,7 @@ function set_alias()
     alias t='_tmux_new'
     alias tl='_task_list'
     alias tmp='cd ~/tmp'
+    alias uall='_update_all'
     alias vb='ssh huangmianbo@virtualbox'
     alias vim='_gvim'
     alias vlc='_vlc'
