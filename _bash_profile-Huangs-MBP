@@ -42,9 +42,10 @@ function _tmux_new()
 function config_path()
 {
     PATH=/usr/local/bin:$PATH;
-    PATH=/usr/local/Cellar/vim/8.1.1501/bin:$PATH;
-    PATH=/usr/local/Cellar/macvim/8.1-156/bin:$PATH;
-    PATH=/usr/local/Cellar/git/2.22.0/bin:$PATH;
+    PATH=/usr/local/Cellar/vim/8.1.1501/bin:$PATH
+    PATH=/usr/local/Cellar/macvim/8.1-156/bin:$PATH
+    PATH=/usr/local/Cellar/git/2.22.0/bin:$PATH
+    PATH=/usr/local/Cellar/python/3.7.5/bin:$PATH
     PATH=/usr/local/texlive/2019/bin/x86_64-darwin:$PATH
     PATH=/usr/local/opt/icu4c/bin:$PATH
     PATH=/usr/local/opt/icu4c/sbin:$PATH
@@ -177,6 +178,44 @@ function _backup_config()
     popd > /dev/null
 }
 
+# backup all
+
+function _backup_all()
+{
+    pushd . &> /dev/null
+
+    cd ~/Documents/
+    let i=0;
+
+    for folder in *
+    do
+        if [ -d "$folder" ];then
+            echo ----------------------------------------------------------
+            let i=$i+1
+            echo "$i , cd $folder ..."
+            cd "$folder"
+            check=`git remote -v 2> /dev/null | grep fetch | awk '{ print $1 }'` 
+            if [ -z "$check" ];then
+                echo "$folder no git repos!!"
+                cd ..
+                continue
+            else
+                echo
+                echo update git folder $folder 
+                echo git pull $(git remote | sed -n 1p) master ...
+                echo
+                git pull $(git remote | sed -n 1p) master
+                cd  ..
+            fi
+            echo ----------------------------------------------------------
+        fi
+    done
+
+    popd &> /dev/null
+    
+}
+
+
 # synctask warrior
 function _synctask()
 {
@@ -234,7 +273,6 @@ function _other_task()
 # Config for Alias
 function config_alias()
 {
-    alias c='clear'
     alias vi='vim --noplugin'
     alias gvim='_gvim'
     alias rm='rm -iv'
@@ -284,6 +322,7 @@ function config_alias()
     alias task2='_other_task'
     alias t='_tmux_new'
     alias src='cd ~/Source'
+    alias ball='_backup_all'
 }
 
 set completion-ignore-case On
