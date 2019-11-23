@@ -128,6 +128,8 @@ function _cbpos()
             echo login 192.168.0.2 ...
             ssh root@192.168.0.2
             return 0
+        else
+            echo "error,could not ping cbpos!!"
         fi
     ;;
     esac
@@ -353,15 +355,18 @@ function _tmux_new()
     let tmux_cnt=`tmux list-sessions 2>&1 | grep -v "no server running" | grep ":" | wc -l`
     let tmux_cnt=$tmux_cnt+1
 
-    if [ "$1" == "m" ];then
+    case $1 in 
+        2)
         tmux new-session -d -s session-$tmux_cnt 
         tmux new-window -d -n cygwin 
         tmux new-window -d -n vmware
         tmux new-window -d -n cbpos
         tmux attach-session -d -t session-$tmux_cnt
-    else
+        ;;
+        *)
         tmux new -s session-$tmux_cnt -n cygwin
-    fi
+        ;;
+    esac
 
 }
 
