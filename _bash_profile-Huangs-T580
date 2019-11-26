@@ -357,8 +357,7 @@ function _tmux_new()
 
     case $1 in 
         2)
-        tmux new-session -d -s session-$tmux_cnt 
-        tmux new-window -d -n cygwin 
+        tmux new-session -d -s session-$tmux_cnt  -n cygwin
         tmux new-window -d -n vmware
         tmux new-window -d -n cbpos
         tmux attach-session -d -t session-$tmux_cnt
