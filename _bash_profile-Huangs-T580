@@ -123,16 +123,22 @@ function _cbpos()
         fi
     ;;
     4)
-        let cnt=0;
+        let cnt=0
         ping -c 1 -W 1 192.168.0.2 > /dev/null
-        while [ "$?" != "0" ]; do
+        check=$?
+        while [ "$check" != "0" ]; do
             echo try to ping 192.168.0.2 ...
             ping -c 1 -W 1 192.168.0.2 > /dev/null
-            let cnt=$cnt+1
-            sleep 1
-            if [ $cnt == 100 ];then
-                echo "error: could not ping 192.168.0.2"
-                return 1
+            check=$?
+            if [ "$check" == "0" ];then
+                break
+            else
+                let cnt=$cnt+1
+                sleep 1
+                if [ $cnt == 100 ];then
+                    echo "error: could not ping 192.168.0.2"
+                    return 1
+                fi
             fi
         done
         echo login 192.168.0.2 ...
