@@ -122,29 +122,7 @@ function _cbpos()
             return 0
         fi
     ;;
-    4)
-        let cnt=0
-        ping -c 1 -W 1 192.168.0.2 > /dev/null
-        check=$?
-        while [ "$check" != "0" ]; do
-            echo try to ping 192.168.0.2 ...
-            ping -c 1 -W 1 192.168.0.2 > /dev/null
-            check=$?
-            if [ "$check" == "0" ];then
-                break
-            else
-                let cnt=$cnt+1
-                sleep 1
-                if [ $cnt == 100 ];then
-                    echo "error: could not ping 192.168.0.2"
-                    return 1
-                fi
-            fi
-        done
-        echo login 192.168.0.2 ...
-        ssh root@192.168.0.2
-    ;;
-    *)
+    3)
         ping -c 1 -W 1 192.168.0.2 > /dev/null
         if [ "$?" == "0" ];then
             echo login 192.168.0.2 ...
@@ -154,6 +132,29 @@ function _cbpos()
             echo "error,could not ping cbpos!!"
         fi
     ;;
+    *)
+        let cnt=1
+        ping -c 1 -W 1 192.168.0.2 > /dev/null
+        check=$?
+        while [ "$check" != "0" ]; do
+            echo "$cnt try to ping 192.168.0.2 ..."
+            ping -c 1 -W 1 192.168.0.2 > /dev/null
+            check=$?
+            if [ "$check" == "0" ];then
+                break
+            else
+                let cnt=$cnt+1
+                sleep 1
+                if [ $cnt == 101 ];then
+                    echo "error: could not ping 192.168.0.2"
+                    return 1
+                fi
+            fi
+        done
+        echo login 192.168.0.2 ...
+        ssh root@192.168.0.2
+    ;;
+    
     esac
 }
 
