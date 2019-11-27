@@ -152,10 +152,28 @@ function _cbpos()
             fi
         done
         echo login 192.168.0.2 ...
-        ssh root@192.168.0.2
+        ssh root@192.168.0.2 
+        if [ $? != 0 ];then
+            return 1
+        fi
     ;;
     
     esac
+}
+
+function _reset_known_host()
+{
+    pushd . > /dev/null
+    cd ~/.ssh
+
+    check=`cat known_hosts | egrep -n "^192.168.0.2"`
+    if [ ! -z "$check" ];then
+        line=`echo $check | cut -f1 -d:`
+        echo line is $line
+        sed -i "$line d" known_hosts
+    fi
+
+    popd > /dev/null
 }
 
 function _getvb()
@@ -573,6 +591,7 @@ function set_alias()
     alias mydate='_mydate'
     alias pdf='SumatraPDF'
     alias reload='source ~/.bash_profile'
+    alias rkh='_reset_known_host'
     alias rm='rm -iv'
     alias rtai='cd ~/documents/RTAI'
     alias src='cd $dir/d/Source'
