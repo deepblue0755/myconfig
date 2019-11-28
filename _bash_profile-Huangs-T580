@@ -169,7 +169,7 @@ function _reset_known_host()
     check=`cat known_hosts | egrep -n "^192.168.0.2"`
     if [ ! -z "$check" ];then
         line=`echo $check | cut -f1 -d:`
-        echo line is $line
+        echo "remove line at $line in file ~/.ssh/known_hosts"
         sed -i "$line d" known_hosts
     fi
 
