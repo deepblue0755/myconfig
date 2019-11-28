@@ -397,14 +397,14 @@ function _tmux_new()
     let tmux_cnt=$tmux_cnt+1
 
     case $1 in 
-        2)
+        1)
+        tmux new -s session-$tmux_cnt -n cygwin
+        ;;
+        *)
         tmux new-session -d -s session-$tmux_cnt  -n cygwin
         tmux new-window -d -n vmware
         tmux new-window -d -n cbpos
         tmux attach-session -d -t session-$tmux_cnt
-        ;;
-        *)
-        tmux new -s session-$tmux_cnt -n cygwin
         ;;
     esac
 
