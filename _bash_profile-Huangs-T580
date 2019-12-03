@@ -123,10 +123,10 @@ function _cbpos()
         fi
     ;;
     3)
-        ping -c 1 -W 1 192.168.0.2 > /dev/null
+        ping -c 1 -W 1 192.168.0.3 > /dev/null
         if [ "$?" == "0" ];then
-            echo login 192.168.0.2 ...
-            ssh root@192.168.0.2
+            echo login 192.168.0.3 ...
+            ssh root@192.168.0.3
             return 0
         else
             echo "error,could not ping cbpos!!"
@@ -167,6 +167,13 @@ function _reset_known_host()
     cd ~/.ssh
 
     check=`cat known_hosts | egrep -n "^192.168.0.2"`
+    if [ ! -z "$check" ];then
+        line=`echo $check | cut -f1 -d:`
+        echo "remove line at $line in file ~/.ssh/known_hosts"
+        sed -i "$line d" known_hosts
+    fi
+
+    check=`cat known_hosts | egrep -n "^192.168.0.3"`
     if [ ! -z "$check" ];then
         line=`echo $check | cut -f1 -d:`
         echo "remove line at $line in file ~/.ssh/known_hosts"
