@@ -579,7 +579,7 @@ function set_alias()
     alias cplinux='_cplinux'
     alias cpvb='_cpvb'
     alias cpvm='_cpvm'
-    alias doc='cd ~/documents/RTAI'
+    alias doc='pushd . > /dev/null && cd ~/documents/RTAI'
     alias expl='explorer'
     alias gdb='gdb -q'
     alias getlinux='_getlinux'
