@@ -633,6 +633,7 @@ function set_path()
     export PATH=$dir/d/VMware/VMware\ Workstation:$PATH
     export PATH=$dir/D/Oracle/VirtualBox:$PATH
     export PATH=$dir/D/TortoiseSVN/bin:$PATH
+    export PATH=$dir/D/Typora/bin:$PATH
 
     if [ "$SHELL" == "/bin/bash" ];then
         export PATH=$dir/d/cygwin64/bin:$PATH
