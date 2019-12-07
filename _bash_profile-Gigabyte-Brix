@@ -37,6 +37,74 @@ fi
 
 EDITOR=$dir/d/Vim/vim81/gvim;export EDITOR
 
+function _start()
+{
+    if [ $# -lt 1 ];then
+        echo "error: please specify which virtual machine to start"
+        return 1
+    fi
+
+    case $1 in
+        vm)
+            check=`vmrun list | grep "Ubuntu-14.04-Kylin"` 
+            if [ ! -z "$check" ];then
+                echo ""
+                echo "vmware machine is already starting"
+                return 0
+            fi
+            echo start vmware machine ... 
+            vmrun start "D:\\Virtual Machines\\Ubuntu-14.04-Kylin\\\Ubuntu.vmx"  nogui
+        ;;
+        vb)
+            check=`VBoxManage list runningvms | grep "Ubuntu-1804"` 
+            if [ ! -z "$check" ];then
+                echo ""
+                echo "virtualbox machine is already starting"
+                return 0
+            fi
+            echo start virtual box machine ... 
+            VBoxManage startvm "Ubuntu-1804" --type headless
+        ;;
+        list)
+            echo list virtual machines ...
+            echo vmware:
+            vmrun list
+            echo
+            echo virtualbox:
+            VBoxManage list runningvms
+        ;;
+        *)
+            echo error,unknown virtual machine start vm|vb
+        ;;
+    esac
+    
+}
+
+function _stop()
+{
+    if [ $# -lt 1 ];then
+        echo "error: please specify which virtual machine to start"
+        return 1
+    fi
+
+    case $1 in
+        vm)
+            echo stop vmware machine ...  
+            vmrun stop "D:\\Virtual Machines\\Ubuntu-14.04-Kylin\\\Ubuntu.vmx" nogui
+            VM_START=0
+        ;;
+        vb)
+            echo stop virtual box machine ... 
+            VBoxManage controlvm "Ubuntu-1804" poweroff
+            VB_START=0
+        ;;
+        *)
+            echo error,unknown virtual machine,stop vm|vb
+        ;;
+    esac
+    
+}
+
 
 function _update_task()
 {
@@ -207,15 +275,14 @@ function _tmux_new()
     let tmux_cnt=$tmux_cnt+1
 
     case $1 in 
-        2)
-        tmux new-session -d -s session-$tmux_cnt 
-        tmux new-window -d -n cygwin 
+        1)
+        tmux new -s session-$tmux_cnt -n cygwin
+        ;;
+        *)
+        tmux new-session -d -s session-$tmux_cnt -n cygwin
         tmux new-window -d -n vmware
         tmux new-window -d -n cbpos
         tmux attach-session -d -t session-$tmux_cnt
-        ;;
-        *)
-        tmux new -s session-$tmux_cnt -n cygwin
         ;;
     esac
 
@@ -272,6 +339,9 @@ function set_path()
     PATH=$dir/d/texlive/2018/bin/win32:$PATH
     PATH=$dir/d/vim/vim81/:$PATH
     PATH=$dir/d/SumatraPDF/:$PATH
+    PATH=$dir/d/VMware/VMware\ Workstation:$PATH
+    PATH=$dir/d/Oracle/VirtualBox:$PATH
+
 
     # do not add cygwin/bin to $PATH
     if [ "$SHELL" == "/bin/bash" ];then
@@ -313,15 +383,20 @@ function set_alias()
     alias rasp4='ssh huangmianbo@raspberrypi4'
     alias reload='source $HOME/.bash_profile' 
     alias rm='rm -iv -d'
+    alias start='_start'
+    alias stop='_stop'
     alias syncbash='cp -iv $HOME/.bash_profile /cygdrive/f/05-To-From-Gigabyte-MiniComputer/'
     alias synctask='pushd . && cd $HOME && git pull origin master && popd'
     alias t580='ssh mianb@Huangs-T580'
     alias tc='task cale'
     alias tl='task list'
     alias t='_tmux_new'
+    alias vb='gitlab'
     alias vi='vim'
     alias videos='cd ~/videos'
     alias vim='_gvim'
+    alias vm='ssh huangmianbo@vmware'
+    alias vmware='vm'
     alias xgrep='grep -nHR'
     alias ~='cd ~'
 }
