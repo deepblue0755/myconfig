@@ -289,6 +289,11 @@ function _tmux_new()
 
 }
 
+function _typora()
+{
+    typora.exe $* &
+}
+
 function _win_dir()
 {
     # this function is under debugging
@@ -341,6 +346,7 @@ function set_path()
     PATH=$dir/d/SumatraPDF/:$PATH
     PATH=$dir/d/VMware/VMware\ Workstation:$PATH
     PATH=$dir/d/Oracle/VirtualBox:$PATH
+    PATH=$dir/d/Typora/bin:$PATH
 
 
     # do not add cygwin/bin to $PATH
@@ -391,6 +397,7 @@ function set_alias()
     alias tc='task cale'
     alias tl='task list'
     alias t='_tmux_new'
+    alias typora='_typora'
     alias vb='gitlab'
     alias vi='vim'
     alias videos='cd ~/videos'
