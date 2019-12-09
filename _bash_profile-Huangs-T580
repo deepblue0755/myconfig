@@ -597,6 +597,8 @@ function set_alias()
     alias md2pdf='_md2pdf'
     alias mydate='_mydate'
     alias pdf='SumatraPDF'
+    alias pycharm='pycharm64 &> /dev/null &'
+    alias qt='qtcreator &> /dev/null &'
     alias reload='source ~/.bash_profile'
     alias rkh='_reset_known_host'
     alias rm='rm -iv'
@@ -634,6 +636,8 @@ function set_path()
     export PATH=$dir/D/Oracle/VirtualBox:$PATH
     export PATH=$dir/D/TortoiseSVN/bin:$PATH
     export PATH=$dir/D/Typora/bin:$PATH
+    export PATH=$dir/D/Qt/Qt5.13.2/Tools/QtCreator/bin:$PATH
+    export PATH=$dir/D/JetBrains/PyCharm\ Community\ Edition\ 2019.3/bin:$PATH
 
     if [ "$SHELL" == "/bin/bash" ];then
         export PATH=$dir/d/cygwin64/bin:$PATH
