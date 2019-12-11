@@ -198,6 +198,11 @@ function _vlc()
     vlc $1 &> /dev/null &
 }
 
+function _code()
+{
+    code $1 &> /dev/null &
+}
+
 function _backup_doc()
 {
     pushd . > /dev/null
@@ -575,7 +580,6 @@ function set_alias()
     alias btask='_backup_task'
     alias cbpos='_cbpos'
     alias cgdb='cgdb -q'
-    alias code='code &> /dev/null &'
     alias config='gvim --remote-silent D:\\cygwin64\\home\\mianb\\\.bash_profile &'
     alias cplinux='_cplinux'
     alias cpvb='_cpvb'
@@ -589,6 +593,7 @@ function set_alias()
     alias gigabyte='ssh mianb@gigabyte-brix'
     alias gitlab='ssh huangmianbo@192.168.56.103'
     alias googol='ssh googol@cbpos'
+    alias gp='gnuplot'
     alias grep='grep --color=auto'
     alias iperf2s='iperf -u -s -m -i 1'
     alias linux='ssh googole@192.168.0.2'
@@ -619,6 +624,8 @@ function set_alias()
     alias vlc='_vlc'
     alias vm='ssh huangmianbo@vmware'
     alias vmware='vm'
+    alias vscode='_code'
+    alias vsco='vscode'
     alias ~='cd ~'
 }
 
@@ -632,14 +639,15 @@ function set_path()
     export PATH=$dir/d/VLC:$PATH
     export PATH=$dir/d/PUTTY:$PATH
     export PATH=$dir/d/Beyond\ Compare\ 3:$PATH
-    export PATH=$dir/C/Program\ Files\ \(x86\)/Google/Chrome/Application:$PATH
+    export PATH=$dir/c/Program\ Files\ \(x86\)/Google/Chrome/Application:$PATH
     export PATH=$dir/d/VMware/VMware\ Workstation:$PATH
-    export PATH=$dir/D/Oracle/VirtualBox:$PATH
-    export PATH=$dir/D/TortoiseSVN/bin:$PATH
-    export PATH=$dir/D/Typora/bin:$PATH
-    export PATH=$dir/D/Qt/Qt5.13.2/Tools/QtCreator/bin:$PATH
-    export PATH=$dir/D/JetBrains/PyCharm\ Community\ Edition\ 2019.3/bin:$PATH
-    export PATH=$dir/D/Microsoft\ VS\ Code:$PATH
+    export PATH=$dir/d/Oracle/VirtualBox:$PATH
+    export PATH=$dir/d/TortoiseSVN/bin:$PATH
+    export PATH=$dir/d/Typora/bin:$PATH
+    export PATH=$dir/d/Qt/Qt5.13.2/Tools/QtCreator/bin:$PATH
+    export PATH=$dir/d/JetBrains/PyCharm\ Community\ Edition\ 2019.3/bin:$PATH
+    export PATH=$dir/d/Microsoft\ VS\ Code:$PATH
+    export PATH=$dir/d/gnuplot/bin:$PATH
     if [ "$SHELL" == "/bin/bash" ];then
         export PATH=$dir/d/cygwin64/bin:$PATH
     fi
