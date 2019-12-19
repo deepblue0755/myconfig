@@ -466,6 +466,7 @@ function _start()
 
     case $1 in
         vm)
+            export vm_start=true
             check=`vmrun list | grep "Ubuntu-14.04-Kylin"` 
             if [ ! -z "$check" ];then
                 echo ""
@@ -474,9 +475,9 @@ function _start()
             fi
             echo start vmware machine ... 
             vmrun start "D:\\Virtual Machines\\Ubuntu-14.04-Kylin\\\Ubuntu.vmx"  nogui
-            export vm_start=true
         ;;
         vb)
+            export vb_start=true
             check=`VBoxManage list runningvms | grep "Ubuntu-1804"` 
             if [ ! -z "$check" ];then
                 echo ""
@@ -485,7 +486,6 @@ function _start()
             fi
             echo start virtual box machine ... 
             VBoxManage startvm "Ubuntu-1804" --type headless
-            export vb_start=true
         ;;
         list)
             echo list virtual machines ...
@@ -713,6 +713,6 @@ export TZ=Asia/Shanghai
 export EDITOR=gvim
 export SVN_EDITOR=vim
 
-if [ "$vm_start" == "false" ];then
+if [ "$vm_start" != "true" ];then
     start vm
 fi
