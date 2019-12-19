@@ -122,7 +122,7 @@ function _cbpos()
             return 0
         fi
     ;;
-    3)
+    x)
         ping -c 1 -W 1 192.168.0.3 > /dev/null
         if [ "$?" == "0" ];then
             echo login 192.168.0.3 ...
@@ -201,6 +201,23 @@ function _vlc()
 function _code()
 {
     code $1 &> /dev/null &
+}
+
+function _burn()
+{
+    if [ ! -f "$1" ];then
+        echo file $1 could not be found
+        return
+    fi
+
+    if [ $# -lt 2 ];then
+        ip=192.168.0.2
+    else
+        ip=$2
+    fi
+
+    scp $1 root@$ip:/tmp/
+    ssh root@$ip "burn /tmp/$1"
 }
 
 function _backup_doc()
@@ -457,6 +474,7 @@ function _start()
             fi
             echo start vmware machine ... 
             vmrun start "D:\\Virtual Machines\\Ubuntu-14.04-Kylin\\\Ubuntu.vmx"  nogui
+            export vm_start=true
         ;;
         vb)
             check=`VBoxManage list runningvms | grep "Ubuntu-1804"` 
@@ -467,6 +485,7 @@ function _start()
             fi
             echo start virtual box machine ... 
             VBoxManage startvm "Ubuntu-1804" --type headless
+            export vb_start=true
         ;;
         list)
             echo list virtual machines ...
@@ -494,12 +513,16 @@ function _stop()
         vm)
             echo stop vmware machine ...  
             vmrun stop "D:\\Virtual Machines\\Ubuntu-14.04-Kylin\\\Ubuntu.vmx" nogui
-            VM_START=0
+            if [ "$?" == "0" ];then
+                export vm_start=false
+            fi
         ;;
         vb)
             echo stop virtual box machine ... 
             VBoxManage controlvm "Ubuntu-1804" poweroff
-            VB_START=0
+            if [ "$?" == "0" ];then
+                export vb_start=false
+            fi
         ;;
         *)
             echo error,unknown virtual machine
@@ -577,6 +600,7 @@ function set_alias()
     alias bcomp='BCompare'
     alias bconfig='_backup_config'
     alias bdoc='_backup_doc'
+    alias burn='_burn'
     alias btask='_backup_task'
     alias cbpos='_cbpos'
     alias cgdb='cgdb -q'
@@ -586,6 +610,8 @@ function set_alias()
     alias cpvm='_cpvm'
     alias doc='pushd . > /dev/null && cd ~/documents/RTAI'
     alias expl='explorer'
+    alias fpga_version='ssh root@192.168.0.2 \"fpga_version\"'
+    alias fv='fpga_version'
     alias gdb='gdb -q'
     alias getlinux='_getlinux'
     alias getvb='_getvb'
@@ -687,4 +713,6 @@ export TZ=Asia/Shanghai
 export EDITOR=gvim
 export SVN_EDITOR=vim
 
-start vm
+if [ "$vm_start" == "false" ];then
+    start vm
+fi
