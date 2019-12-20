@@ -536,6 +536,14 @@ function _mydate()
     date +%Y%m%d%H%M%S
 }
 
+function _dmesg()
+{
+    case $1 in
+        *)
+        ssh root@192.168.0.2 "dmesg"
+        ;;
+    esac
+}
 
 function _task_list()
 {
@@ -608,6 +616,7 @@ function set_alias()
     alias cplinux='_cplinux'
     alias cpvb='_cpvb'
     alias cpvm='_cpvm'
+    alias dmesg='_dmesg'
     alias doc='pushd . > /dev/null && cd ~/documents/RTAI'
     alias expl='explorer'
     alias fpga_version='ssh root@192.168.0.2 \"fpga_version\"'
