@@ -352,6 +352,8 @@ function set_path()
     # do not add cygwin/bin to $PATH
     if [ "$SHELL" == "/bin/bash" ];then
         PATH=$dir/d/cygwin64/bin/:$PATH
+    else
+        PATH=$dir/d/Git/usr/bin/:$PATH
     fi
 
     PATH=$dir/d/Git/bin:$PATH
@@ -359,6 +361,26 @@ function set_path()
 
     export PATH
 
+}
+
+function _tidy_file()
+{
+    mkdir -p 001-010   
+    mkdir -p 011-020   
+    mkdir -p 021-030   
+    mkdir -p 031-040   
+    mkdir -p 041-050   
+    mkdir -p 051-060   
+    mkdir -p 061-070   
+    mkdir -p 071-080   
+    mkdir -p 081-090   
+    mkdir -p 091-100   
+
+    # let i=1
+    # for (( i=0;i<101;i++ ))
+    # do
+    #     echo $i*mp4
+    # done
 }
 
 function set_alias()
