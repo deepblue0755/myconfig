@@ -723,5 +723,5 @@ export EDITOR=gvim
 export SVN_EDITOR=vim
 
 if [ "$vm_start" != "true" ];then
-    start vm
+    echo start vm
 fi
