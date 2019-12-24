@@ -56,9 +56,9 @@ fi
 
 function _cplinux()
 {
-    scp $1 root@cbpos:~/tmp/
+    scp $1 root@192.168.0.2:/tmp/
     if [ "$?" != 0 ];then
-        scp $1 root@192.168.0.2:~/tmp/
+        scp $1 root@192.168.0.2:/tmp/
     fi
 }
 
@@ -723,5 +723,5 @@ export EDITOR=gvim
 export SVN_EDITOR=vim
 
 if [ "$vm_start" != "true" ];then
-    echo start vm
+    start vm
 fi
