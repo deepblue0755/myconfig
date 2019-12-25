@@ -64,7 +64,7 @@ function _cplinux()
 
 function _getlinux()
 {
-    scp root@cbpos:$1 ./
+    scp root@cbpos:/tmp/$1 ./
 }
 
 function _md2pdf()
@@ -86,7 +86,7 @@ function _cpvm()
         echo "file $1 does not exist !!"
         return -1
     fi
-    scp $1 huangmianbo@vmware:~/tmp/
+    scp $1 huangmianbo@vmware:/tmp/
 }
 
 function _getvm()
@@ -439,6 +439,11 @@ function _tmux_new()
 
 }
 
+function _bcomp()
+{
+    BCompare $* &> /dev/null &
+}
+
 function _done_102()
 {
     the_date=`date +%Y%m%d`
@@ -598,6 +603,7 @@ function _update_all()
     popd
 }
 
+
 function set_alias()
 {
     alias ....='cd ../../../'
@@ -605,7 +611,7 @@ function set_alias()
     alias ..='cd ../'
     alias ball='_backup_all'
     alias bbash='_backup_bash'
-    alias bcomp='BCompare'
+    alias bcomp='_bcomp'
     alias bconfig='_backup_config'
     alias bdoc='_backup_doc'
     alias burn='_burn'
