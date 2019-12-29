@@ -56,10 +56,21 @@ fi
 
 function _cplinux()
 {
-    scp $1 root@192.168.0.2:/tmp/
-    if [ "$?" != 0 ];then
-        scp $1 root@192.168.0.2:/tmp/
-    fi
+    case $1 in 
+        t430)
+            if [ ! -f "$2" ];then
+                echo error file $2 does not exist!!
+                return 1
+            fi
+            scp $2 huangmianbo@t430:/tmp/
+        ;;
+        *)
+            scp $1 root@192.168.0.2:/tmp/
+            if [ "$?" != 0 ];then
+            scp $1 root@192.168.0.2:/tmp/
+            fi
+        ;;
+    esac
 }
 
 function _getlinux()
@@ -103,7 +114,7 @@ function _cpvb()
     scp $1 huangmianbo@virtualbox:~/tmp/
 }
 
-function _cbpos()
+function _login_machine()
 {
     case $1 in
     1)
@@ -132,6 +143,27 @@ function _cbpos()
             echo "error,could not ping cbpos!!"
         fi
     ;;
+    gitlab)
+        ssh huangmianbo@192.168.56.103
+    ;;
+    googol)
+        ssh googol@cbpos
+    ;;
+    gigabyte)
+        ssh mianb@gigabyte-brix
+    ;;
+    mac)
+        ssh huangmianbo@Huangs-MBP
+    ;;
+    t430)
+        ssh huangmianbo@t430
+    ;;
+    t580)
+        ssh mianb@Huangs-T580
+    ;;
+    vm)
+        ssh huangmianbo@vmware
+    ;;
     *)
         let cnt=1
         ping -c 1 -W 1 192.168.0.2 > /dev/null
@@ -157,7 +189,6 @@ function _cbpos()
             return 1
         fi
     ;;
-    
     esac
 }
 
@@ -616,10 +647,11 @@ function set_alias()
     alias bdoc='_backup_doc'
     alias burn='_burn'
     alias btask='_backup_task'
-    alias cbpos='_cbpos'
+    alias cbpos='_login_machine'
     alias cgdb='cgdb -q'
     alias config='gvim --remote-silent D:\\cygwin64\\home\\mianb\\\.bash_profile &'
     alias cplinux='_cplinux'
+    alias cpt430='_cplinux t430'
     alias cpvb='_cpvb'
     alias cpvm='_cpvm'
     alias dmesg='_dmesg'
@@ -631,16 +663,14 @@ function set_alias()
     alias getlinux='_getlinux'
     alias getvb='_getvb'
     alias getvm='_getvm'
-    alias gigabyte='ssh mianb@gigabyte-brix'
-    alias gitlab='ssh huangmianbo@192.168.56.103'
-    alias googol='ssh googol@cbpos'
+    alias gigabyte='_login_machine gigabyte'
+    alias gitlab='_login_machine gitlab'
+    alias googol='_login_machine googol'
     alias gp='gnuplot'
     alias grep='grep --color=auto'
     alias iperf2s='iperf -u -s -m -i 1'
-    alias linux='ssh googole@192.168.0.2'
-    alias linux='ssh googole@cbpos'
     alias ls='ls --color=auto'
-    alias mac='ssh huangmianbo@Huangs-MBP'
+    alias mac='_login_machine mac'
     alias md2pdf='_md2pdf'
     alias mydate='_mydate'
     alias pdf='SumatraPDF'
@@ -654,16 +684,15 @@ function set_alias()
     alias start='_start'
     alias stop='_stop'
     alias svn='svn --username huang.mb --password huang.mb'
-    alias t430='ssh huangmianbo@ThinkPad-T430'
-    alias t580='ssh mianb@Huangs-T580'
+    alias t430='_login_machine t430'
+    alias t580='_login_machine t580'
     alias t='_tmux_new'
     alias tl='_task_list'
     alias tmp='cd ~/tmp'
     alias uall='_update_all'
-    alias vb='ssh huangmianbo@virtualbox'
     alias vim='_gvim'
     alias vlc='_vlc'
-    alias vm='ssh huangmianbo@vmware'
+    alias vm='_login_machine vm'
     alias vmware='vm'
     alias vscode='_code'
     alias vsco='vscode'
