@@ -75,7 +75,14 @@ function _cplinux()
 
 function _getlinux()
 {
-    scp root@cbpos:/tmp/$1 ./
+    case $1 in
+        t430)
+            scp huangmianbo@t430:/tmp/$2 ./
+        ;;
+        *)
+            scp root@cbpos:/tmp/$2 ./
+        ;;
+    esac
 }
 
 function _md2pdf()
@@ -660,7 +667,8 @@ function set_alias()
     alias fpga_version='ssh root@192.168.0.2 \"fpga_version\"'
     alias fv='fpga_version'
     alias gdb='gdb -q'
-    alias getlinux='_getlinux'
+    alias getlinux='_getlinux cbpos'
+    alias gett430='_getlinux t430'
     alias getvb='_getvb'
     alias getvm='_getvm'
     alias gigabyte='_login_machine gigabyte'
