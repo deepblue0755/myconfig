@@ -482,6 +482,16 @@ function _bcomp()
     BCompare $* &> /dev/null &
 }
 
+function _expl()
+{
+    
+    if [ -z "$1" ];then
+        explorer $(echo $PWD | sed 's/\//\\/g' | sed 's/^\\//g' | sed 's/\\/:\\/')
+    else
+        explorer $(echo $1 | sed 's/\//\\/g' | sed 's/^\\//g' | sed 's/\\/:\\/')
+    fi
+}
+
 function _done_102()
 {
     the_date=`date +%Y%m%d`
@@ -663,7 +673,7 @@ function set_alias()
     alias cpvm='_cpvm'
     alias dmesg='_dmesg'
     alias doc='pushd . > /dev/null && cd ~/documents/RTAI'
-    alias expl='explorer'
+    alias expl='_expl'
     alias fpga_version='ssh root@192.168.0.2 \"fpga_version\"'
     alias fv='fpga_version'
     alias gdb='gdb -q'
