@@ -347,6 +347,7 @@ function set_path()
     PATH=$dir/d/VMware/VMware\ Workstation:$PATH
     PATH=$dir/d/Oracle/VirtualBox:$PATH
     PATH=$dir/d/Typora/bin:$PATH
+    PATH=$dir/d/MKVToolNix:$PATH
 
 
     # do not add cygwin/bin to $PATH
