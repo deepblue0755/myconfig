@@ -709,6 +709,7 @@ function set_alias()
     alias tmp='cd ~/tmp'
     alias uall='_update_all'
     alias vim='_gvim'
+    alias vivado='vivado -mode tcl'
     alias vlc='_vlc'
     alias vm='_login_machine vm'
     alias vmware='vm'
@@ -736,6 +737,7 @@ function set_path()
     export PATH=$dir/d/JetBrains/PyCharm\ Community\ Edition\ 2019.3/bin:$PATH
     export PATH=$dir/d/Microsoft\ VS\ Code:$PATH
     export PATH=$dir/d/gnuplot/bin:$PATH
+    export PATH=$dir/d/Xilinx/Vivado/2019.2/bin/unwrapped/win64.o:$PATH
     if [ "$SHELL" == "/bin/bash" ];then
         export PATH=$dir/d/cygwin64/bin:$PATH
     fi
