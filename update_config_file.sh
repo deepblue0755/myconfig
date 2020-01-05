@@ -151,6 +151,28 @@ function copy_config_from_cygwin()
     upload_to_github
 }
 
+function copy_config_from_t430()
+{
+    echo 
+    echo pull update from github ...
+    git pull 
+    echo 
+    
+    flag=0
+
+    diff ~/.bashrc ./_bash_profile-$HOSTNAME
+
+    if [  $? != 0 ];then
+        echo copy $HOME/.bashrc $PWD ...
+        cp  $HOME/.bashrc ./_bash_profile-$HOSTNAME
+        flag=1
+    fi
+
+    print_result $flag
+
+    upload_to_github
+}
+
 function main()
 {
     echo --------------------------------------------------------
@@ -169,6 +191,9 @@ function main()
 
         Huangs-MBP)
             copy_config_from_macosx
+        ;;
+        t430)
+            copy_config_from_t430
         ;;
     esac
 }
