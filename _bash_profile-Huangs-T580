@@ -527,7 +527,7 @@ function _start()
                 return 0
             fi
             echo start vmware machine ... 
-            vmrun start "D:\\Virtual Machines\\Ubuntu-14.04-Kylin\\\Ubuntu.vmx"  nogui
+            vmrun start "D:\\Virtual Machines\\Ubuntu-14.04-Kylin\\\Ubuntu.vmx"  nogui 2>&1 > /dev/null &
         ;;
         vb)
             export vb_start=true
@@ -538,7 +538,7 @@ function _start()
                 return 0
             fi
             echo start virtual box machine ... 
-            VBoxManage startvm "Ubuntu-1804" --type headless
+            VBoxManage startvm "Ubuntu-1804" --type headless 2>&1 > /dev/null &
         ;;
         list)
             echo list virtual machines ...
