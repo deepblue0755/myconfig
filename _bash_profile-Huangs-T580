@@ -54,192 +54,9 @@ else
     export dir=
 fi
 
-function _cplinux()
-{
-    case $1 in 
-        t430)
-            if [ ! -f "$2" ];then
-                echo error file $2 does not exist!!
-                return 1
-            fi
-            scp $2 huangmianbo@t430:/tmp/
-        ;;
-        *)
-            scp $1 root@192.168.0.2:/tmp/
-            if [ "$?" != 0 ];then
-            scp $1 root@192.168.0.2:/tmp/
-            fi
-        ;;
-    esac
-}
-
-function _getlinux()
-{
-    case $1 in
-        t430)
-            scp huangmianbo@t430:/tmp/$2 ./
-        ;;
-        *)
-            scp root@cbpos:/tmp/$2 ./
-        ;;
-    esac
-}
-
-function _md2pdf()
-{
-    file=$1
-    pdffile=${file/.md/.pdf}
-
-    if [ ! -f "$file" ];then
-        echo "error: there is no such file $1"
-        return -1
-    fi
-
-    pandoc --pdf-engine=pdflatex $file -o $pdffile
-}
-
-function _cpvm()
-{
-    if [ ! -f "$1" ];then
-        echo "file $1 does not exist !!"
-        return -1
-    fi
-    scp $1 huangmianbo@vmware:/tmp/
-}
-
-function _getvm()
-{
-    scp huangmianbo@vmware:$1 ./
-}
-
-function _cpvb()
-{
-    if [ ! -f "$1" ];then
-        echo "file $1 does not exist !!"
-        return -1
-    fi
-    scp $1 huangmianbo@virtualbox:~/tmp/
-}
-
-function _login_machine()
-{
-    case $1 in
-    1)
-        ping -c 1 cpbos > /dev/null
-        if [ "$?" == "0" ];then
-            echo login cbpos ...
-            ssh root@cbpos
-            return 0
-        fi
-    ;;
-    2)
-        ping -c 1 -W 1 192.168.50.213 > /dev/null
-        if [ "$?" == "0" ];then
-            echo login 192.168.50.213 ...
-            ssh root@192.168.50.213
-            return 0
-        fi
-    ;;
-    x)
-        ping -c 1 -W 1 192.168.0.3 > /dev/null
-        if [ "$?" == "0" ];then
-            echo login 192.168.0.3 ...
-            ssh root@192.168.0.3
-            return 0
-        else
-            echo "error,could not ping cbpos!!"
-        fi
-    ;;
-    gitlab)
-        ssh huangmianbo@192.168.56.103
-    ;;
-    googol)
-        ssh googol@cbpos
-    ;;
-    gigabyte)
-        ssh mianb@gigabyte-brix
-    ;;
-    mac)
-        ssh huangmianbo@Huangs-MBP
-    ;;
-    t430)
-        ssh huangmianbo@t430
-    ;;
-    t580)
-        ssh mianb@Huangs-T580
-    ;;
-    vm)
-        ssh huangmianbo@vmware
-    ;;
-    *)
-        let cnt=1
-        ping -c 1 -W 1 192.168.0.2 > /dev/null
-        check=$?
-        while [ "$check" != "0" ]; do
-            echo "$cnt try to ping 192.168.0.2 ..."
-            ping -c 1 -W 1 192.168.0.2 > /dev/null
-            check=$?
-            if [ "$check" == "0" ];then
-                break
-            else
-                let cnt=$cnt+1
-                sleep 1
-                if [ $cnt == 101 ];then
-                    echo "error: could not ping 192.168.0.2"
-                    return 1
-                fi
-            fi
-        done
-        echo login 192.168.0.2 ...
-        ssh root@192.168.0.2 
-        if [ $? != 0 ];then
-            return 1
-        fi
-    ;;
-    esac
-}
-
-function _reset_known_host()
-{
-    pushd . > /dev/null
-    cd ~/.ssh
-
-    check=`cat known_hosts | egrep -n "^192.168.0.2"`
-    if [ ! -z "$check" ];then
-        line=`echo $check | cut -f1 -d:`
-        echo "remove line at $line in file ~/.ssh/known_hosts"
-        sed -i "$line d" known_hosts
-    fi
-
-    check=`cat known_hosts | egrep -n "^192.168.0.3"`
-    if [ ! -z "$check" ];then
-        line=`echo $check | cut -f1 -d:`
-        echo "remove line at $line in file ~/.ssh/known_hosts"
-        sed -i "$line d" known_hosts
-    fi
-
-    popd > /dev/null
-}
-
-function _getvb()
-{
-    scp huangmianbo@virtualbox:$1 ./
-}
-
-function _gvim()
-{
-    gvim $* > /dev/null &
-}
-
-function _vlc()
-{
-    vlc $1 &> /dev/null &
-}
-
-function _code()
-{
-    code $1 &> /dev/null &
-}
+#----------------------------------#
+# User Function # 
+#----------------------------------#
 
 function _burn()
 {
@@ -455,26 +272,6 @@ function _backup_all()
     echo "--------------------------------------"
     echo 
     _backup_config
-
-}
-
-function _tmux_new()
-{
-    let tmux_cnt=`tmux list-sessions 2>&1 | grep -v "no server running" | grep ":" | wc -l`
-    let tmux_cnt=$tmux_cnt+1
-
-    case $1 in 
-        1)
-        tmux new -s session-$tmux_cnt -n cygwin
-        ;;
-        *)
-        tmux new-session -d -s session-$tmux_cnt  -n cygwin
-        tmux new-window -d -n vmware
-        tmux new-window -d -n cbpos
-        tmux attach-session -d -t session-$tmux_cnt
-        ;;
-    esac
-
 }
 
 function _bcomp()
@@ -482,14 +279,55 @@ function _bcomp()
     BCompare $* &> /dev/null &
 }
 
-function _expl()
+function _code()
 {
-    
-    if [ -z "$1" ];then
-        explorer $(echo $PWD | sed 's/\//\\/g' | sed 's/^\\//g' | sed 's/\\/:\\/')
-    else
-        explorer $(echo $1 | sed 's/\//\\/g' | sed 's/^\\//g' | sed 's/\\/:\\/')
+    code $1 &> /dev/null &
+}
+
+function _cpvm()
+{
+    if [ ! -f "$1" ];then
+        echo "file $1 does not exist !!"
+        return -1
     fi
+    scp $1 huangmianbo@vmware:/tmp/
+}
+
+function _cpvb()
+{
+    if [ ! -f "$1" ];then
+        echo "file $1 does not exist !!"
+        return -1
+    fi
+    scp $1 huangmianbo@virtualbox:~/tmp/
+}
+
+function _cplinux()
+{
+    case $1 in 
+        t430)
+            if [ ! -f "$2" ];then
+                echo error file $2 does not exist!!
+                return 1
+            fi
+            scp $2 huangmianbo@t430:/tmp/
+        ;;
+        *)
+            scp $1 root@192.168.0.2:/tmp/
+            if [ "$?" != 0 ];then
+            scp $1 root@192.168.0.2:/tmp/
+            fi
+        ;;
+    esac
+}
+
+function _dmesg()
+{
+    case $1 in
+        *)
+        ssh root@192.168.0.2 "dmesg"
+        ;;
+    esac
 }
 
 function _done_102()
@@ -508,6 +346,160 @@ function _done_102()
     done
 
     popd  &> /dev/null
+}
+
+function _expl()
+{
+    if [ -z "$1" ];then
+        explorer $(echo $PWD | sed 's/\//\\/g' | sed 's/^\\//g' | sed 's/\\/:\\/')
+    else
+        explorer $(echo $1 | sed 's/\//\\/g' | sed 's/^\\//g' | sed 's/\\/:\\/')
+    fi
+}
+
+function _getvb()
+{
+    scp huangmianbo@virtualbox:$1 ./
+}
+
+function _getlinux()
+{
+    case $1 in
+        t430)
+            scp huangmianbo@t430:/tmp/$2 ./
+        ;;
+        *)
+            scp root@cbpos:/tmp/$2 ./
+        ;;
+    esac
+}
+
+function _getvm()
+{
+    scp huangmianbo@vmware:$1 ./
+}
+
+function _gvim()
+{
+    gvim $* > /dev/null &
+}
+
+function _login_machine()
+{
+    case $1 in
+    1)
+        ping -c 1 cpbos > /dev/null
+        if [ "$?" == "0" ];then
+            echo login cbpos ...
+            ssh root@cbpos
+            return 0
+        fi
+    ;;
+    2)
+        ping -c 1 -W 1 192.168.50.213 > /dev/null
+        if [ "$?" == "0" ];then
+            echo login 192.168.50.213 ...
+            ssh root@192.168.50.213
+            return 0
+        fi
+    ;;
+    x)
+        ping -c 1 -W 1 192.168.0.3 > /dev/null
+        if [ "$?" == "0" ];then
+            echo login 192.168.0.3 ...
+            ssh root@192.168.0.3
+            return 0
+        else
+            echo "error,could not ping cbpos!!"
+        fi
+    ;;
+    gitlab)
+        ssh huangmianbo@192.168.56.103
+    ;;
+    googol)
+        ssh googol@cbpos
+    ;;
+    gigabyte)
+        ssh mianb@gigabyte-brix
+    ;;
+    mac)
+        ssh huangmianbo@Huangs-MBP
+    ;;
+    t430)
+        ssh huangmianbo@t430
+    ;;
+    t580)
+        ssh mianb@Huangs-T580
+    ;;
+    vm)
+        ssh huangmianbo@vmware
+    ;;
+    *)
+        let cnt=1
+        ping -c 1 -W 1 192.168.0.2 > /dev/null
+        check=$?
+        while [ "$check" != "0" ]; do
+            echo "$cnt try to ping 192.168.0.2 ..."
+            ping -c 1 -W 1 192.168.0.2 > /dev/null
+            check=$?
+            if [ "$check" == "0" ];then
+                break
+            else
+                let cnt=$cnt+1
+                sleep 1
+                if [ $cnt == 101 ];then
+                    echo "error: could not ping 192.168.0.2"
+                    return 1
+                fi
+            fi
+        done
+        echo login 192.168.0.2 ...
+        ssh root@192.168.0.2 
+        if [ $? != 0 ];then
+            return 1
+        fi
+    ;;
+    esac
+}
+
+function _md2pdf()
+{
+    file=$1
+    pdffile=${file/.md/.pdf}
+
+    if [ ! -f "$file" ];then
+        echo "error: there is no such file $1"
+        return -1
+    fi
+
+    pandoc --pdf-engine=pdflatex $file -o $pdffile
+}
+
+function _mydate()
+{
+    date +%Y%m%d%H%M%S
+}
+
+function _reset_known_host()
+{
+    pushd . > /dev/null
+    cd ~/.ssh
+
+    check=`cat known_hosts | egrep -n "^192.168.0.2"`
+    if [ ! -z "$check" ];then
+        line=`echo $check | cut -f1 -d:`
+        echo "remove line at $line in file ~/.ssh/known_hosts"
+        sed -i "$line d" known_hosts
+    fi
+
+    check=`cat known_hosts | egrep -n "^192.168.0.3"`
+    if [ ! -z "$check" ];then
+        line=`echo $check | cut -f1 -d:`
+        echo "remove line at $line in file ~/.ssh/known_hosts"
+        sed -i "$line d" known_hosts
+    fi
+
+    popd > /dev/null
 }
 
 function _start()
@@ -552,7 +544,6 @@ function _start()
             echo error,unknown virtual machine
         ;;
     esac
-    
 }
 
 function _stop()
@@ -581,76 +572,7 @@ function _stop()
             echo error,unknown virtual machine
         ;;
     esac
-    
 }
-
-function _mydate()
-{
-    date +%Y%m%d%H%M%S
-}
-
-function _dmesg()
-{
-    case $1 in
-        *)
-        ssh root@192.168.0.2 "dmesg"
-        ;;
-    esac
-}
-
-function _task_list()
-{
-    if [ -z "$1" ];then
-        task list proj:RTAI
-        return 0
-    fi
-
-    if [ "$1" == "2" ];then
-        task list proj:infra
-        return 0
-    fi
-
-    if [ "$1" == "a" ];then
-        task list
-        return 0
-    fi
-    
-}
-
-function _update_all()
-{
-    pushd . > /dev/null
-
-    echo
-    echo -------------------------------------------------
-    echo 1, update $dir/d/documents/10-github-documents 
-    echo -------------------------------------------------
-    echo 
-
-    cd $dir/d/documents/10-github-documents
-    git pull
-
-    echo
-    echo -------------------------------------------------
-    echo 2, $dir/d/documents/11-configs-from-github
-    echo -------------------------------------------------
-    echo
-
-    cd $dir/d/documents/11-configs-from-github
-    git pull
-
-    echo
-    echo -------------------------------------------------
-    echo 3,$dir/d/documents/09-latex-tikz-demo
-    echo -------------------------------------------------
-    echo
-
-    cd $dir/d/documents/09-latex-tikz-demo
-    git pull
-
-    popd
-}
-
 
 function set_alias()
 {
@@ -760,6 +682,81 @@ function set_lang()
      export LC_MEASUREMENT="en_US.utf8"
      export LC_IDENTIFICATION="en_US.utf8"
      export LC_ALL=en_US.utf8
+}
+
+function _task_list()
+{
+    if [ -z "$1" ];then
+        task list proj:RTAI
+        return 0
+    fi
+
+    if [ "$1" == "2" ];then
+        task list proj:infra
+        return 0
+    fi
+
+    if [ "$1" == "a" ];then
+        task list
+        return 0
+    fi
+}
+
+function _tmux_new()
+{
+    let tmux_cnt=`tmux list-sessions 2>&1 | grep -v "no server running" | grep ":" | wc -l`
+    let tmux_cnt=$tmux_cnt+1
+
+    case $1 in 
+        1)
+        tmux new -s session-$tmux_cnt -n cygwin
+        ;;
+        *)
+        tmux new-session -d -s session-$tmux_cnt  -n cygwin
+        tmux new-window -d -n vmware
+        tmux new-window -d -n cbpos
+        tmux attach-session -d -t session-$tmux_cnt
+        ;;
+    esac
+}
+
+function _update_all()
+{
+    pushd . > /dev/null
+
+    echo
+    echo -------------------------------------------------
+    echo 1, update $dir/d/documents/10-github-documents 
+    echo -------------------------------------------------
+    echo 
+
+    cd $dir/d/documents/10-github-documents
+    git pull
+
+    echo
+    echo -------------------------------------------------
+    echo 2, $dir/d/documents/11-configs-from-github
+    echo -------------------------------------------------
+    echo
+
+    cd $dir/d/documents/11-configs-from-github
+    git pull
+
+    echo
+    echo -------------------------------------------------
+    echo 3,$dir/d/documents/09-latex-tikz-demo
+    echo -------------------------------------------------
+    echo
+
+    cd $dir/d/documents/09-latex-tikz-demo
+    git pull
+
+    popd
+}
+
+function _vlc()
+{
+    vlc $1 &> /dev/null &
 }
 
 set_path
