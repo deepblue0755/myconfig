@@ -434,6 +434,9 @@ function _login_machine()
     vm)
         ssh huangmianbo@vmware
     ;;
+    server)
+        ssh googol@192.168.212.30
+    ;;
     *)
         let cnt=1
         ping -c 1 -W 1 192.168.0.2 > /dev/null
@@ -624,6 +627,7 @@ function set_alias()
     alias start='_start'
     alias stop='_stop'
     alias svn='svn --username huang.mb --password huang.mb'
+    alias server='_login_machine server'
     alias t430='_login_machine t430'
     alias t580='_login_machine t580'
     alias t='_tmux_new'
@@ -770,7 +774,7 @@ if [ "$SHELL" == "/bin/bash" ];then
 fi
 
 export TIME_STYLE="+%Y/%m/%d %H:%M:%S"
-export TZ=Asia/Shanghai
+export TZ="CEST-8"
 export EDITOR=gvim
 export SVN_EDITOR=vim
 
