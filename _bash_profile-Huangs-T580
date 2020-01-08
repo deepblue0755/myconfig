@@ -57,11 +57,28 @@ fi
 #----------------------------------#
 # User Function # 
 #----------------------------------#
+function _print()
+{
+    case $1 in 
+        error)
+            echo -e "\e[31merror: $2\e[0m"
+        ;;
+        warning)
+            echo -e "\e[33mwarning: $2\e[0m"
+        ;;
+        infor)
+            echo -e "\e[32minfor: $2\e[0m"
+        ;;
+        *)
+            echo "$1"
+        ;;
+    esac
+}
 
 function _burn()
 {
     if [ ! -f "$1" ];then
-        echo file $1 could not be found
+        _print error "file $1 could not be found"
         return
     fi
 
@@ -85,7 +102,7 @@ function _backup_doc()
 
     check=`git diff 00-rtai-x86-ubuntu-1404.md | wc -c`
     if [ "$check" != "0" ];then
-        echo git add 00-rtai-x86-ubuntu-1404.md ...
+        _print infor "git add 00-rtai-x86-ubuntu-1404.md ..."
         git add 00-rtai-x86-ubuntu-1404.md
         flag=1
         comment=$comment" 00-rtai-x86-ubuntu-1404.md"
@@ -93,7 +110,7 @@ function _backup_doc()
 
     check=`git diff Makefile | wc -c`
     if [ "$check" != "0" ];then
-        echo git add Makefile ...
+        _print infor "git add Makefile ..."
         git add Makefile
         flag=1
         comment=$comment" Makefile"
@@ -101,20 +118,20 @@ function _backup_doc()
 
     check=`git diff .gitignore | wc -c`
     if [ "$check" != "0" ];then
-        echo git add .gitignore ...
+        _print infor "git add .gitignore ..."
         git add .gitignore
         flag=1
         comment=$comment" .gitignore"
     fi
 
     if [ "$flag" == "1" ];then
-        echo commit change to local  ...
+        _print infor "commit change to local  ..."
         git  commit -m "update $comment from $USER@$HOSTNAME"
         echo 
         git push -u local master
 
         echo
-        echo update to common folder ...
+        _print infor "update to common folder ..."
 
         pushd . > /dev/null
         cd $dir/d/documents/10-github-documents/ 
@@ -122,7 +139,7 @@ function _backup_doc()
         popd > /dev/null
 
     else
-        echo "no update ,nothing to backup"
+        _print infor "no update ,nothing to backup"
     fi
 
     popd > /dev/null
@@ -167,24 +184,24 @@ function _backup_bash()
     cd ~
     check=`git diff .bash_profile | wc -c`
     if [ "$check" != "0" ];then
-        echo git add .bash_profile ...
+        _print infor "git add .bash_profile ..."
         git add .bash_profile
         flag=1
     fi
 
     if [ "$flag" == "1" ];then
-        echo commit change to local 
+        _print infor "commit change to local"
         git  commit -m "update .bash_profile from $USER@$HOSTNAME"
         git push -u $(git remote | sed -n 1p) master
 
-        echo update to common config folders ...
+        _print infor "update to common config folders ..."
         echo
         pushd . > /dev/null
         cd $dir/d/documents/11-configs-from-github/
         ./update_config_file.sh
         popd > /dev/null
     else
-        echo "no update ,nothing to backup"
+        _print infor "no update ,nothing to backup"
     fi
 
     
@@ -202,18 +219,18 @@ function _backup_config()
     files=`git status | grep modified | awk -F: '{print $2}'`
 
     if [ -z "$files" ];then
-        echo no file need to git add 
+        _print infor "no file need to git add " 
         popd > /dev/null
         return 0
     fi
 
     for file in $files
     do
-        echo git add $file ...
+        _print infor "git add $file ..."
         git add $file
     done
 
-    echo "git commit -m \"udpate config file from $USER @ $HOSTNAME \" ..."
+    _print infor "git commit -m \"udpate config file from $USER @ $HOSTNAME \" ..."
     git commit -m "udpate config file from $USER @ $HOSTNAME "
 
     git push -u origin master
@@ -228,17 +245,17 @@ function _backup_config()
     files=`git status | grep modified | awk -F: '{print $2}'`
     files=`echo $files | grep ".bash_profile \| .tmux.conf \| .taskrc \| .task"`
     if [ -z "$files" ];then
-        echo no file in $HOME need to git add 
+        _print infor "no file in $HOME need to git add " 
         popd > /dev/null
         return 0
     fi
     echo
     for file in $files
     do
-        echo git add $file ...
+        _print infor "git add $file ..."
         git add $file
     done
-    echo "git commit -m \"update files $comment from $USER @ $HOSTNAME\""
+    _print infor "git commit -m \"update files $comment from $USER @ $HOSTNAME\""
     git commit -m "update files $comment from $USER @ $HOSTNAME"
     git push -u $(git remote | sed -n 1p) master
     echo
@@ -435,7 +452,7 @@ function _login_machine()
         ssh huangmianbo@vmware
     ;;
     server)
-        ssh googol@192.168.212.30
+        ssh huangmianbo@192.168.212.30
     ;;
     *)
         let cnt=1
