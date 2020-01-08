@@ -153,24 +153,24 @@ function _backup_task()
     cd ~
     check=`git diff .taskrc | wc -c`
     if [ "$check" != "0" ];then
-        echo git add .taskrc ...
+        _print infor "git add .taskrc ..."
         git add .taskrc
         flag=1
     fi
 
     check=`git diff .task | wc -c`
     if [ "$check" != "0" ];then
-        echo git add .task ...
+        _print infor "git add .task ..."
         git add .task
         flag=1
     fi
 
     if [ "$flag" == "1" ];then
-        echo commit change to local 
+        _print infor "commit change to local "
         git  commit -m "update taskwarrior from $USER@$HOSTNAME"
         git push -u $(git remote | sed -n 1p) master
     else
-        echo "no update ,nothing to backup"
+        _print infor "no update ,nothing to backup"
     fi
     
     popd > /dev/null
@@ -304,7 +304,7 @@ function _code()
 function _cpvm()
 {
     if [ ! -f "$1" ];then
-        echo "file $1 does not exist !!"
+        _print error "file $1 does not exist !!"
         return -1
     fi
     scp $1 huangmianbo@vmware:/tmp/
@@ -313,7 +313,7 @@ function _cpvm()
 function _cpvb()
 {
     if [ ! -f "$1" ];then
-        echo "file $1 does not exist !!"
+        _print error "file $1 does not exist !!"
         return -1
     fi
     scp $1 huangmianbo@virtualbox:~/tmp/
@@ -324,10 +324,17 @@ function _cplinux()
     case $1 in 
         t430)
             if [ ! -f "$2" ];then
-                echo error file $2 does not exist!!
+                _print error "file $2 does not exist!!"
                 return 1
             fi
             scp $2 huangmianbo@t430:/tmp/
+        ;;
+        server)
+            if [ ! -f "$2" ];then
+                _print error "file $2 does not exist!!"
+                return 1
+            fi
+            scp $2 huangmianbo@192.168.212.30:/tmp/
         ;;
         *)
             scp $1 root@192.168.0.2:/tmp/
@@ -407,7 +414,7 @@ function _login_machine()
     1)
         ping -c 1 cpbos > /dev/null
         if [ "$?" == "0" ];then
-            echo login cbpos ...
+            _print infor "login cbpos ..."
             ssh root@cbpos
             return 0
         fi
@@ -415,7 +422,7 @@ function _login_machine()
     2)
         ping -c 1 -W 1 192.168.50.213 > /dev/null
         if [ "$?" == "0" ];then
-            echo login 192.168.50.213 ...
+            _print infor "login 192.168.50.213 ..."
             ssh root@192.168.50.213
             return 0
         fi
@@ -423,11 +430,11 @@ function _login_machine()
     x)
         ping -c 1 -W 1 192.168.0.3 > /dev/null
         if [ "$?" == "0" ];then
-            echo login 192.168.0.3 ...
+            _print infor "login 192.168.0.3 ..."
             ssh root@192.168.0.3
             return 0
         else
-            echo "error,could not ping cbpos!!"
+            _print infor "error,could not ping cbpos!!"
         fi
     ;;
     gitlab)
@@ -459,7 +466,7 @@ function _login_machine()
         ping -c 1 -W 1 192.168.0.2 > /dev/null
         check=$?
         while [ "$check" != "0" ]; do
-            echo "$cnt try to ping 192.168.0.2 ..."
+            _print infor "$cnt try to ping 192.168.0.2 ..."
             ping -c 1 -W 1 192.168.0.2 > /dev/null
             check=$?
             if [ "$check" == "0" ];then
@@ -468,12 +475,12 @@ function _login_machine()
                 let cnt=$cnt+1
                 sleep 1
                 if [ $cnt == 101 ];then
-                    echo "error: could not ping 192.168.0.2"
+                    _print error "could not ping 192.168.0.2"
                     return 1
                 fi
             fi
         done
-        echo login 192.168.0.2 ...
+        _print infor login 192.168.0.2 ...
         ssh root@192.168.0.2 
         if [ $? != 0 ];then
             return 1
@@ -488,7 +495,7 @@ function _md2pdf()
     pdffile=${file/.md/.pdf}
 
     if [ ! -f "$file" ];then
-        echo "error: there is no such file $1"
+        _print error "there is no such file $1"
         return -1
     fi
 
@@ -508,14 +515,14 @@ function _reset_known_host()
     check=`cat known_hosts | egrep -n "^192.168.0.2"`
     if [ ! -z "$check" ];then
         line=`echo $check | cut -f1 -d:`
-        echo "remove line at $line in file ~/.ssh/known_hosts"
+        _print infor "remove line at $line in file ~/.ssh/known_hosts"
         sed -i "$line d" known_hosts
     fi
 
     check=`cat known_hosts | egrep -n "^192.168.0.3"`
     if [ ! -z "$check" ];then
         line=`echo $check | cut -f1 -d:`
-        echo "remove line at $line in file ~/.ssh/known_hosts"
+        _print infor "remove line at $line in file ~/.ssh/known_hosts"
         sed -i "$line d" known_hosts
     fi
 
@@ -525,7 +532,7 @@ function _reset_known_host()
 function _start()
 {
     if [ $# -lt 1 ];then
-        echo "error: please specify which virtual machine to start"
+        _print error "please specify which virtual machine to start"
         return 1
     fi
 
@@ -569,7 +576,7 @@ function _start()
 function _stop()
 {
     if [ $# -lt 1 ];then
-        echo "error: please specify which virtual machine to start"
+        _print error "please specify which virtual machine to start"
         return 1
     fi
 
@@ -589,7 +596,7 @@ function _stop()
             fi
         ;;
         *)
-            echo error,unknown virtual machine
+            _print error "unknown virtual machine" 
         ;;
     esac
 }
@@ -611,6 +618,7 @@ function set_alias()
     alias config='gvim --remote-silent D:\\cygwin64\\home\\mianb\\\.bash_profile &'
     alias cplinux='_cplinux'
     alias cpt430='_cplinux t430'
+    alias cpserver='_cplinux server'
     alias cpvb='_cpvb'
     alias cpvm='_cpvm'
     alias dmesg='_dmesg'
