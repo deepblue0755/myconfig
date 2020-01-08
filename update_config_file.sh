@@ -1,13 +1,30 @@
 #!/bin/bash
 
+function print_error()
+{
+    echo -e "\e[31merror: $1\e[0m"
+}
+
+function print_warning()
+{
+
+    echo -e "\e[33mwarning: $1\e[0m"
+}
+
+function print_infor()
+{
+
+    echo -e "\e[32minfor: $1\e[0m"
+}
+
 function print_result()
 {
     flag=$1
     if [ "$flag" == "1" ];then
-        echo update $HOSTNAME documents !!
+        print_infor "update $HOSTNAME documents !!"
         return 0
     else
-        echo nothing to update from $HOSTNAME
+        print_infor "nothing to update from $HOSTNAME"
         return 0
     fi
 }
@@ -18,20 +35,20 @@ function upload_to_github()
     files=`git status | grep "modified:" | awk -F":" '{print $2}'`
 
     if [ -z "$files" ];then
-        echo "nothing to git commit"
+        print_infor "nothing to git commit"
         return 0
     fi
 
     for file in $files
     do
         if [ -f "$file" ];then
-            echo "git add $file ..."
+            print_infor "git add $file ..."
             comment="$comment $file"
             git add "$file"
         fi
     done
 
-    echo "git commit -m \"update file $comment from $USER @ $HOSTNAME\"  ... "
+    print_infor "git commit -m \"update file $comment from $USER @ $HOSTNAME\"  ... "
 
     git commit -m "update file $comment from $USER @ $HOSTNAME"
 
@@ -45,7 +62,7 @@ function copy_files()
     to=$2
 
     if [ ! -f $fome ];then
-        echo "error ,there's no such file $from !!"
+        print_error "there's no such file $from !!"
         return 0
     fi
 
@@ -61,7 +78,7 @@ function copy_files()
 function copy_config_from_macosx()
 {
     echo 
-    echo pull update from github ...
+    print_infor "pull update from github ..."
     git pull origin master
     echo 
 
@@ -90,7 +107,7 @@ function copy_config_from_macosx()
 function copy_config_from_cygwin()
 {
     echo 
-    echo pull update from github ...
+    print_infor "pull update from github ..."
     git pull 
     echo 
 
@@ -107,7 +124,7 @@ function copy_config_from_cygwin()
     diff $dir/d/Vim/_vimrc ./_vimrc-$HOSTNAME
 
     if [ $? != 0 ];then
-        echo "copy vim _vimrc ..."
+        print_infor "copy vim _vimrc ..."
         cp $dir/d/Vim/_vimrc ./_vimrc-$HOSTNAME
         flag=1
     fi
@@ -117,7 +134,7 @@ function copy_config_from_cygwin()
     diff $dir/d/cygwin64/home/$USER/.tmux.conf ./_tmux.conf-$HOSTNAME
 
     if [  $? != 0 ];then
-        echo copy tmux .tmux.conf ...
+        print_infor "copy tmux .tmux.conf ..."
         cp $dir/d/cygwin64/home/$USER/.tmux.conf ./_tmux.conf-$HOSTNAME
         flag=1
     fi
@@ -125,7 +142,7 @@ function copy_config_from_cygwin()
     diff $dir/d/cygwin64/home/mianb/.bash_profile ./_bash_profile-$HOSTNAME
 
     if [  $? != 0 ];then
-        echo copy cygwin64 .bash_profile ...
+        print_infor "copy cygwin64 .bash_profile ..."
         cp  $dir/d/cygwin64/home/mianb/.bash_profile ./_bash_profile-$HOSTNAME
         flag=1
     fi
@@ -133,7 +150,7 @@ function copy_config_from_cygwin()
     diff $dir/d/cygwin64/home/mianb/.gitconfig ./_gitconfig-$HOSTNAME
 
     if [  $? != 0 ];then
-        echo copy cygwin64 .gitconfig ...
+        print_infor "copy cygwin64 .gitconfig ..."
         cp  $dir/d/cygwin64/home/mianb/.gitconfig ./_gitconfig-$HOSTNAME
         flag=1
     fi
@@ -141,7 +158,7 @@ function copy_config_from_cygwin()
     diff $dir/d/Batch/_cvimrc ./_cvimrc-$HOSTNAME
 
     if [  $? != 0 ];then
-        echo copy _cvimrc ...
+        print_infor "copy _cvimrc ..." 
         cp  $dir/d/Batch/_cvimrc ./_cvimrc-$HOSTNAME
         flag=1
     fi
@@ -154,7 +171,7 @@ function copy_config_from_cygwin()
 function copy_config_from_t430()
 {
     echo 
-    echo pull update from github ...
+    print_infor "pull update from github ..."
     git pull 
     echo 
     
@@ -163,7 +180,7 @@ function copy_config_from_t430()
     diff ~/.bashrc ./_bash_profile-$HOSTNAME
 
     if [  $? != 0 ];then
-        echo copy $HOME/.bashrc $PWD ...
+        print_infor "copy $HOME/.bashrc $PWD ..."
         cp  $HOME/.bashrc ./_bash_profile-$HOSTNAME
         flag=1
     fi
