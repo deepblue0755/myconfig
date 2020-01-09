@@ -744,6 +744,7 @@ function _tmux_new()
         tmux new-session -d -s session-$tmux_cnt  -n cygwin
         tmux new-window -d -n vmware
         tmux new-window -d -n cbpos
+        tmux new-window -d -n server ssh huangmianbo@192.168.212.30
         tmux attach-session -d -t session-$tmux_cnt
         ;;
     esac
