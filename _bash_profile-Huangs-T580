@@ -461,6 +461,9 @@ function _login_machine()
     server)
         ssh huangmianbo@192.168.212.30
     ;;
+    iso)
+        ssh googol@virtualbox
+    ;;
     *)
         let cnt=1
         ping -c 1 -W 1 192.168.0.2 > /dev/null
@@ -559,6 +562,17 @@ function _start()
             echo start virtual box machine ... 
             VBoxManage startvm "Ubuntu-1804" --type headless 2>&1 > /dev/null &
         ;;
+        iso)
+            export vb_start=true
+            check=`VBoxManage list runningvms | grep "ISO"` 
+            if [ ! -z "$check" ];then
+                echo ""
+                echo "virtualbox machine iso is already starting"
+                return 0
+            fi
+            echo start iso test virtual box machine ... 
+            VBoxManage startvm "ISO" --type headless 2>&1 > /dev/null &
+        ;;
         list)
             echo list virtual machines ...
             echo vmware:
@@ -594,6 +608,10 @@ function _stop()
             if [ "$?" == "0" ];then
                 export vb_start=false
             fi
+        ;;
+        iso)
+            echo stop iso test virtual box machine ... 
+            VBoxManage controlvm "ISO" poweroff
         ;;
         *)
             _print error "unknown virtual machine" 
@@ -637,6 +655,7 @@ function set_alias()
     alias gp='gnuplot'
     alias grep='grep --color=auto'
     alias iperf2s='iperf -u -s -m -i 1'
+    alias iso='_login_machine iso'
     alias ls='ls --color=auto'
     alias mac='_login_machine mac'
     alias md2pdf='_md2pdf'
