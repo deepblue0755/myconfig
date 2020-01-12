@@ -23,6 +23,9 @@
 
 # User dependent .bash_profile file
 
+#----------------------------------#
+# User Customer Setting # 
+#----------------------------------#
 if [ -e $USER ];then
     export USER=mianb
 fi
@@ -37,10 +40,28 @@ fi
 
 EDITOR=$dir/d/Vim/vim81/gvim;export EDITOR
 
+function _print()
+{
+    case $1 in 
+        error)
+            echo -e "\e[31merror: $2\e[0m"
+        ;;
+        warning)
+            echo -e "\e[33mwarning: $2\e[0m"
+        ;;
+        infor)
+            echo -e "\e[32minfor: $2\e[0m"
+        ;;
+        *)
+            echo "$1"
+        ;;
+    esac
+}
+
 function _start()
 {
     if [ $# -lt 1 ];then
-        echo "error: please specify which virtual machine to start"
+        _print error "please specify which virtual machine to start"
         return 1
     fi
 
@@ -74,7 +95,7 @@ function _start()
             VBoxManage list runningvms
         ;;
         *)
-            echo error,unknown virtual machine start vm|vb
+            _print error "unknown virtual machine start vm|vb"
         ;;
     esac
     
@@ -83,7 +104,7 @@ function _start()
 function _stop()
 {
     if [ $# -lt 1 ];then
-        echo "error: please specify which virtual machine to start"
+        _print error "please specify which virtual machine to start"
         return 1
     fi
 
@@ -99,7 +120,7 @@ function _stop()
             VB_START=0
         ;;
         *)
-            echo error,unknown virtual machine,stop vm|vb
+            _print error "unknown virtual machine,stop vm|vb"
         ;;
     esac
     
@@ -112,7 +133,7 @@ function _update_task()
     cd $HOME 
     files=`git status | grep modified: | grep .task | awk -F":" '{print $2}'`
     if [ -z "$files" ];then
-        echo no task to update ...
+        _print infor "no task to update ..."
         return 0
     else
         git add .task 
@@ -134,7 +155,7 @@ function _backup_config()
 
     files=`git status | grep modified: | awk -F":" '{print $2}'`
     if [ -z "$files" ];then
-        echo no task to update ...
+        _print infor "no task to update ..."
         return 0
     fi
 
@@ -142,21 +163,21 @@ function _backup_config()
     for file in $files
     do
         if [ -f "$file" ];then
-            echo "git add $file ... "
+            _print infor "git add $file ... "
             git add "$file"
             comment="$comment $file"
         fi
     done
 
-    echo "git commit -m \"update file $comment from $USER $HOSTNAME\""
+    _print infor "git commit -m \"update file $comment from $USER $HOSTNAME\""
     git commit -m "update file $comment from $USER $HOSTNAME"
 
-    echo "git push -u $(git remote) master ... "
+    _print infor "git push -u $(git remote) master ... "
     git push -u $(git remote) master
 
     echo ""
 
-    echo "now synchronous to all-config folder ..."
+    _print infor "now synchronous to all-config folder ..."
 
     cd $dir/d/documents/11-configs-from-github
     
@@ -175,13 +196,13 @@ function _backup_all()
     echo -------------------------------------------
     cd $dir/d/documents/10-github-document
     echo
-    echo "git pull $(git remote | sed -n 1p) master ..."
+    _print infor "git pull $(git remote | sed -n 1p) master ..."
     echo
     git pull $(git remote | sed -n 1p) master
 
     if [ $? == 0 ];then
         echo 
-        echo "running updating script ..."
+        _print infor "running updating script ..."
         echo
         ./update_documents_from_local.sh
     fi
@@ -191,13 +212,13 @@ function _backup_all()
     echo -------------------------------------------
     cd $dir/d/documents/11-configs-from-github
     echo 
-    echo "git pull $(git remote | sed -n 1p) master ... "
+    _print infor "git pull $(git remote | sed -n 1p) master ... "
     echo
     git pull $(git remote | sed -n 1p) master
 
     if [ $? == 0 ];then
         echo 
-        echo "running updating script ..."
+        _print infor "running updating script ..."
         echo
         ./update_config_file.sh
     fi
@@ -207,7 +228,7 @@ function _backup_all()
     echo -------------------------------------------
     cd $dir/d/documents/12-cygwin64-config-t580
     echo 
-    echo "git pull $(git remote | sed -n 1p) master ... "
+    _print infor "git pull $(git remote | sed -n 1p) master ... "
     echo
     git pull $(git remote | sed -n 1p) master
 
@@ -218,20 +239,20 @@ function _backup_all()
     cd ~
     files=`git status | grep "modified:" | awk -F":" '{ print $2 }'`
     if [ -z "$files" ];then
-        echo "no update config files from $HOME"
+        _print infor "no update config files from $HOME"
     else
         for file in $files
         do
             echo 
             if [ -f "$file" ];then
-                echo "git add $file ..."
+                _print infor "git add $file ..."
                 git add "$file"
                 comment="$comment $file"
             fi
         done
-        echo "git commit -m \"update $comment from $USER @ $HOSTNAME\""
+        _print infor "git commit -m \"update $comment from $USER @ $HOSTNAME\""
         git commit -m "update $comment from $USER @ $HOSTNAME"
-        echo "git push -u $(git remote | sed -n 1p) master"
+        _print infor "git push -u $(git remote | sed -n 1p) master"
         git push -u $(git remote | sed -n 1p) master
         echo
     fi
@@ -258,7 +279,7 @@ function _md2pdf()
     file=$1
     pdffile=${file/.md/.pdf/}
     if [ ! -f "$file" ];then
-        echo "error:there's no such file $file"
+        _print error "there's no such file $file"
         return -1
     fi
     pandoc --pdf-engine=pdflatex $file -o $pdffile 
@@ -299,7 +320,7 @@ function _win_dir()
     # this function is under debugging
 
     if [ $# -lt 1 ];then
-        echo "error: please input dir string"
+        _print error "please input dir string"
         return 1
     fi
 
