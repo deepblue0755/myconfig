@@ -270,9 +270,9 @@ function _backup_scripts()
 
     cd $dir/d/documents/16-bash-scripts
 
-    ./update_bash_files t580
-    ./update_bash_files cbpos
-    ./update_bash_files server
+    ./update_bash_files.sh t580
+    ./update_bash_files.sh cbpos
+    ./update_bash_files.sh server
 
 
     popd &> /dev/null
