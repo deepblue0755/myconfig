@@ -264,6 +264,21 @@ function _backup_config()
     popd &> /dev/null
 }
 
+function _backup_scripts()
+{
+    pushd . &> /dev/null
+
+    cd $dir/d/documents/16-bash-scripts
+
+    ./update_bash_files t580
+    ./update_bash_files cbpos
+    ./update_bash_files server
+
+
+    popd &> /dev/null
+
+}
+
 function _backup_all()
 {
     echo "--------------------------------------"
@@ -289,6 +304,12 @@ function _backup_all()
     echo "--------------------------------------"
     echo 
     _backup_config
+
+    echo "--------------------------------------"
+    echo "5, backup bash scripts to github ..."
+    echo "--------------------------------------"
+    echo 
+    _backup_scripts
 }
 
 function _bcomp()
