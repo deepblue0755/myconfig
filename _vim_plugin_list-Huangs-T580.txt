@@ -19,5 +19,6 @@ vim-gutentags
 vim-latex-suite
 vim-repeat
 vim-surround
+vimwiki
 winmanager
 xterm-color-table.vim

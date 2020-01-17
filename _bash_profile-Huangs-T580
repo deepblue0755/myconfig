@@ -755,20 +755,28 @@ function set_lang()
 
 function _task_list()
 {
-    if [ -z "$1" ];then
-        task list proj:RTAI
-        return 0
-    fi
-
-    if [ "$1" == "2" ];then
-        task list proj:infra
-        return 0
-    fi
-
-    if [ "$1" == "a" ];then
-        task list
-        return 0
-    fi
+    case $1 in 
+        1)
+            task list proj:RTAI
+            return 0
+        ;;
+        2)
+            task list proj:infra
+            return 0
+        ;;
+        3)
+            task list proj:fpga
+            return 0
+        ;;
+        a)
+            task list
+            return 0
+        ;;
+        *)
+            task list
+            return 0
+        ;;
+    esac
 }
 
 function _tmux_new()
@@ -845,5 +853,6 @@ export EDITOR=gvim
 export SVN_EDITOR=vim
 
 if [ "$vm_start" != "true" ];then
-    echo start vm
+    _print warning "no start vm"
+    # start vm
 fi
