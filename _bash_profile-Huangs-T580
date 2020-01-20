@@ -483,7 +483,7 @@ function _login_machine()
         ssh huangmianbo@192.168.212.30
     ;;
     iso)
-        ssh googol@virtualbox
+        ssh gitlab-test@192.168.56.112
     ;;
     *)
         let cnt=1
