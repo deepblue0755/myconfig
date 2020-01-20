@@ -281,35 +281,57 @@ function _backup_scripts()
 
 function _backup_all()
 {
-    echo "--------------------------------------"
-    echo "1, backup doc ..."
-    echo "--------------------------------------"
-    echo 
-    _backup_doc
+    case $1 in 
+        4)
+            echo "--------------------------------------"
+            echo "3, backup taskwarrior ..."
+            echo "--------------------------------------"
+            echo 
+            _backup_task
+            return 0
+        ;;
+        5)
+            echo "--------------------------------------"
+            echo "5, backup bash scripts to github ..."
+            echo "--------------------------------------"
+            echo 
+            _backup_scripts
+            return 0
+        ;;
+        *)
+            echo "--------------------------------------"
+            echo "1, backup doc ..."
+            echo "--------------------------------------"
+            echo 
+            _backup_doc
 
-    echo "--------------------------------------"
-    echo "2, backup bash profile ..."
-    echo "--------------------------------------"
-    echo 
-    _backup_bash
+            echo "--------------------------------------"
+            echo "2, backup bash profile ..."
+            echo "--------------------------------------"
+            echo 
+            _backup_bash
 
-    echo "--------------------------------------"
-    echo "3, backup taskwarrior ..."
-    echo "--------------------------------------"
-    echo 
-    _backup_task
+            echo "--------------------------------------"
+            echo "3, backup taskwarrior ..."
+            echo "--------------------------------------"
+            echo 
+            _backup_task
 
-    echo "--------------------------------------"
-    echo "4, backup config file to github ..."
-    echo "--------------------------------------"
-    echo 
-    _backup_config
+            echo "--------------------------------------"
+            echo "4, backup config file to github ..."
+            echo "--------------------------------------"
+            echo 
+            _backup_config
 
-    echo "--------------------------------------"
-    echo "5, backup bash scripts to github ..."
-    echo "--------------------------------------"
-    echo 
-    _backup_scripts
+            echo "--------------------------------------"
+            echo "5, backup bash scripts to github ..."
+            echo "--------------------------------------"
+            echo 
+            _backup_scripts
+
+            return 0
+        ;;
+    esac
 }
 
 function _bcomp()
