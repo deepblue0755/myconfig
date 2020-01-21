@@ -57,28 +57,26 @@ fi
 #----------------------------------#
 # User Function # 
 #----------------------------------#
-function _print()
+function print_infor()
 {
-    case $1 in 
-        error)
-            echo -e "\e[31merror: $2\e[0m"
-        ;;
-        warning)
-            echo -e "\e[33mwarning: $2\e[0m"
-        ;;
-        infor)
-            echo -e "\e[32minfor: $2\e[0m"
-        ;;
-        *)
-            echo "$1"
-        ;;
-    esac
+    echo -e "\e[32minfor: $1\e[0m"
+}
+
+function print_warning()
+{
+    echo -e "\e[33mwarning: $1\e[0m"
+}
+
+function print_error()
+{
+
+    echo -e "\e[31merror: $1\e[0m"
 }
 
 function _burn()
 {
     if [ ! -f "$1" ];then
-        _print error "file $1 could not be found"
+        print_error "file $1 could not be found"
         return
     fi
 
@@ -102,7 +100,7 @@ function _backup_doc()
 
     check=`git diff 00-rtai-x86-ubuntu-1404.md | wc -c`
     if [ "$check" != "0" ];then
-        _print infor "git add 00-rtai-x86-ubuntu-1404.md ..."
+        print_infor "git add 00-rtai-x86-ubuntu-1404.md ..."
         git add 00-rtai-x86-ubuntu-1404.md
         flag=1
         comment=$comment" 00-rtai-x86-ubuntu-1404.md"
@@ -110,7 +108,7 @@ function _backup_doc()
 
     check=`git diff Makefile | wc -c`
     if [ "$check" != "0" ];then
-        _print infor "git add Makefile ..."
+        print_infor "git add Makefile ..."
         git add Makefile
         flag=1
         comment=$comment" Makefile"
@@ -118,20 +116,20 @@ function _backup_doc()
 
     check=`git diff .gitignore | wc -c`
     if [ "$check" != "0" ];then
-        _print infor "git add .gitignore ..."
+        print_infor "git add .gitignore ..."
         git add .gitignore
         flag=1
         comment=$comment" .gitignore"
     fi
 
     if [ "$flag" == "1" ];then
-        _print infor "commit change to local  ..."
+        print_infor "commit change to local  ..."
         git  commit -m "update $comment from $USER@$HOSTNAME"
         echo 
         git push -u local master
 
         echo
-        _print infor "update to common folder ..."
+        print_infor "update to common folder ..."
 
         pushd . > /dev/null
         cd $dir/d/documents/10-github-documents/ 
@@ -139,7 +137,7 @@ function _backup_doc()
         popd > /dev/null
 
     else
-        _print infor "no update ,nothing to backup"
+        print_infor "no update ,nothing to backup"
     fi
 
     popd > /dev/null
@@ -153,24 +151,24 @@ function _backup_task()
     cd ~
     check=`git diff .taskrc | wc -c`
     if [ "$check" != "0" ];then
-        _print infor "git add .taskrc ..."
+        print_infor "git add .taskrc ..."
         git add .taskrc
         flag=1
     fi
 
     check=`git diff .task | wc -c`
     if [ "$check" != "0" ];then
-        _print infor "git add .task ..."
+        print_infor "git add .task ..."
         git add .task
         flag=1
     fi
 
     if [ "$flag" == "1" ];then
-        _print infor "commit change to local "
+        print_infor "commit change to local "
         git  commit -m "update taskwarrior from $USER@$HOSTNAME"
         git push -u $(git remote | sed -n 1p) master
     else
-        _print infor "no update ,nothing to backup"
+        print_infor "no update ,nothing to backup"
     fi
     
     popd > /dev/null
@@ -184,24 +182,24 @@ function _backup_bash()
     cd ~
     check=`git diff .bash_profile | wc -c`
     if [ "$check" != "0" ];then
-        _print infor "git add .bash_profile ..."
+        print_infor "git add .bash_profile ..."
         git add .bash_profile
         flag=1
     fi
 
     if [ "$flag" == "1" ];then
-        _print infor "commit change to local"
+        print_infor "commit change to local"
         git  commit -m "update .bash_profile from $USER@$HOSTNAME"
         git push -u $(git remote | sed -n 1p) master
 
-        _print infor "update to common config folders ..."
+        print_infor "update to common config folders ..."
         echo
         pushd . > /dev/null
         cd $dir/d/documents/11-configs-from-github/
         ./update_config_file.sh
         popd > /dev/null
     else
-        _print infor "no update ,nothing to backup"
+        print_infor "no update ,nothing to backup"
     fi
 
     
@@ -219,18 +217,18 @@ function _backup_config()
     files=`git status | grep modified | awk -F: '{print $2}'`
 
     if [ -z "$files" ];then
-        _print infor "no file need to git add " 
+        print_infor "no file need to git add " 
         popd > /dev/null
         return 0
     fi
 
     for file in $files
     do
-        _print infor "git add $file ..."
+        print_infor "git add $file ..."
         git add $file
     done
 
-    _print infor "git commit -m \"udpate config file from $USER @ $HOSTNAME \" ..."
+    print_infor "git commit -m \"udpate config file from $USER @ $HOSTNAME \" ..."
     git commit -m "udpate config file from $USER @ $HOSTNAME "
 
     git push -u origin master
@@ -245,17 +243,17 @@ function _backup_config()
     files=`git status | grep modified | awk -F: '{print $2}'`
     files=`echo $files | grep ".bash_profile \| .tmux.conf \| .taskrc \| .task"`
     if [ -z "$files" ];then
-        _print infor "no file in $HOME need to git add " 
+        print_infor "no file in $HOME need to git add " 
         popd > /dev/null
         return 0
     fi
     echo
     for file in $files
     do
-        _print infor "git add $file ..."
+        print_infor "git add $file ..."
         git add $file
     done
-    _print infor "git commit -m \"update files $comment from $USER @ $HOSTNAME\""
+    print_infor "git commit -m \"update files $comment from $USER @ $HOSTNAME\""
     git commit -m "update files $comment from $USER @ $HOSTNAME"
     git push -u $(git remote | sed -n 1p) master
     echo
@@ -347,7 +345,7 @@ function _code()
 function _cpvm()
 {
     if [ ! -f "$1" ];then
-        _print error "file $1 does not exist !!"
+        print_error "file $1 does not exist !!"
         return -1
     fi
     scp $1 huangmianbo@vmware:/tmp/
@@ -356,7 +354,7 @@ function _cpvm()
 function _cpvb()
 {
     if [ ! -f "$1" ];then
-        _print error "file $1 does not exist !!"
+        print_error "file $1 does not exist !!"
         return -1
     fi
     scp $1 huangmianbo@virtualbox:~/tmp/
@@ -367,14 +365,14 @@ function _cplinux()
     case $1 in 
         t430)
             if [ ! -f "$2" ];then
-                _print error "file $2 does not exist!!"
+                print_error "file $2 does not exist!!"
                 return 1
             fi
             scp $2 huangmianbo@t430:/tmp/
         ;;
         server)
             if [ ! -f "$2" ];then
-                _print error "file $2 does not exist!!"
+                print_error "file $2 does not exist!!"
                 return 1
             fi
             scp $2 huangmianbo@192.168.212.30:/tmp/
@@ -457,7 +455,7 @@ function _login_machine()
     1)
         ping -c 1 cpbos > /dev/null
         if [ "$?" == "0" ];then
-            _print infor "login cbpos ..."
+            print_infor "login cbpos ..."
             ssh root@cbpos
             return 0
         fi
@@ -465,7 +463,7 @@ function _login_machine()
     2)
         ping -c 1 -W 1 192.168.50.213 > /dev/null
         if [ "$?" == "0" ];then
-            _print infor "login 192.168.50.213 ..."
+            print_infor "login 192.168.50.213 ..."
             ssh root@192.168.50.213
             return 0
         fi
@@ -473,11 +471,11 @@ function _login_machine()
     x)
         ping -c 1 -W 1 192.168.0.3 > /dev/null
         if [ "$?" == "0" ];then
-            _print infor "login 192.168.0.3 ..."
+            print_infor "login 192.168.0.3 ..."
             ssh root@192.168.0.3
             return 0
         else
-            _print infor "error,could not ping cbpos!!"
+            print_infor "error,could not ping cbpos!!"
         fi
     ;;
     gitlab)
@@ -512,7 +510,7 @@ function _login_machine()
         ping -c 1 -W 1 192.168.0.2 > /dev/null
         check=$?
         while [ "$check" != "0" ]; do
-            _print infor "$cnt try to ping 192.168.0.2 ..."
+            print_infor "$cnt try to ping 192.168.0.2 ..."
             ping -c 1 -W 1 192.168.0.2 > /dev/null
             check=$?
             if [ "$check" == "0" ];then
@@ -521,12 +519,12 @@ function _login_machine()
                 let cnt=$cnt+1
                 sleep 1
                 if [ $cnt == 101 ];then
-                    _print error "could not ping 192.168.0.2"
+                    print_error "could not ping 192.168.0.2"
                     return 1
                 fi
             fi
         done
-        _print infor login 192.168.0.2 ...
+        print_infor login 192.168.0.2 ...
         ssh root@192.168.0.2 
         if [ $? != 0 ];then
             return 1
@@ -541,7 +539,7 @@ function _md2pdf()
     pdffile=${file/.md/.pdf}
 
     if [ ! -f "$file" ];then
-        _print error "there is no such file $1"
+        print_error "there is no such file $1"
         return -1
     fi
 
@@ -561,14 +559,14 @@ function _reset_known_host()
     check=`cat known_hosts | egrep -n "^192.168.0.2"`
     if [ ! -z "$check" ];then
         line=`echo $check | cut -f1 -d:`
-        _print infor "remove line at $line in file ~/.ssh/known_hosts"
+        print_infor "remove line at $line in file ~/.ssh/known_hosts"
         sed -i "$line d" known_hosts
     fi
 
     check=`cat known_hosts | egrep -n "^192.168.0.3"`
     if [ ! -z "$check" ];then
         line=`echo $check | cut -f1 -d:`
-        _print infor "remove line at $line in file ~/.ssh/known_hosts"
+        print_infor "remove line at $line in file ~/.ssh/known_hosts"
         sed -i "$line d" known_hosts
     fi
 
@@ -578,11 +576,9 @@ function _reset_known_host()
 function _start()
 {
     if [ $# -lt 1 ];then
-        _print error "please specify which virtual machine to start"
+        print_error "please specify which virtual machine to start"
         return 1
     fi
-
-
 
     case $1 in
         vm)
@@ -609,36 +605,22 @@ function _start()
             done
             let vb_machine_id=$vb_machine_id-1
             test "$2" == "i" && read -p "please select which id to start 1-$vb_machine_id: " vb_machine_id
-            test "$2" == "i" &&  \
-            (_print infor "start virtualbox machine ${machines_array[$vb_machine_id]}") &&  \
+            # start the selected machine 
+            test "$2" == "i" && ( \
+            (print_infor "start virtualbox machine ${machines_array[$vb_machine_id]} ...") &&  \
+            (VBoxManage list runningvms | grep "${machines_array[$vb_machine_id]}")  || \
             (VBoxManage startvm ${machines_array[$vb_machine_id]} --type headless 2>&1 > /dev/null &) &&  \
-            return 0
-
-            if  [ ! -z "$2" ];then
-                VBoxManage startvm ${machines_array[$2]} --type headless 2>&1 > /dev/null & \
-                return 0
-            fi
-
+            return 0 )
+            # start the default vb machine
             export vb_start=true
             check=`VBoxManage list runningvms | grep "Ubuntu-1804"` 
             if [ ! -z "$check" ];then
                 echo ""
-                echo "virtualbox machine is already starting"
-                return 0
+                print_warning "virtualbox machine is already starting"
+                return 1
             fi
-            echo start virtual box machine ... 
+            print_infor "start default virtual box machine \"Ubuntu-1804\" ... "
             VBoxManage startvm "Ubuntu-1804" --type headless 2>&1 > /dev/null &
-        ;;
-        iso)
-            export vb_start=true
-            check=`VBoxManage list runningvms | grep "ISO"` 
-            if [ ! -z "$check" ];then
-                echo ""
-                _print warning "virtualbox machine iso is already starting"
-                return 0
-            fi
-            echo start iso test virtual box machine ... 
-            VBoxManage startvm "ISO" --type headless 2>&1 > /dev/null &
         ;;
         list)
             echo list virtual machines ...
@@ -649,7 +631,7 @@ function _start()
             VBoxManage list runningvms
         ;;
         *)
-            _print error "error,unknown virtual machine"
+            print_error "error,unknown virtual machine"
         ;;
     esac
 }
@@ -657,7 +639,7 @@ function _start()
 function _stop()
 {
     if [ $# -lt 1 ];then
-        _print error "please specify which virtual machine to start"
+        print_error "please specify which virtual machine to start"
         return 1
     fi
 
@@ -681,7 +663,7 @@ function _stop()
             VBoxManage controlvm "ISO" poweroff
         ;;
         *)
-            _print error "unknown virtual machine" 
+            print_error "unknown virtual machine" 
         ;;
     esac
 }
@@ -701,6 +683,7 @@ function set_alias()
     alias cbpos='_login_machine'
     alias cgdb='cgdb -q'
     alias config='gvim --remote-silent D:\\cygwin64\\home\\mianb\\\.bash_profile &'
+    alias diff='colordiff'
     alias cplinux='_cplinux'
     alias cpt430='_cplinux t430'
     alias cpserver='_cplinux server'
@@ -899,6 +882,6 @@ export EDITOR=gvim
 export SVN_EDITOR=vim
 
 if [ "$vm_start" != "true" ];then
-    _print warning "no start vm"
+    print_warning "no start vm"
     # start vm
 fi
