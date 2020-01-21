@@ -582,6 +582,8 @@ function _start()
         return 1
     fi
 
+
+
     case $1 in
         vm)
             export vm_start=true
@@ -595,6 +597,28 @@ function _start()
             vmrun start "D:\\Virtual Machines\\Ubuntu-14.04-Kylin\\\Ubuntu.vmx"  nogui 2>&1 > /dev/null &
         ;;
         vb)
+            # list all vb machine
+            vb_machines=`vboxmanage list vms | awk -d\" '{print $1}' | sed 's/"//g'`
+            # push machine name into array buffer
+            let vb_machine_id=1
+            for vb_machine in $vb_machines 
+            do
+                echo $vb_machine_id $vb_machine 
+                machines_array[$vb_machine_id]=$vb_machine
+                let vb_machine_id=$vb_machine_id+1
+            done
+            let vb_machine_id=$vb_machine_id-1
+            test "$2" == "i" && read -p "please select which id to start 1-$vb_machine_id: " vb_machine_id
+            test "$2" == "i" &&  \
+            (_print infor "start virtualbox machine ${machines_array[$vb_machine_id]}") &&  \
+            (VBoxManage startvm ${machines_array[$vb_machine_id]} --type headless 2>&1 > /dev/null &) &&  \
+            return 0
+
+            if  [ ! -z "$2" ];then
+                VBoxManage startvm ${machines_array[$2]} --type headless 2>&1 > /dev/null & \
+                return 0
+            fi
+
             export vb_start=true
             check=`VBoxManage list runningvms | grep "Ubuntu-1804"` 
             if [ ! -z "$check" ];then
@@ -610,7 +634,7 @@ function _start()
             check=`VBoxManage list runningvms | grep "ISO"` 
             if [ ! -z "$check" ];then
                 echo ""
-                echo "virtualbox machine iso is already starting"
+                _print warning "virtualbox machine iso is already starting"
                 return 0
             fi
             echo start iso test virtual box machine ... 
@@ -625,7 +649,7 @@ function _start()
             VBoxManage list runningvms
         ;;
         *)
-            echo error,unknown virtual machine
+            _print error "error,unknown virtual machine"
         ;;
     esac
 }
