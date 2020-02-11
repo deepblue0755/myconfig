@@ -55,7 +55,7 @@ else
 fi
 
 #----------------------------------#
-# User Function # 
+# Customer User Function # 
 #----------------------------------#
 function print_infor()
 {
@@ -69,7 +69,6 @@ function print_warning()
 
 function print_error()
 {
-
     echo -e "\e[31merror: $1\e[0m"
 }
 
@@ -210,6 +209,7 @@ function _backup_config()
 {
     pushd . &> /dev/null
 
+    print_infor "cd $dir/d/documents/11-configs-from-github"
     cd $dir/d/documents/11-configs-from-github
 
     ./update_config_file.sh
@@ -234,9 +234,9 @@ function _backup_config()
     git push -u origin master
 
     echo 
-    echo ---------------------------------------------------------
-    echo Now,Git Backup Config File In $home
-    echo ---------------------------------------------------------
+    print_infor "---------------------------------------------------------"
+    print_infor "Now,Git Backup Config File In $home"
+    print_infor "---------------------------------------------------------"
     cd ~
     comment=""
 
@@ -864,6 +864,10 @@ function _vlc()
 {
     vlc $1 &> /dev/null &
 }
+
+# ------------------------------------------------------------------- #
+# Customer Main Entry
+# ------------------------------------------------------------------- #
 
 set_path
 set_alias

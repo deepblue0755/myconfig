@@ -193,7 +193,7 @@ function copy_config_from_t430()
 function main()
 {
     echo --------------------------------------------------------
-    echo Running Scripts $0 At $HOSTNAME !!
+    print_infor "Running Scripts $0 At $HOSTNAME !!"
     echo --------------------------------------------------------
 
     case $HOSTNAME in 
@@ -216,4 +216,4 @@ function main()
 }
 
 
-main
+main $*
