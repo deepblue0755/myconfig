@@ -615,7 +615,6 @@ function _start()
             export vb_start=true
             check=`VBoxManage list runningvms | grep "Ubuntu-1804"` 
             if [ ! -z "$check" ];then
-                echo ""
                 print_warning "virtualbox machine is already starting"
                 return 1
             fi
