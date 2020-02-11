@@ -479,7 +479,7 @@ function set_alias()
     alias config='vim D:\\cygwin64\\home\\mianb\\.bash_profile' 
     alias doc='cd ~/documents'
     alias es='es -highlight'
-    alias find='/d/cygwin64/bin/find'
+    alias find='$dir/d/cygwin64/bin/find'
     alias gbash='git-bash'
     alias gitlab='ssh huangmianbo@192.168.56.103'
     alias grep='grep --color=auto'
