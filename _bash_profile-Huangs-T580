@@ -416,7 +416,9 @@ function _done_102()
 function _expl()
 {
     if [ -z "$1" ];then
-        explorer $(echo $PWD | sed 's/\//\\/g' | sed 's/^\\//g' | sed 's/\\/:\\/')
+        curdir=$PWD
+        test "$PWD" == "$HOME" && curdir=/d/cygwin64/home/mianb
+        explorer $(echo $curdir | sed 's/\//\\/g' | sed 's/^\\//g' | sed 's/\\/:\\/')
     else
         explorer $(echo $1 | sed 's/\//\\/g' | sed 's/^\\//g' | sed 's/\\/:\\/')
     fi
