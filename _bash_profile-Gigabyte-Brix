@@ -285,8 +285,7 @@ function _set_alias()
     alias synctask='pushd . && cd $HOME && git pull origin master && popd'
     alias t580='_login_machine t580'
     alias t='_tmux_new'
-    alias tc='task cale'
-    alias tl='task list'
+    alias tl='_task_list'
     alias typora='_typora'
     alias vb='gitlab'
     alias vi='vim'
@@ -406,6 +405,33 @@ function _SumatraPDF()
 {
     SumatraPDF $* &> /dev/null &
 }
+
+function _task_list()
+{
+    case $1 in 
+        1)
+            task list proj:RTAI
+            return 0
+        ;;
+        2)
+            task list proj:infra
+            return 0
+        ;;
+        3)
+            task list proj:fpga
+            return 0
+        ;;
+        a)
+            task list
+            return 0
+        ;;
+        *)
+            task list
+            return 0
+        ;;
+    esac
+}
+
 
 function _tmux_new()
 {
