@@ -23,9 +23,9 @@
 
 # User dependent .bash_profile file
 
-#----------------------------------#
+#---------------------------------------------------------------------#
 # User Customer Setting # 
-#----------------------------------#
+#---------------------------------------------------------------------#
 if [ -e $USER ];then
     export USER=mianb
 fi
@@ -39,29 +39,307 @@ if [ "$SHELL" == "/bin/bash" ];then
 fi
 
 EDITOR=$dir/d/Vim/vim81/gvim;export EDITOR
-
-function _print()
+# ------------------------------------------------------------------- #
+# Print Function
+# ------------------------------------------------------------------- #
+function print_infor()
 {
-    case $1 in 
-        error)
-            echo -e "\e[31merror: $2\e[0m"
+    echo -e "\e[32minfor: $1\e[0m"
+}
+
+function print_warning()
+{
+    echo -e "\e[33mwarning: $1\e[0m"
+}
+
+function print_error()
+{
+    echo -e "\e[31merror: $1\e[0m"
+}
+
+# ------------------------------------------------------------------- #
+# Customer Internal Function
+# ------------------------------------------------------------------- #
+function _backup_config()
+{
+    pushd . > /dev/null
+
+    cd ~
+
+    git pull $(git remote) master
+
+    comment=""
+
+    files=`git status | grep modified: | awk -F":" '{print $2}'`
+    if [ -z "$files" ];then
+        print_infor "no task to update ..."
+        return 0
+    fi
+
+    echo ""
+    for file in $files
+    do
+        if [ -f "$file" ];then
+            print_infor "git add $file ... "
+            git add "$file"
+            comment="$comment $file"
+        fi
+    done
+
+    print_infor "git commit -m \"update file $comment from $USER $HOSTNAME\""
+    git commit -m "update file $comment from $USER $HOSTNAME"
+
+    print_infor "git push -u $(git remote) master ... "
+    git push -u $(git remote) master
+
+    echo ""
+
+    print_infor "now synchronous to all-config folder ..."
+
+    cd $dir/d/documents/11-configs-from-github
+    
+    ./update_config_file.sh
+
+    popd > /dev/null
+}
+
+function _backup_all()
+{
+    pushd . &> /dev/null
+
+    echo -------------------------------------------
+    echo 1, update document
+    echo -------------------------------------------
+    cd $dir/d/documents/10-github-document
+    echo
+    print_infor "git pull $(git remote | sed -n 1p) master ..."
+    echo
+    git pull $(git remote | sed -n 1p) master
+
+    if [ $? == 0 ];then
+        echo 
+        print_infor "running updating script ..."
+        echo
+        ./update_documents_from_local.sh
+    fi
+
+    echo -------------------------------------------
+    echo 2, update all config files
+    echo -------------------------------------------
+    cd $dir/d/documents/11-configs-from-github
+    echo 
+    print_infor "git pull $(git remote | sed -n 1p) master ... "
+    echo
+    git pull $(git remote | sed -n 1p) master
+
+    if [ $? == 0 ];then
+        echo 
+        print_infor "running updating script ..."
+        echo
+        ./update_config_file.sh
+    fi
+
+    echo -------------------------------------------
+    echo 3, update config files from T580
+    echo -------------------------------------------
+    cd $dir/d/documents/12-cygwin64-config-t580
+    echo 
+    print_infor "git pull $(git remote | sed -n 1p) master ... "
+    echo
+    git pull $(git remote | sed -n 1p) master
+
+    echo -------------------------------------------
+    echo 4, update config files from gigabyte-brix
+    echo -------------------------------------------
+    comment=
+    cd ~
+    files=`git status | grep "modified:" | awk -F":" '{ print $2 }'`
+    if [ -z "$files" ];then
+        print_infor "no update config files from $HOME"
+    else
+        for file in $files
+        do
+            echo 
+            if [ -f "$file" ];then
+                print_infor "git add $file ..."
+                git add "$file"
+                comment="$comment $file"
+            fi
+        done
+        print_infor "git commit -m \"update $comment from $USER @ $HOSTNAME\""
+        git commit -m "update $comment from $USER @ $HOSTNAME"
+        print_infor "git push -u $(git remote | sed -n 1p) master"
+        git push -u $(git remote | sed -n 1p) master
+        echo
+    fi
+    
+
+    popd  &> /dev/null
+}
+
+function _expl()
+{
+    if [ -z "$1" ];then
+        curdir=$PWD
+        test "$PWD" == "$HOME" && curdir=/d/cygwin64/home/mianb
+        explorer $(echo $curdir | sed 's/\//\\/g' | sed 's/^\\//g' | sed 's/\\/:\\/')
+    else
+        explorer $(echo $1 | sed 's/\//\\/g' | sed 's/^\\//g' | sed 's/\\/:\\/')
+    fi
+}
+
+function _gvim()
+{
+    if [ ! -z `echo $1 | grep \/` ];then
+        echo vim $(_win_dir $1)
+        $dir/d/Vim/vim81/gvim "$(_win_dir $1)" &
+    else
+        $dir/d/Vim/vim81/gvim --remote-silent $* &
+    fi
+
+    return  0
+}
+
+function _login_machine()
+{
+    case $1 in
+        mac)
+            ssh huangmianbo@192.168.1.103
         ;;
-        warning)
-            echo -e "\e[33mwarning: $2\e[0m"
+        t430)
+            ssh huangmianbo@t430
         ;;
-        infor)
-            echo -e "\e[32minfor: $2\e[0m"
+        t580)
+            ssh mianb@Huangs-T580
+        ;;
+        pi3)
+            ssh huangmianbo@raspberry3
+        ;;
+        pi4)
+            ssh pi@raspberrypi4
+        ;;
+        rasp3)
+            ssh huangmianbo@raspberry3
+        ;;
+        rasp4)
+            ssh huangmianbo@raspberrypi4
+        ;;
+        gitlab)
+            ssh huangmianbo@192.168.56.103
+        ;;
+        vm)
+            ssh huangmianbo@vmware
+        ;;
+        zynq)
+            ssh root@192.168.1.10
         ;;
         *)
-            echo "$1"
+            :
         ;;
     esac
+}
+
+function _md2pdf()
+{
+    file=$1
+    pdffile=${file/.md/.pdf/}
+    if [ ! -f "$file" ];then
+        print_error "there's no such file $file"
+        return -1
+    fi
+    pandoc --pdf-engine=pdflatex $file -o $pdffile 
+}
+
+function _set_alias()
+{
+    alias ....='cd ../../../'
+    alias ...='cd ../../'
+    alias ..='cd ..'
+    alias aspell-tex='aspell --mode=tex --list'
+    alias ball='_backup_all'
+    alias config='vim D:\\cygwin64\\home\\mianb\\.bash_profile' 
+    alias diff='colordiff'
+    alias doc='cd ~/documents'
+    alias es='es -highlight'
+    alias expl='_expl'
+    alias find='$dir/d/cygwin64/bin/find'
+    alias gbash='git-bash'
+    alias gitlab='_login_machine gitlab'
+    alias grep='grep --color=auto'
+    alias ls='ls --color=auto'
+    alias mac='_login_machine mac'
+    alias md2pdf='_md2pdf'
+    alias mdkir='mkdir'
+    alias mv='mv -iv'
+    alias mydate='date +%Y%m%d%H%M%S'
+    alias pdf='_SumatraPDF'
+    alias pi3='_login_machine pi3'
+    alias pi4='_login_machine pi4'
+    alias rasp3='_login_machine rasp3'
+    alias rasp4='_login_machine rasp4'
+    alias reload='source $HOME/.bash_profile' 
+    alias rm='rm -iv -d'
+    alias start='_start'
+    alias stop='_stop'
+    alias syncbash='cp -iv $HOME/.bash_profile /cygdrive/f/05-To-From-Gigabyte-MiniComputer/'
+    alias synctask='pushd . && cd $HOME && git pull origin master && popd'
+    alias t580='_login_machine t580'
+    alias t='_tmux_new'
+    alias tc='task cale'
+    alias tl='task list'
+    alias typora='_typora'
+    alias vb='gitlab'
+    alias vi='vim'
+    alias videos='cd ~/videos'
+    alias vivado='vivado -mode tcl'
+    alias vim='_gvim'
+    alias vlc='_vlc'
+    alias vm='_login_machine vm'
+    alias vmware='vm'
+    alias xgrep='grep -nHR'
+    alias zynq='_login_machine zynq'
+    alias ~='cd ~'
+}
+
+function _set_path()
+{
+    PATH=$dir/d/emacs-26.2-x86_64/bin:$PATH
+    PATH=$dir/c/Windows/System32:$PATH
+    PATH=$dir/d/7-Zip-18.05-x64:$PATH
+    PATH=$dir/d/Beyond\ Compare\ 3/:$PATH
+    PATH=$dir/d/ES-1.1.0.10:$PATH
+    PATH=$dir/d/Python27-64:$PATH
+    PATH=$dir/d/Python37-64:$PATH
+    PATH=$dir/d/VLC-3.0.6:$PATH
+    PATH=$dir/d/Wireshark-3.0.1:$PATH
+    PATH=$dir/d/ffmpeg-4.1.1/bin:$PATH
+    PATH=$dir/d/gnuplot-5.2.6/bin:$PATH
+    PATH=$dir/d/texlive/2018/bin/win32:$PATH
+    PATH=$dir/d/vim/vim81/:$PATH
+    PATH=$dir/d/SumatraPDF/:$PATH
+    PATH=$dir/d/VMware/VMware\ Workstation:$PATH
+    PATH=$dir/d/Oracle/VirtualBox:$PATH
+    PATH=$dir/d/Typora/bin:$PATH
+    PATH=$dir/d/MKVToolNix:$PATH
+
+
+    # do not add cygwin/bin to $PATH
+    if [ "$SHELL" == "/bin/bash" ];then
+        PATH=$dir/d/cygwin64/bin/:$PATH
+    else
+        PATH=$dir/d/Git/usr/bin/:$PATH
+    fi
+
+    PATH=$dir/d/Git/bin:$PATH
+    PATH=$dir/d/Git:$PATH
+
+    export PATH
 }
 
 function _start()
 {
     if [ $# -lt 1 ];then
-        _print error "please specify which virtual machine to start"
+        print_error "please specify which virtual machine to start"
         return 1
     fi
 
@@ -95,16 +373,15 @@ function _start()
             VBoxManage list runningvms
         ;;
         *)
-            _print error "unknown virtual machine start vm|vb"
+            print_error "unknown virtual machine start vm|vb"
         ;;
     esac
-    
 }
 
 function _stop()
 {
     if [ $# -lt 1 ];then
-        _print error "please specify which virtual machine to start"
+        print_error "please specify which virtual machine to start"
         return 1
     fi
 
@@ -120,169 +397,9 @@ function _stop()
             VB_START=0
         ;;
         *)
-            _print error "unknown virtual machine,stop vm|vb"
+            print_error "unknown virtual machine,stop vm|vb"
         ;;
     esac
-    
-}
-
-
-function _update_task()
-{
-    pushd . > /dev/null
-    cd $HOME 
-    files=`git status | grep modified: | grep .task | awk -F":" '{print $2}'`
-    if [ -z "$files" ];then
-        _print infor "no task to update ..."
-        return 0
-    else
-        git add .task 
-        git commit -m "update task from $HOSTNAME : $1" 
-        git push -u git@github.com:deepblue0755/cygwin64_config_gigabyte.git master
-    fi
-    popd > /dev/null
-}
-
-function _backup_config()
-{
-    pushd . > /dev/null
-
-    cd ~
-
-    git pull $(git remote) master
-
-    comment=""
-
-    files=`git status | grep modified: | awk -F":" '{print $2}'`
-    if [ -z "$files" ];then
-        _print infor "no task to update ..."
-        return 0
-    fi
-
-    echo ""
-    for file in $files
-    do
-        if [ -f "$file" ];then
-            _print infor "git add $file ... "
-            git add "$file"
-            comment="$comment $file"
-        fi
-    done
-
-    _print infor "git commit -m \"update file $comment from $USER $HOSTNAME\""
-    git commit -m "update file $comment from $USER $HOSTNAME"
-
-    _print infor "git push -u $(git remote) master ... "
-    git push -u $(git remote) master
-
-    echo ""
-
-    _print infor "now synchronous to all-config folder ..."
-
-    cd $dir/d/documents/11-configs-from-github
-    
-    ./update_config_file.sh
-
-    popd > /dev/null
-    
-}
-
-function _backup_all()
-{
-    pushd . &> /dev/null
-
-    echo -------------------------------------------
-    echo 1, update document
-    echo -------------------------------------------
-    cd $dir/d/documents/10-github-document
-    echo
-    _print infor "git pull $(git remote | sed -n 1p) master ..."
-    echo
-    git pull $(git remote | sed -n 1p) master
-
-    if [ $? == 0 ];then
-        echo 
-        _print infor "running updating script ..."
-        echo
-        ./update_documents_from_local.sh
-    fi
-
-    echo -------------------------------------------
-    echo 2, update all config files
-    echo -------------------------------------------
-    cd $dir/d/documents/11-configs-from-github
-    echo 
-    _print infor "git pull $(git remote | sed -n 1p) master ... "
-    echo
-    git pull $(git remote | sed -n 1p) master
-
-    if [ $? == 0 ];then
-        echo 
-        _print infor "running updating script ..."
-        echo
-        ./update_config_file.sh
-    fi
-
-    echo -------------------------------------------
-    echo 3, update config files from T580
-    echo -------------------------------------------
-    cd $dir/d/documents/12-cygwin64-config-t580
-    echo 
-    _print infor "git pull $(git remote | sed -n 1p) master ... "
-    echo
-    git pull $(git remote | sed -n 1p) master
-
-    echo -------------------------------------------
-    echo 4, update config files from gigabyte-brix
-    echo -------------------------------------------
-    comment=
-    cd ~
-    files=`git status | grep "modified:" | awk -F":" '{ print $2 }'`
-    if [ -z "$files" ];then
-        _print infor "no update config files from $HOME"
-    else
-        for file in $files
-        do
-            echo 
-            if [ -f "$file" ];then
-                _print infor "git add $file ..."
-                git add "$file"
-                comment="$comment $file"
-            fi
-        done
-        _print infor "git commit -m \"update $comment from $USER @ $HOSTNAME\""
-        git commit -m "update $comment from $USER @ $HOSTNAME"
-        _print infor "git push -u $(git remote | sed -n 1p) master"
-        git push -u $(git remote | sed -n 1p) master
-        echo
-    fi
-    
-
-    popd  &> /dev/null
-    
-}
-
-function _gvim()
-{
-    if [ ! -z `echo $1 | grep \/` ];then
-        echo vim $(_win_dir $1)
-        $dir/d/Vim/vim81/gvim "$(_win_dir $1)" &
-    else
-        $dir/d/Vim/vim81/gvim --remote-silent $* &
-    fi
-
-    return  0
-}
-
-function _md2pdf()
-{
-    file=$1
-    pdffile=${file/.md/.pdf/}
-    if [ ! -f "$file" ];then
-        _print error "there's no such file $file"
-        return -1
-    fi
-    pandoc --pdf-engine=pdflatex $file -o $pdffile 
 }
 
 function _SumatraPDF()
@@ -306,83 +423,11 @@ function _tmux_new()
         tmux attach-session -d -t session-$tmux_cnt
         ;;
     esac
-
-
 }
 
 function _typora()
 {
     typora.exe $* &
-}
-
-function _win_dir()
-{
-    # this function is under debugging
-
-    if [ $# -lt 1 ];then
-        _print error "please input dir string"
-        return 1
-    fi
-
-
-    if [ ! -z `echo $1 | grep cygdrive` ];then
-        echo $1 | awk -F"/"   \
-        '{ \
-            for (i=3;i<=NF;i++)  \
-                if ( i==3 )
-                    printf("%s:\\", $i);  \
-                else
-                    printf("%s\\", $i);  \
-                print "" \
-         }'
-     else
-        echo $1 | awk -F"/"   \
-        '{ \
-            for (i=2;i<=NF;i++)  \
-                if ( i==2 )
-                    printf("%s:\\", $i);  \
-                else
-                    printf("%s\\", $i);  \
-                print "" \
-         }'
-    fi
-}
-
-function set_path()
-{
-
-    PATH=$dir/d/emacs-26.2-x86_64/bin:$PATH
-    PATH=$dir/c/Windows/System32:$PATH
-    PATH=$dir/d/7-Zip-18.05-x64:$PATH
-    PATH=$dir/d/Beyond\ Compare\ 3/:$PATH
-    PATH=$dir/d/ES-1.1.0.10:$PATH
-    PATH=$dir/d/Python27-64:$PATH
-    PATH=$dir/d/Python37-64:$PATH
-    PATH=$dir/d/VLC-3.0.6:$PATH
-    PATH=$dir/d/Wireshark-3.0.1:$PATH
-    PATH=$dir/d/ffmpeg-4.1.1/bin:$PATH
-    PATH=$dir/d/gnuplot-5.2.6/bin:$PATH
-    PATH=$dir/d/texlive/2018/bin/win32:$PATH
-    PATH=$dir/d/vim/vim81/:$PATH
-    PATH=$dir/d/SumatraPDF/:$PATH
-    PATH=$dir/d/VMware/VMware\ Workstation:$PATH
-    PATH=$dir/d/Oracle/VirtualBox:$PATH
-    PATH=$dir/d/Typora/bin:$PATH
-    PATH=$dir/d/MKVToolNix:$PATH
-
-
-    # do not add cygwin/bin to $PATH
-    if [ "$SHELL" == "/bin/bash" ];then
-        PATH=$dir/d/cygwin64/bin/:$PATH
-    else
-        PATH=$dir/d/Git/usr/bin/:$PATH
-    fi
-
-    PATH=$dir/d/Git/bin:$PATH
-    PATH=$dir/d/Git:$PATH
-
-    export PATH
-
 }
 
 function _tidy_file()
@@ -467,57 +512,63 @@ function _tidy_file()
     done
 }
 
-function set_alias()
+function _update_task()
 {
-    alias ....='cd ../../../'
-    alias ...='cd ../../'
-    alias ..='cd ..'
-    alias aspell-tex='aspell --mode=tex --list'
-    alias ball='_backup_all'
-    alias bconfig='_backup_config'
-    alias btask='_update_task'
-    alias config='vim D:\\cygwin64\\home\\mianb\\.bash_profile' 
-    alias doc='cd ~/documents'
-    alias es='es -highlight'
-    alias find='$dir/d/cygwin64/bin/find'
-    alias gbash='git-bash'
-    alias gitlab='ssh huangmianbo@192.168.56.103'
-    alias grep='grep --color=auto'
-    alias ls='ls --color=auto'
-    alias mac='ssh huangmianbo@Huangs-MBP'
-    alias md2pdf='_md2pdf'
-    alias mdkir='mkdir'
-    alias mv='mv -iv'
-    alias pdf='_SumatraPDF'
-    alias pi3='ssh huangmianbo@raspberry3'
-    alias pi4='ssh pi@raspberrypi4'
-    alias rasp3='ssh huangmianbo@raspberry3'
-    alias rasp4='ssh huangmianbo@raspberrypi4'
-    alias reload='source $HOME/.bash_profile' 
-    alias rm='rm -iv -d'
-    alias start='_start'
-    alias stop='_stop'
-    alias syncbash='cp -iv $HOME/.bash_profile /cygdrive/f/05-To-From-Gigabyte-MiniComputer/'
-    alias synctask='pushd . && cd $HOME && git pull origin master && popd'
-    alias t580='ssh mianb@Huangs-T580'
-    alias tc='task cale'
-    alias tl='task list'
-    alias t='_tmux_new'
-    alias typora='_typora'
-    alias vb='gitlab'
-    alias vi='vim'
-    alias videos='cd ~/videos'
-    alias vim='_gvim'
-    alias vm='ssh huangmianbo@vmware'
-    alias vmware='vm'
-    alias xgrep='grep -nHR'
-    alias zynq='ssh root@192.168.1.10'
-    alias ~='cd ~'
+    pushd . > /dev/null
+    cd $HOME 
+    files=`git status | grep modified: | grep .task | awk -F":" '{print $2}'`
+    if [ -z "$files" ];then
+        print_infor "no task to update ..."
+        return 0
+    else
+        git add .task 
+        git commit -m "update task from $HOSTNAME : $1" 
+        git push -u git@github.com:deepblue0755/cygwin64_config_gigabyte.git master
+    fi
+    popd > /dev/null
 }
 
+function _win_dir()
+{
+    # this function is under debugging
+    if [ $# -lt 1 ];then
+        print_error "please input dir string"
+        return 1
+    fi
 
-set_path
-set_alias
+
+    if [ ! -z `echo $1 | grep cygdrive` ];then
+        echo $1 | awk -F"/"   \
+        '{ \
+            for (i=3;i<=NF;i++)  \
+                if ( i==3 )
+                    printf("%s:\\", $i);  \
+                else
+                    printf("%s\\", $i);  \
+                print "" \
+         }'
+     else
+        echo $1 | awk -F"/"   \
+        '{ \
+            for (i=2;i<=NF;i++)  \
+                if ( i==2 )
+                    printf("%s:\\", $i);  \
+                else
+                    printf("%s\\", $i);  \
+                print "" \
+         }'
+    fi
+}
+
+function _vlc()
+{
+    vlc $* &> /dev/null &
+}
+# ------------------------------------------------------------------- #
+# Customer Main Function
+# ------------------------------------------------------------------- #
+_set_path
+_set_alias
 
 if [ "$SHELL" == "/bin/bash" ];then
     task list
