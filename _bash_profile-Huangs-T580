@@ -548,11 +548,6 @@ function _md2pdf()
     pandoc --pdf-engine=pdflatex $file -o $pdffile
 }
 
-function _mydate()
-{
-    date +%Y%m%d%H%M%S
-}
-
 function _reset_known_host()
 {
     pushd . > /dev/null
@@ -710,7 +705,8 @@ function set_alias()
     alias ls='ls --color=auto'
     alias mac='_login_machine mac'
     alias md2pdf='_md2pdf'
-    alias mydate='_mydate'
+    alias mydate='date +%Y%m%d%H%M%S'
+    alias mv='mv -iv'
     alias pdf='SumatraPDF'
     alias pycharm='pycharm64 &> /dev/null &'
     alias qt='qtcreator &> /dev/null &'
@@ -796,6 +792,7 @@ function _task_list()
         ;;
         3)
             task list proj:fpga
+            task list proj:FPGA
             return 0
         ;;
         a)
