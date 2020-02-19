@@ -250,6 +250,18 @@ function _md2pdf()
     pandoc --pdf-engine=pdflatex $file -o $pdffile 
 }
 
+function _pushd()
+{
+    test -n "$1" || { pushd . && return 0; }
+
+    for((i=0;i<5;i++))
+    do
+        pushd $*
+    done
+
+    return 0
+}
+
 function _set_alias()
 {
     alias ....='cd ../../../'
@@ -275,6 +287,7 @@ function _set_alias()
     alias pdf='_SumatraPDF'
     alias pi3='_login_machine pi3'
     alias pi4='_login_machine pi4'
+    alias pushd='_pushd $*'
     alias rasp3='_login_machine rasp3'
     alias rasp4='_login_machine rasp4'
     alias reload='source $HOME/.bash_profile' 
@@ -320,6 +333,7 @@ function _set_path()
     PATH=$dir/d/Oracle/VirtualBox:$PATH
     PATH=$dir/d/Typora/bin:$PATH
     PATH=$dir/d/MKVToolNix:$PATH
+
 
 
     # do not add cygwin/bin to $PATH
@@ -454,88 +468,6 @@ function _tmux_new()
 function _typora()
 {
     typora.exe $* &
-}
-
-function _tidy_file()
-{
-    mkdir -p 001-010   
-    mkdir -p 011-020   
-    mkdir -p 021-030   
-    mkdir -p 031-040   
-    mkdir -p 041-050   
-    mkdir -p 051-060   
-    mkdir -p 061-070   
-    mkdir -p 071-080   
-    mkdir -p 081-090   
-    mkdir -p 091-100   
-    mkdir -p 101-110   
-    mkdir -p 111-120   
-    mkdir -p 121-130   
-    mkdir -p 131-140   
-    mkdir -p 141-150   
-
-
-    let i=1
-    for (( i=0;i<999;i++ ))
-    do
-        if [ $i -le 9 ];then
-            mv -iv 00$i* 001-010
-        fi
-
-        if [ $i -eq 10 ];then
-            mv -iv 010* 001-010
-        fi
-
-        if [ $i -ge 11 ] && [ $i -le 20 ] ;then
-            mv -iv 0$i* 011-020
-        fi
-
-        if [ $i -ge 11 ] && [ $i -le 20 ] ;then
-            mv -iv 0$i* 011-020
-        fi
-        if [ $i -ge 21 ] && [ $i -le 30 ] ;then
-            mv -iv 0$i* 021-030
-        fi
-        if [ $i -ge 31 ] && [ $i -le 40 ] ;then
-            mv -iv 0$i* 031-040
-        fi
-        if [ $i -ge 41 ] && [ $i -le 50 ] ;then
-            mv -iv 0$i* 041-050
-        fi
-        if [ $i -ge 51 ] && [ $i -le 60 ] ;then
-            mv -iv 0$i* 051-060
-        fi
-        if [ $i -ge 61 ] && [ $i -le 70 ] ;then
-            mv -iv 0$i* 061-070
-        fi
-        if [ $i -ge 71 ] && [ $i -le 80 ] ;then
-            mv -iv 0$i* 071-080
-        fi
-        if [ $i -ge 81 ] && [ $i -le 90 ] ;then
-            mv -iv 0$i* 081-090
-        fi
-        if [ $i -ge 91 ] && [ $i -le 99 ] ;then
-            mv -iv 0$i* 091-100
-        fi
-        if [ $i -eq 100 ];then
-            mv -iv 100* 091-100
-        fi
-        if [ $i -ge 101 ] && [ $i -le 110 ] ;then
-            mv -iv $i* 101-110
-        fi
-        if [ $i -ge 111 ] && [ $i -le 120 ] ;then
-            mv -iv $i* 111-120
-        fi
-        if [ $i -ge 121 ] && [ $i -le 130 ] ;then
-            mv -iv $i* 121-130
-        fi
-        if [ $i -ge 131 ] && [ $i -le 140 ] ;then
-            mv -iv $i* 131-140
-        fi
-        if [ $i -ge 141 ] && [ $i -le 150 ] ;then
-            mv -iv $i* 141-150
-        fi
-    done
 }
 
 function _update_task()
