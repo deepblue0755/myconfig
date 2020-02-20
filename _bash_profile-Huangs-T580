@@ -509,7 +509,7 @@ function _login_machine()
     ;;
     *)
         let cnt=1
-        ping -c 1 -W 1 192.168.0.2 > /dev/null
+        ping -c 1 -W 1 192.168.0.2 &> /dev/null
         check=$?
         while [ "$check" != "0" ]; do
             print_infor "$cnt try to ping 192.168.0.2 ..."
@@ -526,11 +526,9 @@ function _login_machine()
                 fi
             fi
         done
-        print_infor login 192.168.0.2 ...
+        print_infor "login 192.168.0.2 ..."
         ssh root@192.168.0.2 
-        if [ $? != 0 ];then
-            return 1
-        fi
+        test $? != 0 &&  return 1
     ;;
     esac
 }
@@ -546,6 +544,34 @@ function _md2pdf()
     fi
 
     pandoc --pdf-engine=pdflatex $file -o $pdffile
+}
+
+function _poweroff()
+{
+    case $1 in 
+        cbpos)
+           print_infor "try to poweroff ideabox ..."
+           { print_infor "ping cbpos ..." && ping -c 1 -W 1 cbpos && ssh root@cbpos "sudo poweroff"; } || \ 
+           { print_infor "ping 192.168.0.2" && ping -c 1 -W 1 192.168.0.2 && ssh root@192.168.0.2 "sudo poweroff"; }
+        ;;
+        *)
+           print_infor "try to poweroff gigabyte ..."
+           { print_infor "ping gigabyte-brix ..." && ping -c 1 -W 1 gigabyte-brix && ssh mianb@gigabyte-brix "shutdown /s"; } || \ 
+           { print_infor "ping 192.168.1.102 ..." && ping -c 1 -W 1 192.168.1.102 && ssh mianb@192.168.1.102 "shutdown /s"; }
+
+           print_infor "try to poweroff t430 ..."
+           { print_infor "ping t430 ..." && ping -c 1 -W 1 t430 && ssh huangmianbo@t430 "sudo poweroff"; } || \ 
+           { print_infor "ping 192.168.1.105" && ping -c 1 -W 1 192.168.1.105 && ssh huangmianbo@192.168.1.105 "sudo poweroff"; }
+
+           print_infor "try to poweroff mac ..."
+           { print_infor "ping Huangs-MBP ..." && ping -c 1 -W 1 Huangs-MBP && ssh huangmianbo@Huangs-MBP "sudo poweroff"; } || \ 
+           { print_infor "ping 192.168.1.103" && ping -c 1 -W 1 192.168.1.103 && ssh huangmianbo@192.168.1.103 "sudo poweroff"; }
+
+           print_infor "try to poweroff ideabox ..."
+           { print_infor "ping cbpos ..." && ping -c 1 -W 1 cbpos && ssh root@cbpos "sudo poweroff"; } || \ 
+           { print_infor "ping 192.168.0.102" && ping -c 1 -W 1 192.168.0.102 && ssh root@192.168.1.102 "sudo poweroff"; }
+       ;;
+    esac
 }
 
 function _reset_known_host()
@@ -708,6 +734,7 @@ function set_alias()
     alias mydate='date +%Y%m%d%H%M%S'
     alias mv='mv -iv'
     alias pdf='SumatraPDF'
+    alias poweroff='_poweroff'
     alias pycharm='pycharm64 &> /dev/null &'
     alias qt='qtcreator &> /dev/null &'
     alias reload='source ~/.bash_profile'
@@ -755,6 +782,7 @@ function set_path()
     export PATH=$dir/d/Microsoft\ VS\ Code:$PATH
     export PATH=$dir/d/gnuplot/bin:$PATH
     export PATH=$dir/d/Xilinx/Vivado/2019.2/bin/unwrapped/win64.o:$PATH
+
     if [ "$SHELL" == "/bin/bash" ];then
         export PATH=$dir/d/cygwin64/bin:$PATH
     fi
