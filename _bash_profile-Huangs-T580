@@ -448,7 +448,7 @@ function _getvm()
 
 function _gvim()
 {
-    gvim $* > /dev/null &
+    gvim --remote-silent $* > /dev/null &
 }
 
 function _login_machine()
@@ -551,8 +551,13 @@ function _poweroff()
     case $1 in 
         cbpos)
            print_infor "try to poweroff ideabox ..."
-           { print_infor "ping cbpos ..." && ping -c 1 -W 1 cbpos && ssh root@cbpos "sudo poweroff"; } || \ 
-           { print_infor "ping 192.168.0.2" && ping -c 1 -W 1 192.168.0.2 && ssh root@192.168.0.2 "sudo poweroff"; }
+           { print_infor "ping cbpos ..." && ping -c 1 -W 1 cbpos &> /dev/null && ssh root@cbpos "sudo poweroff"; } || \ 
+           { print_infor "ping 192.168.0.2 ..." && ping -c 1 -W 1 192.168.0.2 &> /dev/null && ssh root@192.168.0.2 "sudo poweroff"; }
+        ;;
+        gigabyte)
+           print_infor "try to poweroff gigabyte ..."
+           { print_infor "ping gigabyte-brix ..." && ping -c 1 -W 1 gigabyte-brix && ssh mianb@gigabyte-brix "shutdown /s"; } || \ 
+           { print_infor "ping 192.168.1.102 ..." && ping -c 1 -W 1 192.168.1.102 && ssh mianb@192.168.1.102 "shutdown /s"; }
         ;;
         *)
            print_infor "try to poweroff gigabyte ..."
@@ -713,6 +718,7 @@ function set_alias()
     alias cpvm='_cpvm'
     alias dmesg='_dmesg'
     alias doc='pushd . > /dev/null && cd ~/documents/RTAI'
+    alias eclipse='/d/Profinet/DevKit46/eclipse/eclipse &'
     alias expl='_expl'
     alias fpga_version='ssh root@192.168.0.2 \"fpga_version\"'
     alias fv='fpga_version'
@@ -782,6 +788,10 @@ function set_path()
     export PATH=$dir/d/Microsoft\ VS\ Code:$PATH
     export PATH=$dir/d/gnuplot/bin:$PATH
     export PATH=$dir/d/Xilinx/Vivado/2019.2/bin/unwrapped/win64.o:$PATH
+    export PATH=$dir/d/Xilinx/Vivado/2019.2/bin/:$PATH
+    export PATH=$dir/d/Wireshark:$PATH
+
+
 
     if [ "$SHELL" == "/bin/bash" ];then
         export PATH=$dir/d/cygwin64/bin:$PATH
