@@ -415,13 +415,26 @@ function _done_102()
 
 function _expl()
 {
-    if [ -z "$1" ];then
-        curdir=$PWD
-        test "$PWD" == "$HOME" && curdir=/d/cygwin64/home/mianb
-        explorer $(echo $curdir | sed 's/\//\\/g' | sed 's/^\\//g' | sed 's/\\/:\\/')
-    else
-        explorer $(echo $1 | sed 's/\//\\/g' | sed 's/^\\//g' | sed 's/\\/:\\/')
-    fi
+    # echo $1 | grep "\" > /dev/null && print_error "not a cygdrive path" &&  return 1
+    case $1 in 
+        youtube-dl)
+           explorer "D:\\Batch\\97-YouTube-Downloading"
+        ;;
+        tmp)
+            explorer "D:\\temp"
+        ;;
+        *)
+            if [ -z "$1" ];then
+                curdir=$PWD
+                test "$PWD" == "$HOME" && curdir=/d/cygwin64/home/mianb
+                echo explorer "$(echo $curdir | sed 's/\//\\/g' | sed 's/^\\//g' | sed 's/\\/:\\/')"
+                explorer "$(echo $curdir | sed 's/\//\\/g' | sed 's/^\\//g' | sed 's/\\/:\\/')"
+            else
+                echo explorer "$(echo $1 | sed 's/\//\\/g' | sed 's/^\\//g' | sed 's/\\/:\\/')"
+                explorer "$(echo $1 | sed 's/\//\\/g' | sed 's/^\\//g' | sed 's/\\/:\\/')"
+            fi
+        ;;
+    esac
 }
 
 function _getvb()
@@ -732,6 +745,7 @@ function set_alias()
     alias googol='_login_machine googol'
     alias gp='gnuplot'
     alias grep='grep --color=auto'
+    alias ifconfig='ipconfig'
     alias iperf2s='iperf -u -s -m -i 1'
     alias iso='_login_machine iso'
     alias ls='ls --color=auto'
@@ -790,8 +804,8 @@ function set_path()
     export PATH=$dir/d/Xilinx/Vivado/2019.2/bin/unwrapped/win64.o:$PATH
     export PATH=$dir/d/Xilinx/Vivado/2019.2/bin/:$PATH
     export PATH=$dir/d/Wireshark:$PATH
-
-
+    export PATH=$dir/d/ffmpeg/bin:$PATH
+    export PATH=$dir/d/SEGGER/JLink:$PATH
 
     if [ "$SHELL" == "/bin/bash" ];then
         export PATH=$dir/d/cygwin64/bin:$PATH
