@@ -417,7 +417,7 @@ function _expl()
 {
     # echo $1 | grep "\" > /dev/null && print_error "not a cygdrive path" &&  return 1
     case $1 in 
-        youtube-dl)
+        youtube)
            explorer "D:\\Batch\\97-YouTube-Downloading"
         ;;
         tmp)
@@ -592,6 +592,15 @@ function _poweroff()
     esac
 }
 
+function _putty()
+{
+    case $1 in 
+        *)
+            \putty -load COM2 &
+        ;;
+    esac
+}
+
 function _reset_known_host()
 {
     pushd . > /dev/null
@@ -755,6 +764,7 @@ function set_alias()
     alias mv='mv -iv'
     alias pdf='SumatraPDF'
     alias poweroff='_poweroff'
+    alias putty='_putty'
     alias pycharm='pycharm64 &> /dev/null &'
     alias qt='qtcreator &> /dev/null &'
     alias reload='source ~/.bash_profile'
