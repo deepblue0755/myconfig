@@ -575,6 +575,7 @@ let g:vimwiki_list = [{'path': '~/vimwiki/',
 let g:miniBufExplorerMoreThanOne=0
 set guifont=Consolas:h14
 set fileformat=unix
+set ff=unix
 set lines=100
 set columns=180
 set clipboard+=unnamed

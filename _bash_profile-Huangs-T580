@@ -561,6 +561,9 @@ function _md2pdf()
 
 function _poweroff()
 {
+    win_poweroff_cmd="shutdown /s"
+    linux_poweroff_cmd="ifconfig -a"
+
     case $1 in 
         cbpos)
            print_infor "try to poweroff ideabox ..."
@@ -573,22 +576,34 @@ function _poweroff()
            { print_infor "ping 192.168.1.102 ..." && ping -c 1 -W 1 192.168.1.102 && ssh mianb@192.168.1.102 "shutdown /s"; }
         ;;
         *)
-           print_infor "try to poweroff gigabyte ..."
-           { print_infor "ping gigabyte-brix ..." && ping -c 1 -W 1 gigabyte-brix && ssh mianb@gigabyte-brix "shutdown /s"; } || \ 
-           { print_infor "ping 192.168.1.102 ..." && ping -c 1 -W 1 192.168.1.102 && ssh mianb@192.168.1.102 "shutdown /s"; }
+            echo "--------------------------------------------------"
+            echo " machine 1: gigabyte-brix win10"
+            echo "--------------------------------------------------"
+            print_infor "try to poweroff gigabyte ..."
+            { print_infor "ping gigabyte-brix ..." && ping -c 1 -W 1 gigabyte-brix && ssh mianb@gigabyte-brix $win_poweroff_cmd; } || \ 
+            { print_infor "ping 192.168.1.102 ..." && ping -c 1 -W 1 192.168.1.102 && ssh mianb@192.168.1.102 $win_poweroff_cmd; }
 
-           print_infor "try to poweroff t430 ..."
-           { print_infor "ping t430 ..." && ping -c 1 -W 1 t430 && ssh huangmianbo@t430 "sudo poweroff"; } || \ 
-           { print_infor "ping 192.168.1.105" && ping -c 1 -W 1 192.168.1.105 && ssh huangmianbo@192.168.1.105 "sudo poweroff"; }
+            echo "--------------------------------------------------"
+            echo " machine 2: Ubuntu Linux T430"
+            echo "--------------------------------------------------"
+            print_infor "try to poweroff t430 ..."
+            { print_infor "ping t430 ..." && ping -c 1 -W 1 t430 && ssh huangmianbo@t430 $linux_poweroff_cmd; } || \ 
+            { print_infor "ping 192.168.1.105" && ping -c 1 -W 1 192.168.1.105 && ssh huangmianbo@192.168.1.105 $linux_poweroff_cmd; }
 
-           print_infor "try to poweroff mac ..."
-           { print_infor "ping Huangs-MBP ..." && ping -c 1 -W 1 Huangs-MBP && ssh huangmianbo@Huangs-MBP "sudo poweroff"; } || \ 
-           { print_infor "ping 192.168.1.103" && ping -c 1 -W 1 192.168.1.103 && ssh huangmianbo@192.168.1.103 "sudo poweroff"; }
+            echo "--------------------------------------------------"
+            echo " machine 3: Mac OSx"
+            echo "--------------------------------------------------"
+            print_infor "try to poweroff mac ..."
+            { print_infor "ping Huangs-MBP ..." && ping -c 1 -W 1 Huangs-MBP && ssh huangmianbo@Huangs-MBP $linux_poweroff_cmd; } || \ 
+            { print_infor "ping 192.168.1.103" && ping -c 1 -W 1 192.168.1.103 && ssh huangmianbo@192.168.1.103 $linux_poweroff_cmd; }
 
-           print_infor "try to poweroff ideabox ..."
-           { print_infor "ping cbpos ..." && ping -c 1 -W 1 cbpos && ssh root@cbpos "sudo poweroff"; } || \ 
-           { print_infor "ping 192.168.0.102" && ping -c 1 -W 1 192.168.0.102 && ssh root@192.168.1.102 "sudo poweroff"; }
-       ;;
+            echo "--------------------------------------------------"
+            echo " machine 4: IdeaBox Pro Ubuntu 14.04 "
+            echo "--------------------------------------------------"
+            print_infor "try to poweroff ideabox ..."
+            { print_infor "ping cbpos ..." && ping -c 1 -W 1 cbpos && ssh root@cbpos $linux_poweroff_cmd; } || \ 
+            { print_infor "ping 192.168.0.102" && ping -c 1 -W 1 192.168.0.102 && ssh root@192.168.1.102 $linux_poweroff_cmd; }
+        ;;
     esac
 }
 
