@@ -468,8 +468,9 @@ function _ifconfig()
 {
     adapter_array=("")
     adapter_list=`ipconfig /all | grep "Description" | cut -d: -f 2`
-    # adapter_id=`netsh interface show interface | sed -n 4,5p | awk '{print $4}'`
-    # echo adapter list is: $adapter_id
+    adapter_id=`netsh interface show interface | sed -n '4,$p' | awk '{$1="";$2="";$3="";print $0}'`
+    echo "$adapter_id" | cat -n
+    
 
     let adapter_num=`echo "$adapter_list" | wc -l`
     for (( i=1;i<=$adapter_num;i++ ))
