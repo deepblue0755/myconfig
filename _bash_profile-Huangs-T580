@@ -464,6 +464,45 @@ function _gvim()
     gvim --remote-silent $* > /dev/null &
 }
 
+function _ifconfig()
+{
+    adapter_array=("")
+    adapter_list=`ipconfig /all | grep "Description" | cut -d: -f 2`
+    # adapter_id=`netsh interface show interface | sed -n 4,5p | awk '{print $4}'`
+    # echo adapter list is: $adapter_id
+
+    let adapter_num=`echo "$adapter_list" | wc -l`
+    for (( i=1;i<=$adapter_num;i++ ))
+    do
+        adapter_array[$i]=$(echo "$adapter_list" | sed -n "$i"p)
+    done
+
+    test -z "$1" && { echo "$adapter_list" | cat -n; }
+
+    test "$1" == "-a" && { ipconfig /all && return 0; }
+    
+    test -n "$1" && { 
+        case $1 in 
+            [0-9]*)
+            case $2 in 
+                up)
+                  print_infor "turn up Adapter: ${adapter_array[$1]}"
+                  netsh interface set interface "${adapter_array[$1]}" enabled
+                ;;
+                down)
+                  print_infor "turn down Adapter ${adapter_array[$1]}"
+                  netsh interface set interface "${adapter_array[$1]}" disabled
+                ;;
+            esac
+            ;;
+            *)
+                print_error "please input adapter id 1-$adapter_num"
+            ;;
+        esac
+        return 1;
+    }
+}
+
 function _login_machine()
 {
     case $1 in
@@ -732,6 +771,11 @@ function _stop()
     esac
 }
 
+function _sudo()
+{
+    runas /user:mianb /savecred $*  
+}
+
 function set_alias()
 {
     alias ....='cd ../../../'
@@ -769,7 +813,7 @@ function set_alias()
     alias googol='_login_machine googol'
     alias gp='gnuplot'
     alias grep='grep --color=auto'
-    alias ifconfig='ipconfig'
+    alias ifconfig='_ifconfig'
     alias iperf2s='iperf -u -s -m -i 1'
     alias iso='_login_machine iso'
     alias ls='ls --color=auto'
@@ -789,6 +833,7 @@ function set_alias()
     alias src='cd $dir/d/Source'
     alias start='_start'
     alias stop='_stop'
+    alias sudo='_sudo'
     alias svn='svn --username huang.mb --password huang.mb'
     alias server='_login_machine server'
     alias t430='_login_machine t430'
