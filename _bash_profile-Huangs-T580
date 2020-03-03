@@ -468,15 +468,23 @@ function _ifconfig()
 {
     adapter_array=("")
     adapter_list=`ipconfig /all | grep "Description" | cut -d: -f 2`
-    adapter_id=`netsh interface show interface | sed -n '4,$p' | awk '{$1="";$2="";$3="";print $0}'`
-    echo "$adapter_id" | cat -n
-    
+    adapter_id=`netsh interface show interface | sed -n '4,$p' | awk '{$1="";$2="";$3="";print $0}' | sed 's/   //g'`
 
-    let adapter_num=`echo "$adapter_list" | wc -l`
-    for (( i=1;i<=$adapter_num;i++ ))
+    OLD_IFS="$IFS"
+    IFS=$'\r\n'
+    let i=1
+    for adapter in $adapter_id
     do
-        adapter_array[$i]=$(echo "$adapter_list" | sed -n "$i"p)
+        echo $i: $adapter
+        adapter_array[$i]=$adapter
+        let i=$i+1
     done
+    IFS=$OLD_IFS
+
+    # for (( i=1;i<=$(echo "$adapter_id" | wc -l);i++ ))
+    # do
+    #     adapter_array[$i]=$(echo "$adapter_id" | sed -n "$i"p)
+    # done
 
     test -z "$1" && { echo "$adapter_list" | cat -n; }
 
@@ -487,20 +495,24 @@ function _ifconfig()
             [0-9]*)
             case $2 in 
                 up)
-                  print_infor "turn up Adapter: ${adapter_array[$1]}"
-                  netsh interface set interface "${adapter_array[$1]}" enabled
+                  adapter=${adapter_array[$1]}
+                  print_infor "turn up Adapter:$adapter"
+                  print_infor "netsh interface set interface $adapter enabled"
+                  netsh interface set interface "$adapter" enabled
                 ;;
                 down)
-                  print_infor "turn down Adapter ${adapter_array[$1]}"
-                  netsh interface set interface "${adapter_array[$1]}" disabled
+                  adapter=${adapter_array[$1]}
+                  print_infor "turn down Adapter:$adapter"
+                  print_warning "netsh interface set interface $adapter disabled"
+                  netsh interface set interface "$adapter" disabled
                 ;;
             esac
             ;;
             *)
-                print_error "please input adapter id 1-$adapter_num"
+                print_error "please input adapter id #"
             ;;
         esac
-        return 1;
+        return 0;
     }
 }
 
@@ -540,13 +552,13 @@ function _login_machine()
         ssh googol@cbpos
     ;;
     gigabyte)
-        ssh mianb@gigabyte-brix
+        ssh mianb@192.168.1.102
     ;;
     mac)
         ssh huangmianbo@Huangs-MBP
     ;;
     t430)
-        ssh huangmianbo@t430
+        ssh huangmianbo@192.168.1.105
     ;;
     t580)
         ssh mianb@Huangs-T580
@@ -602,7 +614,7 @@ function _md2pdf()
 function _poweroff()
 {
     win_poweroff_cmd="shutdown /s"
-    linux_poweroff_cmd="ifconfig -a"
+    linux_poweroff_cmd="sudo poweroff"
 
     case $1 in 
         cbpos)
@@ -620,29 +632,25 @@ function _poweroff()
             echo " machine 1: gigabyte-brix win10"
             echo "--------------------------------------------------"
             print_infor "try to poweroff gigabyte ..."
-            { print_infor "ping gigabyte-brix ..." && ping -c 1 -W 1 gigabyte-brix && ssh mianb@gigabyte-brix $win_poweroff_cmd; } || \ 
             { print_infor "ping 192.168.1.102 ..." && ping -c 1 -W 1 192.168.1.102 && ssh mianb@192.168.1.102 $win_poweroff_cmd; }
 
             echo "--------------------------------------------------"
             echo " machine 2: Ubuntu Linux T430"
             echo "--------------------------------------------------"
             print_infor "try to poweroff t430 ..."
-            { print_infor "ping t430 ..." && ping -c 1 -W 1 t430 && ssh huangmianbo@t430 $linux_poweroff_cmd; } || \ 
             { print_infor "ping 192.168.1.105" && ping -c 1 -W 1 192.168.1.105 && ssh huangmianbo@192.168.1.105 $linux_poweroff_cmd; }
 
             echo "--------------------------------------------------"
             echo " machine 3: Mac OSx"
             echo "--------------------------------------------------"
             print_infor "try to poweroff mac ..."
-            { print_infor "ping Huangs-MBP ..." && ping -c 1 -W 1 Huangs-MBP && ssh huangmianbo@Huangs-MBP $linux_poweroff_cmd; } || \ 
             { print_infor "ping 192.168.1.103" && ping -c 1 -W 1 192.168.1.103 && ssh huangmianbo@192.168.1.103 $linux_poweroff_cmd; }
 
             echo "--------------------------------------------------"
             echo " machine 4: IdeaBox Pro Ubuntu 14.04 "
             echo "--------------------------------------------------"
             print_infor "try to poweroff ideabox ..."
-            { print_infor "ping cbpos ..." && ping -c 1 -W 1 cbpos && ssh root@cbpos $linux_poweroff_cmd; } || \ 
-            { print_infor "ping 192.168.0.102" && ping -c 1 -W 1 192.168.0.102 && ssh root@192.168.1.102 $linux_poweroff_cmd; }
+            { print_infor "ping 192.168.0.2" && ping -c 1 -W 1 192.168.0.2 && ssh root@192.168.0.2 $linux_poweroff_cmd; }
         ;;
     esac
 }
