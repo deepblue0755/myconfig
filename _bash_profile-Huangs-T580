@@ -467,14 +467,15 @@ function _gvim()
 function _ifconfig()
 {
     adapter_array=("")
-    adapter_list=`ipconfig /all | grep "Description" | cut -d: -f 2`
-    adapter_id=`netsh interface show interface | sed -n '4,$p' | awk '{$1="";$2="";$3="";print $0}' | sed 's/   //g'`
+    adapter_list=`ipconfig /all | grep "Description" | cut -d: -f 2 | sed 's/^ //g'`
+    adapter_id=`netsh interface show interface | sed -n '4,$p' | awk '{$1="";$2="";$3="";print $0}' | sed 's/^   //g'`
 
     OLD_IFS="$IFS"
     IFS=$'\r\n'
     let i=1
     for adapter in $adapter_id
     do
+        test -z "$adapter" && continue
         echo $i: $adapter
         adapter_array[$i]=$adapter
         let i=$i+1
@@ -496,13 +497,13 @@ function _ifconfig()
             case $2 in 
                 up)
                   adapter=${adapter_array[$1]}
-                  print_infor "turn up Adapter:$adapter"
+                  print_infor "turn up adapter:$adapter"
                   print_infor "netsh interface set interface $adapter enabled"
                   netsh interface set interface "$adapter" enabled
                 ;;
                 down)
                   adapter=${adapter_array[$1]}
-                  print_infor "turn down Adapter:$adapter"
+                  print_infor "turn down adapter:$adapter"
                   print_warning "netsh interface set interface $adapter disabled"
                   netsh interface set interface "$adapter" disabled
                 ;;
