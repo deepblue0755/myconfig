@@ -509,6 +509,9 @@ function _ifconfig()
                 ;;
             esac
             ;;
+            ${adapter_array[1]})
+                ipconfig /all | grep "${adapter_array[1]}" -A 20
+            ;;
             *)
                 print_error "please input adapter id #"
             ;;
