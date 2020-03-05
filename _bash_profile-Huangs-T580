@@ -825,7 +825,7 @@ function set_alias()
     alias gitlab='_login_machine gitlab'
     alias googol='_login_machine googol'
     alias gp='gnuplot'
-    alias grep='grep --color=auto'
+    alias grep='grep --color=auto --exclude-dir=.git --exclude=*.o --exclude=*.d --exclude=*.map --exclude=*.bin'
     alias ifconfig='_ifconfig'
     alias iperf2s='iperf -u -s -m -i 1'
     alias iso='_login_machine iso'
@@ -889,6 +889,8 @@ function set_path()
     export PATH=$dir/d/Wireshark:$PATH
     export PATH=$dir/d/ffmpeg/bin:$PATH
     export PATH=$dir/d/SEGGER/JLink:$PATH
+    export PATH=$dir/d/Profinet/DevKit46/msys/1.0/bin:$PATH
+    export PATH=$dir/d/Profinet/DevKit46/msys/1.0/local/bin:$PATH
 
     if [ "$SHELL" == "/bin/bash" ];then
         export PATH=$dir/d/cygwin64/bin:$PATH
@@ -1021,6 +1023,8 @@ export HISTSIZE=10000
 export HISTFILESIZE=100000
 export HISTTIMEFORMAT="%F %T "
 export HISTIGNORE="ls:ls *:history:clear:pwd"
+export pnio=/d/Profinet/DevKit46/pnio_src
+export proj=/d/Profinet/DevKit46/pnio_proj/ertec/EB200P_Size_EcosNative/
 
 if [ "$vm_start" != "true" ];then
     print_warning "no start vm"
