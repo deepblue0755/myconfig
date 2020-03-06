@@ -36,8 +36,9 @@ bind k select-pane -U
 bind l select-pane -R
 
 # kill window
-bind k confirm kill-window
-bind K confirm kill-server
+bind-key C-k confirm kill-session
+bind K confirm kill-window
+bind k confirm kill-pane
 
 # Enable mouse mode (tmux 2.1 and above)
 set -g mouse on

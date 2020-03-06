@@ -38,7 +38,6 @@ if [ "$SHELL" == "/bin/bash" ];then
     dir=/cygdrive
 fi
 
-EDITOR=$dir/d/Vim/vim81/gvim;export EDITOR
 # ------------------------------------------------------------------- #
 # Print Function
 # ------------------------------------------------------------------- #
@@ -278,6 +277,7 @@ function _set_alias()
     alias gbash='git-bash'
     alias gitlab='_login_machine gitlab'
     alias grep='grep --color=auto'
+    alias ifconfig='ipconfig'
     alias ls='ls --color=auto'
     alias mac='_login_machine mac'
     alias md2pdf='_md2pdf'
@@ -296,6 +296,7 @@ function _set_alias()
     alias stop='_stop'
     alias syncbash='cp -iv $HOME/.bash_profile /cygdrive/f/05-To-From-Gigabyte-MiniComputer/'
     alias synctask='pushd . && cd $HOME && git pull origin master && popd'
+    alias t430='_login_machine t430'
     alias t580='_login_machine t580'
     alias t='_tmux_new'
     alias tl='_task_list'
@@ -333,7 +334,7 @@ function _set_path()
     PATH=$dir/d/Oracle/VirtualBox:$PATH
     PATH=$dir/d/Typora/bin:$PATH
     PATH=$dir/d/MKVToolNix:$PATH
-
+    PATH=$dir/d/ImageMagick:$PATH
 
 
     # do not add cygwin/bin to $PATH
@@ -347,6 +348,12 @@ function _set_path()
     PATH=$dir/d/Git:$PATH
 
     export PATH
+}
+
+function _set_env_var()
+{
+    export RSYNC_PASSWORD=123456
+    export EDITOR=$dir/d/Vim/vim81/gvim
 }
 
 function _start()
@@ -418,6 +425,32 @@ function _stop()
 function _SumatraPDF()
 {
     SumatraPDF $* &> /dev/null &
+}
+
+function _sync()
+{
+    case $1 in 
+        1)
+            rsync -var --progress --delete  \
+            /cygdrive/v/05.网络视频.YouTuBe.Downloading/  \
+            /cygdrive/h/05.网络视频.YouTuBe.Downloading/ 
+        ;;
+        2)
+            rsync -vzrt --progress --include="*.vhd" --exclude=* \
+            Huangs-T580::ubuntu-1804 \
+            "/cygdrive/d/VirtualBox-VMs/Ubuntu-1804"  \
+            --port=10556
+        ;;
+        book1)
+            rsync -var --progress --delete  \
+            /cygdrive/n/01_Books/Linux  \
+            /cygdrive/t/
+
+        ;;
+        *)
+            rsync -varzt --progress --delete Huangs-T580::temp /cygdrive/d/temp --port=10556
+        ;;
+    esac
 }
 
 function _task_list()
@@ -527,6 +560,7 @@ function _vlc()
 # ------------------------------------------------------------------- #
 _set_path
 _set_alias
+_set_env_var
 
 if [ "$SHELL" == "/bin/bash" ];then
     task list
