@@ -673,6 +673,18 @@ function _putty()
     esac
 }
 
+function _randword()
+{
+    pushd . &> /dev/null
+    cd $dir/d/Vim/vimfiles/dictionary/
+    word_list=en_dictionary_huge.dic
+    test -f $word_list || { print_error "could not find file $word_list" && return 1; }
+    let word_size=$(cat $word_list | grep "^[A-Z]" | wc -l)
+    let line=$(uuidgen | cksum | cut -c 1-6)%$word_size
+    cat $word_list | grep "^[A-Z]" | sed -n "$line p"
+    popd &> /dev/null
+}
+
 function _reset_known_host()
 {
     pushd . > /dev/null
@@ -844,6 +856,7 @@ function set_alias()
     alias putty='_putty'
     alias pycharm='pycharm64 &> /dev/null &'
     alias qt='qtcreator &> /dev/null &'
+    alias randword='_randword'
     alias reboot='shutdown /r'
     alias reload='source ~/.bash_profile'
     alias rkh='_reset_known_host'
