@@ -631,7 +631,7 @@ function _poweroff()
            { print_infor "ping gigabyte-brix ..." && ping -c 1 -W 1 gigabyte-brix && ssh mianb@gigabyte-brix "shutdown /s"; } || \ 
            { print_infor "ping 192.168.1.102 ..." && ping -c 1 -W 1 192.168.1.102 && ssh mianb@192.168.1.102 "shutdown /s"; }
         ;;
-        *)
+        all)
             echo "--------------------------------------------------"
             echo " machine 1: gigabyte-brix win10"
             echo "--------------------------------------------------"
@@ -655,6 +655,11 @@ function _poweroff()
             echo "--------------------------------------------------"
             print_infor "try to poweroff ideabox ..."
             { print_infor "ping 192.168.0.2" && ping -c 1 -W 1 192.168.0.2 && ssh root@192.168.0.2 $linux_poweroff_cmd; }
+        ;;
+        *)
+            read -p "shutdown computer $HOSTNAME? (y/n): " input
+            test "$input" == "y" && shutdown /s /p
+            test "$input" == "y" || print_infor "user abort poweroff computer"
         ;;
     esac
 }
@@ -839,6 +844,7 @@ function set_alias()
     alias putty='_putty'
     alias pycharm='pycharm64 &> /dev/null &'
     alias qt='qtcreator &> /dev/null &'
+    alias reboot='shutdown /r'
     alias reload='source ~/.bash_profile'
     alias rkh='_reset_known_host'
     alias rm='rm -iv'
