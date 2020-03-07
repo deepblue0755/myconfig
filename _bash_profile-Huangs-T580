@@ -413,6 +413,20 @@ function _done_102()
     popd  &> /dev/null
 }
 
+function _export_var()
+{
+    export TIME_STYLE="+%Y/%m/%d %H:%M:%S"
+    export TZ="CEST-8"
+    export EDITOR=gvim
+    export SVN_EDITOR=vim
+    export HISTSIZE=10000
+    export HISTFILESIZE=100000
+    export HISTTIMEFORMAT="%F %T "
+    export HISTIGNORE="ls:ls *:history:clear:pwd"
+    export pnio=/d/Profinet/DevKit46/pnio_src
+    export proj=/d/Profinet/DevKit46/pnio_proj/ertec/EB200P_Size_EcosNative/
+}
+
 function _expl()
 {
     # echo $1 | grep "\" > /dev/null && print_error "not a cygdrive path" &&  return 1
@@ -689,14 +703,11 @@ function _rand()
 
 function _randword()
 {
-    pushd . &> /dev/null
-    cd $dir/d/Vim/vimfiles/dictionary/
-    word_list=en_dictionary_huge.dic
+    word_list=$dir/d/documents/18-bash-utils/00_en_dictionary_huge.dic
     test -f $word_list || { print_error "could not find file $word_list" && return 1; }
     let word_size=$(cat $word_list | grep "^[A-Z]" | wc -l)
     let line=$(uuidgen | cksum | cut -c 1-6)%$word_size
     cat $word_list | grep "^[A-Z]" | sed -n "$line p"
-    popd &> /dev/null
 }
 
 function _reset_known_host()
@@ -1039,6 +1050,7 @@ function _vlc()
 # Customer Main Entry
 # ------------------------------------------------------------------- #
 
+_export_var
 set_path
 set_alias
 set_lang
@@ -1049,16 +1061,6 @@ if [ "$SHELL" == "/bin/bash" ];then
     task list
 fi
 
-export TIME_STYLE="+%Y/%m/%d %H:%M:%S"
-export TZ="CEST-8"
-export EDITOR=gvim
-export SVN_EDITOR=vim
-export HISTSIZE=10000
-export HISTFILESIZE=100000
-export HISTTIMEFORMAT="%F %T "
-export HISTIGNORE="ls:ls *:history:clear:pwd"
-export pnio=/d/Profinet/DevKit46/pnio_src
-export proj=/d/Profinet/DevKit46/pnio_proj/ertec/EB200P_Size_EcosNative/
 
 if [ "$vm_start" != "true" ];then
     print_warning "no start vm"
