@@ -559,7 +559,7 @@ function _login_machine()
         ssh mianb@192.168.1.102
     ;;
     mac)
-        ssh huangmianbo@Huangs-MBP
+        ssh huangmianbo@192.168.1.103
     ;;
     t430)
         ssh huangmianbo@192.168.1.105
@@ -631,6 +631,10 @@ function _poweroff()
            { print_infor "ping gigabyte-brix ..." && ping -c 1 -W 1 gigabyte-brix && ssh mianb@gigabyte-brix "shutdown /s"; } || \ 
            { print_infor "ping 192.168.1.102 ..." && ping -c 1 -W 1 192.168.1.102 && ssh mianb@192.168.1.102 "shutdown /s"; }
         ;;
+        mac)
+            print_infor "try to poweroff mac ..."
+            { print_infor "ping 192.168.1.103" && ping -c 1 -W 1 192.168.1.103 && ssh huangmianbo@192.168.1.103 $linux_poweroff_cmd; }
+        ;;
         all)
             echo "--------------------------------------------------"
             echo " machine 1: gigabyte-brix win10"
@@ -658,7 +662,7 @@ function _poweroff()
         ;;
         *)
             read -p "shutdown computer $HOSTNAME? (y/n): " input
-            test "$input" == "y" && shutdown /s /p
+            test "$input" == "y" && shutdown /s 
             test "$input" == "y" || print_infor "user abort poweroff computer"
         ;;
     esac
@@ -671,6 +675,16 @@ function _putty()
             \putty -load COM2 &
         ;;
     esac
+}
+
+function _rand()
+{
+    test "$1" == "" && echo $RANDOM && return 0
+    test "$2" == "" && echo $RANDOM && return 0
+    let min=$1
+    let max=$(($2-$min+1))
+    num=$(cat /dev/urandom | head -n 10 | cksum | awk -F ' ' '{print $1}');
+    echo $(($num%$max+$min))
 }
 
 function _randword()
@@ -857,6 +871,7 @@ function set_alias()
     alias pycharm='pycharm64 &> /dev/null &'
     alias qt='qtcreator &> /dev/null &'
     alias randword='_randword'
+    alias rand='_rand'
     alias reboot='shutdown /r'
     alias reload='source ~/.bash_profile'
     alias rkh='_reset_known_host'
