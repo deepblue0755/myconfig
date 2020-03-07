@@ -31,7 +31,6 @@ function _backup_all()
     done
 
     popd &> /dev/null
-    
 }
 
 # ------------------------------------------------------------------- #
@@ -80,6 +79,8 @@ function _config_alias()
     alias pycharm='_pycharm'
     alias qt='_qt_creator'
     alias qtime='_qtime'
+    alias rand='_rand'
+    alias randword='_randword'
     alias rasp3-xeno3='_login_remote_machine rasp3-xeno3'
     alias rasp3='_login_remote_machine rasp4'
     alias rasp4='_login_remote_machine rasp3'
@@ -170,7 +171,6 @@ function _config_pkg_path()
 # ------------------------------------------------------------------- #
 function _code()
 {
-
     /Applications/Visual\ Studio\ Code.app/Contents/MacOS/Electron $* &> /dev/null &
 }
 
@@ -279,7 +279,6 @@ function _md2pdf()
     pandoc $file -o $pdffile
 }
 
-
 # ------------------------------------------------------------------- #
 # PDFGURU
 # ------------------------------------------------------------------- #
@@ -321,35 +320,35 @@ function _qt_creator()
 }
 
 # ------------------------------------------------------------------- #
-# TMUX NEW SESSION
+# rand
 # ------------------------------------------------------------------- #
-function _tmux_new()
+function _rand()
 {
-    let tmux_cnt=`tmux list-sessions 2>&1 | grep -v "no server running" | grep ":" | wc -l`
-    let tmux_cnt=$tmux_cnt+1
-
-    case $1 in 
-        1)
-        tmux new -s session-$tmux_cnt -n mac
-        ;;
-        *)
-        tmux new-session -d -s session-$tmux_cnt  -n mac
-        tmux new-window -d -n mac
-        tmux new-window -d -n mac
-        tmux new-window -d -n mac 
-        tmux attach-session -d -t session-$tmux_cnt
-        ;;
-    esac
+    test "$1" == "" && echo $RANDOM && return 0
+    test "$2" == "" && echo $RANDOM && return 0
+    let min=$1
+    let max=$(($2-$min+1))
+    num=$(cat /dev/urandom | head -n 10 | cksum | awk -F ' ' '{print $1}');
+    echo $(($num%$max+$min))
 }
 
-
+# ------------------------------------------------------------------- #
+# randword
+# ------------------------------------------------------------------- #
+function _randword()
+{
+    word_list=~/Documents/18-bash-utils/00_en_dictionary_huge.dic
+    test -f $word_list || { print_error "could not find file $word_list" && return 1; }
+    word_size=$(cat $word_list | grep "^[A-Z]" | wc -l)
+    let line=$(($(uuidgen | cksum | cut -c 1-6)%$word_size))
+    cat $word_list | grep "^[A-Z]" | sed -n "$line p"
+}
 
 # ------------------------------------------------------------------- #
 # synctask warrior
 # ------------------------------------------------------------------- #
 function _synctask()
 {
-
     if [ "$1" == "--help" ];then
        echo "synctask up : upload task to the remote origin" 
        return 0 
@@ -373,6 +372,27 @@ function _synctask()
         echo "error unknown option"
         return 1
     fi 
+}
+
+# ------------------------------------------------------------------- #
+# TMUX NEW SESSION
+# ------------------------------------------------------------------- #
+function _tmux_new()
+{
+    let tmux_cnt=$(tmux list-sessions 2>&1 | grep -v "no server running" | grep ":" | wc -l | sed -n 's/ //')
+    let tmux_cnt=$tmux_cnt+1
+    case $1 in 
+        1)
+        tmux new -s session-$tmux_cnt -n mac
+        ;;
+        *)
+        tmux new-session -d -s session-$tmux_cnt  -n mac
+        tmux new-window -d -n mac
+        tmux new-window -d -n mac
+        tmux new-window -d -n mac 
+        tmux attach-session -d -t session-$tmux_cnt
+        ;;
+    esac
 }
 
 # ------------------------------------------------------------------- #
@@ -421,7 +441,6 @@ function _task_switch()
             # export TASKDATA="~/.task"
         ;;
     esac
-
 }
 
 # ------------------------------------------------------------------- #
@@ -437,6 +456,8 @@ function _vlc()
 
 
 
+# ------------------------------------------------------------------- #
+# ------------------------------------------------------------------- #
 # ------------------------------------------------------------------- #
 # ------------------------------------------------------------------- #
 # Main Function 
