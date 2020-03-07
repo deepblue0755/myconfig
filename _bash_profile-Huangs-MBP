@@ -328,14 +328,18 @@ function _tmux_new()
     let tmux_cnt=`tmux list-sessions 2>&1 | grep -v "no server running" | grep ":" | wc -l`
     let tmux_cnt=$tmux_cnt+1
 
-    if [ x"$1" == x"m" ]; then
-        tmux new-session -d -s session-$tmux_cnt 
-        tmux new-window -d -n bash-2
-        tmux new-window -d -n bash-3
+    case $1 in 
+        1)
+        tmux new -s session-$tmux_cnt -n mac
+        ;;
+        *)
+        tmux new-session -d -s session-$tmux_cnt  -n mac
+        tmux new-window -d -n mac
+        tmux new-window -d -n mac
+        tmux new-window -d -n mac 
         tmux attach-session -d -t session-$tmux_cnt
-    else
-        tmux new -s session-$tmux_cnt -n cygwin
-    fi
+        ;;
+    esac
 }
 
 
