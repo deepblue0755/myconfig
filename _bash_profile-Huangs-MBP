@@ -3,15 +3,20 @@
 # bash setting for MacOSx
 
 test -f ~/.bashrc && source ~/.bashrc 
+
+# ------------------------------------------------------------------- #
 # SET COLOR
-function config_bash_color()
+# ------------------------------------------------------------------- #
+function _config_bash_color()
 {
     export CLICOLOR=1
     export TERM=xterm-256color
     export PS1='\[\033[00;31m\]\u@MacOSx\[\033[00m\]:\[\033[00;35m\]\w\[\033[00m\]\$ '  
 }
 
+# ------------------------------------------------------------------- #
 # SET SSH COPY TO RASP4
+# ------------------------------------------------------------------- #
 function cp2rasp4()
 {
     if [ $# -lt 1 ];then
@@ -22,7 +27,9 @@ function cp2rasp4()
     fi
 }
 
+# ------------------------------------------------------------------- #
 # TMUX NEW SESSION
+# ------------------------------------------------------------------- #
 function _tmux_new()
 {
     let tmux_cnt=`tmux list-sessions 2>&1 | grep -v "no server running" | grep ":" | wc -l`
@@ -38,8 +45,11 @@ function _tmux_new()
     fi
 }
 
+
+# ------------------------------------------------------------------- #
 # PATH SETTING
-function config_path()
+# ------------------------------------------------------------------- #
+function _config_path()
 {
     PATH=/usr/local/bin:$PATH;
     PATH=/usr/local/Cellar/vim/8.1.1501/bin:$PATH
@@ -47,6 +57,7 @@ function config_path()
     PATH=/usr/local/Cellar/git/2.22.0/bin:$PATH
     PATH=/usr/local/Cellar/python/3.7.5/bin:$PATH
     PATH=/usr/local/texlive/2019/bin/x86_64-darwin:$PATH
+    PATH=/usr/local/Cellar/python/3.5.7/bin/:$PATH
     PATH=/usr/local/opt/icu4c/bin:$PATH
     PATH=/usr/local/opt/icu4c/sbin:$PATH
     PATH=/usr/local/opt/qt/bin:$PATH
@@ -55,8 +66,10 @@ function config_path()
     export PATH
 }
 
+# ------------------------------------------------------------------- #
 # PKG CONFIG PATH
-function config_pkg_path()
+# ------------------------------------------------------------------- #
+function _config_pkg_path()
 {
     PKG_CONFIG_PATH=/usr/local/Cellar/libidn2/2.2.0/lib/pkgconfig:$PKG_CONFIG_PATH;
     PKG_CONFIG_PATH=/usr/local/Cellar/ncurses/6.1/lib/pkgconfig:$PKG_CONFIG_PATH;
@@ -86,36 +99,49 @@ function config_pkg_path()
     export PKG_CONFIG_PATH
 }
 
+# ------------------------------------------------------------------- #
 # VLC 
+# ------------------------------------------------------------------- #
 function _vlc()
 {
     /Applications/VLC.app/Contents/MacOS/VLC $* &> /dev/null & 
 }
 
+# ------------------------------------------------------------------- #
+# qtime
+# ------------------------------------------------------------------- #
 function _qtime()
 {
     /Applications/QuickTime\ Player.app/Contents/MacOS/QuickTime\ Player $PWD/$* &> /dev/null &
 }
 
+# ------------------------------------------------------------------- #
 # PDFGURU
+# ------------------------------------------------------------------- #
 function _pdfguru()
 {
      /Applications/PDFGuru.app/Contents/MacOS/PDFGuru $1  &> /dev/null &
 }
 
+# ------------------------------------------------------------------- #
 # Document Viewer
+# ------------------------------------------------------------------- #
 function _previewer()
 {
     /Applications/Preview.app/Contents/MacOS/Preview $PWD/$1  &>  /dev/null &
 }
 
+# ------------------------------------------------------------------- #
 # QT Creator 
+# ------------------------------------------------------------------- #
 function _qt_creator()
 {
-    /Users/huangmianbo/Qt5.13.1/Qt\ Creator.app/Contents/MacOS/Qt\ Creator &> /dev/null &
+    /Applications/Qt5.13.1/Qt\ Creator.app/Contents/MacOS/Qt\ Creator &> /dev/null &
 }
 
+# ------------------------------------------------------------------- #
 # evince
+# ------------------------------------------------------------------- #
 function _evince()
 {
     if [ "$1" == "--help" ] || [ "$1" == "-h" ] || [ "$1" == "--help-all" ];then
@@ -125,7 +151,34 @@ function _evince()
     fi
 }
 
+# ------------------------------------------------------------------- #
+# vs code
+# ------------------------------------------------------------------- #
+function _code()
+{
+
+    /Applications/Visual\ Studio\ Code.app/Contents/MacOS/Electron $* &> /dev/null &
+}
+
+# ------------------------------------------------------------------- #
+# typora
+# ------------------------------------------------------------------- #
+function _typora()
+{
+    /Applications/Typora.app/Contents/MacOS/Typora $* &> /dev/null &
+}
+
+# ------------------------------------------------------------------- #
+# _pycharm
+# ------------------------------------------------------------------- #
+function _pycharm()
+{
+    /Applications/PyCharm\ CE.app/Contents/MacOS/pycharm $* &> /dev/null &
+}
+
+# ------------------------------------------------------------------- #
 # back document
+# ------------------------------------------------------------------- #
 function _backup_documents()
 {
     pushd . > /dev/null
@@ -152,7 +205,9 @@ function _backup_documents()
     popd > /dev/null
 }
 
-
+# ------------------------------------------------------------------- #
+# backup config files
+# ------------------------------------------------------------------- #
 function _backup_config()
 {
     pushd . > /dev/null
@@ -178,8 +233,9 @@ function _backup_config()
     popd > /dev/null
 }
 
+# ------------------------------------------------------------------- #
 # backup all
-
+# ------------------------------------------------------------------- #
 function _backup_all()
 {
     pushd . &> /dev/null
@@ -189,26 +245,20 @@ function _backup_all()
 
     for folder in *
     do
-        if [ -d "$folder" ];then
-            echo ----------------------------------------------------------
-            let i=$i+1
-            echo "$i , cd $folder ..."
-            cd "$folder"
-            check=`git remote -v 2> /dev/null | grep fetch | awk '{ print $1 }'` 
-            if [ -z "$check" ];then
-                echo "$folder no git repos!!"
-                cd ..
-                continue
-            else
-                echo
-                echo update git folder $folder 
-                echo git pull $(git remote | sed -n 1p) master ...
-                echo
-                git pull $(git remote | sed -n 1p) master
-                cd  ..
-            fi
-            echo ----------------------------------------------------------
-        fi
+        test -d "$folder" || continue
+        echo ----------------------------------------------------------
+        let i=$i+1
+        echo "$i , cd $folder ..."
+        cd "$folder"
+        check=`git remote -v 2> /dev/null | grep fetch | awk '{ print $1 }'` 
+        test -n "$check" || { echo "$folder is not a git repos!!" && cd .. && continue; } 
+        echo
+        echo update git folder $folder 
+        echo git pull $(git remote | sed -n 1p) master ...
+        echo
+        test -n "$(git remote)" && git pull $(git remote | sed -n 1p) master
+        cd  ..
+        echo ----------------------------------------------------------
     done
 
     popd &> /dev/null
@@ -216,7 +266,9 @@ function _backup_all()
 }
 
 
+# ------------------------------------------------------------------- #
 # synctask warrior
+# ------------------------------------------------------------------- #
 function _synctask()
 {
 
@@ -245,7 +297,9 @@ function _synctask()
     fi 
 }
 
+# ------------------------------------------------------------------- #
 # md2pdf
+# ------------------------------------------------------------------- #
 function _md2pdf()
 {
     file=$1
@@ -256,13 +310,17 @@ function _md2pdf()
     pandoc $file -o $pdffile
 }
 
+# ------------------------------------------------------------------- #
 # _gvim
+# ------------------------------------------------------------------- #
 function _gvim()
 {
-    gvim $* &> /dev/null &
+    /usr/local/Cellar/macvim/8.1-161/bin/gvim $* &> /dev/null &
 }
 
+# ------------------------------------------------------------------- #
 # check other task warrior
+# ------------------------------------------------------------------- #
 function _other_task()
 {
     export TASKDATA=~/Documents/12-cygwin64-config-t580/.task
@@ -270,76 +328,167 @@ function _other_task()
     export TASKDATA="~/.task"
 }
 
-# Config for Alias
-function config_alias()
+# ------------------------------------------------------------------- #
+# login remote machine
+# ------------------------------------------------------------------- #
+function _login_remote_machine()
 {
-    alias vi='vim --noplugin'
-    alias gvim='_gvim'
-    alias rm='rm -iv'
-    alias reload='source ~/.bash_profile'
-    alias config='vim ~/.bash_profile'
-    # alias t430='ssh huangmianbo@192.168.50.28'
-    alias t430='ssh huangmianbo@ThinkPad-T430'
-    alias vlc='_vlc'
-    alias qtime='_qtime'
-    alias rdp='/Applications/Microsoft\ Remote\ Desktop.app/Contents/MacOS/Microsoft\ Remote\ Desktop &'
-    alias tl='task list'
-    # alias pdf='zathura'
-    # alias pdf='_pdfguru'
-    alias pdf='_previewer'
-    alias ..='cd ../'
-    alias ...='cd ../../'
-    alias ....='cd ../../../'
-    alias grep='grep --color=auto'
-    alias temp='/usr/local/bin/osx-cpu-temp'
-    alias gigabyte='ssh mianb@gigabyte-brix'
-    alias giga='gigabyte'
-    # alias gigabyte='ssh mianb@192.168.50.116'
-    alias rasp3='ssh huangmianbo@192.168.50.102'
-    alias rasp3-xeno3='ssh pi@raspberrypi3-xeno3'
-    alias rasp4='ssh huangmianbo@raspberrypi4'
-    alias pi4='ssh pi@raspberrypi4'
-    # alias rasp4='ssh huangmianbo@192.168.50.73'
-    alias beaglebone='ssh huangmianbo@192.168.50.204'
-    alias debian@beaglebone='ssh debian@192.168.50.204'
-    alias pi@rasp4='ssh debian@raspberrypi4'
-    alias git@t430='ssh git@thinkpad-t430'
-    alias vpn='/Applications/ShadowsocksX-NG-R8.app/Contents/MacOS/ShadowsocksX-NG &'
-    alias gdb='sudo gdb -q'
-    alias lldb='sudo lldb'
-    alias synctask='pushd . && cd ~ && git pull origin master && popd'
-    alias ~='cd $HOME'
-    alias poweroff='sudo shutdown -h now'
-    alias md2pdf='_md2pdf'
-    alias poweroff='sudo shutdown -h now'
-    alias qt='_qt_creator'
-    alias v2ray='V2RayX &> /dev/null &'
-    alias cpptags='ctags -R --c++-kinds=+p --fields=+iaS --extra=+q'
-    alias mv='mv -iv'
-    alias bdoc='_backup_documents'
-    alias bconfig='_backup_config'
-    alias doc='cd ~/documents'
-    alias task2='_other_task'
-    alias t='_tmux_new'
-    alias src='cd ~/Source'
-    alias ball='_backup_all'
+    case $1 in 
+        beaglebone)
+            ssh huangmianbo@192.168.50.204
+        ;;
+        beaglebone2)
+            ssh debian@192.168.50.204
+        ;;
+        gigabyte)
+            ssh mianb@gigabyte-brix
+        ;;
+        t430)
+            ping -c 1 192.168.1.105
+            if [ $? -eq 0 ];then
+                echo login huangmianbo@192.168.1.105
+                ssh huangmianbo@192.168.1.105
+                return 0
+            fi
+
+            ping -c 1 192.168.50.28
+            if [ $? -eq 0 ];then
+                echo login huangmianbo@192.168.50.28
+                ssh huangmianbo@192.168.50.28
+                return 0
+            fi
+
+            return 1
+        ;;
+        t580)
+            ssh mianb@Huangs-T580
+        ;;
+        pi4)
+            ssh pi@raspberrypi4
+        ;;
+        rasp3)
+            ssh huangmianbo@192.168.50.102
+        ;;
+        rasp3-xeno3)
+            ssh pi@raspberrypi3-xeno3
+        ;;
+        rasp4)
+            ssh huangmianbo@raspberrypi4
+        ;;
+        zynq)
+            ssh root@192.168.1.10
+        ;;
+        *)
+            :
+        ;;
+    esac
 }
+
+# ------------------------------------------------------------------- #
+# for login cbpos
+# ------------------------------------------------------------------- #
+function _cbpos()
+{
+    ping -c 1 -W 1 192.168.50.213 &> /dev/null
+
+    if [ "$?" == "0" ];then
+        echo "login 192.168.50.213 ..."
+        ssh root@192.168.50.213
+    else
+        echo "error, could not ping 192.168.50.213"
+    fi
+}
+# ------------------------------------------------------------------- #
+# brew update all
+# ------------------------------------------------------------------- #
+function _brew_update_all()
+{
+    brew update
+    brew upgrade youtubedl
+}
+
+# ------------------------------------------------------------------- #
+# config for alias
+# ------------------------------------------------------------------- #
+function _config_alias()
+{
+    # alias gigabyte='ssh mianb@192.168.50.116'
+    # alias pdf='_pdfguru'
+    # alias pdf='zathura'
+    # alias rasp4='ssh huangmianbo@192.168.50.73'
+    alias ....='cd ../../../'
+    alias ...='cd ../../'
+    alias ..='cd ../'
+    alias ball='_backup_all'
+    alias bconfig='_backup_config'
+    alias bdoc='_backup_documents'
+    alias beaglebone='_login_remote_machine beaglebone'
+    alias cbpos='_cbpos'
+    alias code='_code'
+    alias config='vim ~/.bash_profile'
+    alias cpptags='ctags -R --c++-kinds=+p --fields=+iaS --extra=+q'
+    alias debian@beaglebone='_login_remote_machine beaglebone2'
+    alias doc='cd ~/documents'
+    alias gdb='sudo gdb -q'
+    alias giga='gigabyte'
+    alias gigabyte='_login_remote_machine gigabyte'
+    alias grep='grep --color=auto'
+    alias gvim='_gvim'
+    alias lldb='sudo lldb'
+    alias md2pdf='_md2pdf'
+    alias mv='mv -iv'
+    alias pdf='_previewer'
+    alias pi4='_login_remote_machine pi4'
+    alias poweroff='sudo shutdown -h now'
+    alias poweroff='sudo shutdown -h now'
+    alias pycharm='_pycharm'
+    alias qt='_qt_creator'
+    alias qtime='_qtime'
+    alias rasp3-xeno3='_login_remote_machine rasp3-xeno3'
+    alias rasp3='_login_remote_machine rasp4'
+    alias rasp4='_login_remote_machine rasp3'
+    alias rdp='/Applications/Microsoft\ Remote\ Desktop.app/Contents/MacOS/Microsoft\ Remote\ Desktop &'
+    alias reload='source ~/.bash_profile'
+    alias rm='rm -iv'
+    alias src='cd ~/Source'
+    alias synctask='pushd . && cd ~ && git pull origin master && popd'
+    alias t430='_login_remote_machine t430'
+    alias t580='_login_remote_machine t580'
+    alias t='_tmux_new'
+    alias task2='_other_task'
+    alias temp='/usr/local/bin/osx-cpu-temp'
+    alias tl='task list'
+    alias typora='_typora'
+    alias v2ray='V2RayX &> /dev/null &'
+    alias vi='vim --noplugin'
+    alias vlc='_vlc'
+    alias vpn='/Applications/ShadowsocksX-NG-R8.app/Contents/MacOS/ShadowsocksX-NG &'
+    alias zynq='_login_remote_machine zynq'
+    alias ~='cd $HOME'
+}
+
+# ------------------------------------------------------------------- #
+# export environment variable
+# ------------------------------------------------------------------- #
+function _export_environ_var()
+{
+    export EDITOR=vim
+    export LDFLAGS="-L/usr/local/opt/qt/lib":$LDFLAGS
+    export CPPFLAGS="-I/usr/local/opt/qt/include":$CPPFLAGS
+    export QTDIR='/Users/huangmianbo/Software/Qt5.13.1/5.13.1/clang_64/'
+    export DQTDIR='/Users/huangmianbo/Software/Qt5.13.1/5.13.1/Src/'
+}
+
 
 set completion-ignore-case On
 
-if [ "$SHELL" = "/bin/bash" ];then   
-    config_bash_color
-fi
+test "$SHELL" = "/bin/bash" && _config_bash_color
 
-config_path
-config_pkg_path
-config_alias
+_config_path
+_config_pkg_path
+_config_alias
+_export_environ_var
 
-export EDITOR=vim
-export LDFLAGS="-L/usr/local/opt/qt/lib":$LDFLAGS
-export CPPFLAGS="-I/usr/local/opt/qt/include":$CPPFLAGS
-export QTDIR='/Users/huangmianbo/Software/Qt5.13.1/5.13.1/clang_64/'
-export DQTDIR='/Users/huangmianbo/Software/Qt5.13.1/5.13.1/Src/'
 set -o vi
 
 
