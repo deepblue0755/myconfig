@@ -703,7 +703,9 @@ function _rand()
 
 function _randword()
 {
-    word_list=$dir/d/documents/18-bash-utils/00_en_dictionary_huge.dic
+    test $(uname) == "Linux" && word_list=~/documents/18-bash-utils/00_en_dictionary_huge.dic
+    test -n "$(uname | grep -i "cygwin")" && word_list=$dir/d/documents/18-bash-utils/00_en_dictionary_huge.dic
+
     test -f $word_list || { print_error "could not find file $word_list" && return 1; }
     let word_size=$(cat $word_list | grep "^[A-Z]" | wc -l)
     let line=$(uuidgen | cksum | cut -c 1-6)%$word_size
