@@ -1,0 +1,109 @@
+HOST *
+    ServerAliveInterval 30
+    ServerAliveCountMax 3
+
+HOST cbpos
+    user root
+    hostname cbpos 
+    identityfile ~/.ssh/id_rsa_root_at_cbpos
+    
+HOST 192.168.0.2
+    user root
+    hostname 192.168.0.2 
+    identityfile ~/.ssh/id_rsa_root_at_cbpos
+
+HOST 192.168.0.3
+    user root
+    hostname 192.168.0.3
+    identityfile ~/.ssh/id_rsa_root_at_cbpos
+
+HOST 192.168.50.213
+    user root
+    hostname 192.168.50.213
+    identityfile ~/.ssh/id_rsa_root_at_cbpos
+
+HOST cbpos
+    user googol
+    hostname cbpos 
+    identityfile ~/.ssh/id_rsa_googol_at_cbpos
+
+HOST virtualbox
+    user huangmianbo
+    hostname virtualbox 
+    identityfile ~/.ssh/id_rsa_hmb_at_virtualbox
+
+HOST vmware
+    user huangmianbo
+    hostname vmware 
+    identityfile ~/.ssh/id_rsa_vmware
+
+Host github.com
+    user git
+    hostname github.com
+    identityfile ~/.ssh/id_rsa_github
+
+Host Huangs-MBP
+    user huangmianbo
+    hostname Huangs-MBP
+    identityfile ~/.ssh/id_rsa_macosx
+
+Host 192.168.1.103
+    user huangmianbo
+    hostname 192.168.1.103
+    identityfile ~/.ssh/id_rsa_macosx
+
+Host gigabyte-brix
+    user mianb
+    hostname gigabyte-brix
+    identityfile ~/.ssh/id_rsa_gigabyte
+
+Host 192.168.1.102
+    user mianb
+    hostname 192.168.1.102
+    identityfile ~/.ssh/id_rsa_gigabyte
+
+Host Huangs-T580
+    user mianb
+    hostname Huangs-T580
+    identityfile ~/.ssh/id_rsa_t580
+
+
+Host t430
+    user huangmianbo
+    hostname t430
+    identityfile ~/.ssh/id_rsa_t430
+
+Host 192.168.1.105
+    user huangmianbo
+    hostname 192.168.1.105
+    identityfile ~/.ssh/id_rsa_t430
+
+Host 192.168.50.28
+    user huangmianbo
+    hostname 192.168.50.28
+    identityfile ~/.ssh/id_rsa_t430
+
+Host gitlab
+    user huangmianbo
+    hostname gitlab
+    identityfile ~/.ssh/id_rsa_gitlab
+
+Host 192.168.56.103
+    user huangmianbo
+    hostname 192.168.56.103
+    identityfile ~/.ssh/id_rsa_gitlab
+
+Host 192.168.212.30 
+    user huangmianb
+    hostname 192.168.212.30
+    identityfile ~/.ssh/id_rsa_hmb_at_cpac
+
+Host 192.168.212.30 
+    user git
+    hostname 192.168.212.30
+    identityfile ~/.ssh/id_rsa_hmb_at_cpac
+
+Host 192.168.212.30 
+    user root
+    hostname 192.168.212.30
+    identityfile ~/.ssh/id_rsa_root_at_cpac
