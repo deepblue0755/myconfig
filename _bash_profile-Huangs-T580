@@ -676,8 +676,8 @@ function _poweroff()
         ;;
         *)
             read -p "shutdown computer $HOSTNAME? (y/n): " input
-            test "$input" == "y" && shutdown /s 
-            test "$input" == "y" || print_infor "user abort poweroff computer"
+            test "$input" == "y" && shutdown /p  /t 0
+            test "$input" == "y" || print_warning "user abort poweroff computer"
         ;;
     esac
 }
@@ -848,7 +848,7 @@ function set_alias()
     alias cbpos='_login_machine'
     alias cgdb='cgdb -q'
     alias config='gvim --remote-silent D:\\cygwin64\\home\\mianb\\\.bash_profile &'
-    alias diff='colordiff'
+    alias diff='colordiff --exclude=*.git*'
     alias cplinux='_cplinux'
     alias cpt430='_cplinux t430'
     alias cpserver='_cplinux server'
