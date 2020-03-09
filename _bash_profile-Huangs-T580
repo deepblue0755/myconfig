@@ -422,7 +422,7 @@ function _export_var()
     export HISTSIZE=10000
     export HISTFILESIZE=100000
     export HISTTIMEFORMAT="%F %T "
-    export HISTIGNORE="ls:ls *:history:clear:pwd"
+    export HISTIGNORE="ls:history:clear:pwd"
     export pnio=/d/Profinet/DevKit46/pnio_src
     export proj=/d/Profinet/DevKit46/pnio_proj/ertec/EB200P_Size_EcosNative/
 }
