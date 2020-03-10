@@ -849,6 +849,7 @@ function set_alias()
     alias cpserver='_cplinux server'
     alias cpvb='_cpvb'
     alias cpvm='_cpvm'
+    alias cmd='conemu64 &'
     alias dmesg='_dmesg'
     alias doc='pushd . > /dev/null && cd ~/documents/RTAI'
     alias eclipse='/d/Profinet/DevKit46/eclipse/eclipse &'
@@ -897,6 +898,7 @@ function set_alias()
     alias tl='_task_list'
     alias tmp='cd ~/tmp'
     alias uall='_update_all'
+    alias uuid='uuidgen -r | cut -c 1-8'
     alias vim='_gvim'
     alias vivado='vivado -mode tcl'
     alias vlc='_vlc'
@@ -931,8 +933,7 @@ function set_path()
     export PATH=$dir/d/Wireshark:$PATH
     export PATH=$dir/d/ffmpeg/bin:$PATH
     export PATH=$dir/d/SEGGER/JLink:$PATH
-    export PATH=$dir/d/Profinet/DevKit46/msys/1.0/bin:$PATH
-    export PATH=$dir/d/Profinet/DevKit46/msys/1.0/local/bin:$PATH
+    export PATH=$dir/d/ConEmu:$PATH
 
     if [ "$SHELL" == "/bin/bash" ];then
         export PATH=$dir/d/cygwin64/bin:$PATH
