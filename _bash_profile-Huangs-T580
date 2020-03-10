@@ -496,12 +496,7 @@ function _ifconfig()
     done
     IFS=$OLD_IFS
 
-    # for (( i=1;i<=$(echo "$adapter_id" | wc -l);i++ ))
-    # do
-    #     adapter_array[$i]=$(echo "$adapter_id" | sed -n "$i"p)
-    # done
-
-    test -z "$1" && { echo "$adapter_list" | cat -n; }
+    test -z "$1" && { echo "$adapter_list"  | cat -n; }
 
     test "$1" == "-a" && { ipconfig /all && return 0; }
     
@@ -631,7 +626,7 @@ function _md2pdf()
 
 function _poweroff()
 {
-    win_poweroff_cmd="shutdown /s"
+    win_poweroff_cmd="shutdown /p /f"
     linux_poweroff_cmd="sudo poweroff"
 
     case $1 in 
