@@ -13,6 +13,8 @@ repeat.vim
 supertab
 The-NERD-Commenter
 vim-airline
+vim-cmake
+vim-cmake-syntax
 vim-commentary
 vim-cpp-enhanced-highlight
 vim-gutentags

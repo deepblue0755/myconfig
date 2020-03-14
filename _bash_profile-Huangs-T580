@@ -357,7 +357,7 @@ function _cpvb()
         print_error "file $1 does not exist !!"
         return -1
     fi
-    scp $1 huangmianbo@virtualbox:~/tmp/
+    scp $1 huangmianbo@gitlab:/tmp/
 }
 
 function _cplinux()
@@ -425,6 +425,7 @@ function _export_var()
     export HISTIGNORE="ls:history:clear:pwd"
     export pnio=/d/Profinet/DevKit46/pnio_src
     export proj=/d/Profinet/DevKit46/pnio_proj/ertec/EB200P_Size_EcosNative/
+    export CMAKE_ROOT=$dir/d/cmake/
 }
 
 function _expl()
@@ -668,6 +669,16 @@ function _poweroff()
             echo "--------------------------------------------------"
             print_infor "try to poweroff ideabox ..."
             { print_infor "ping 192.168.0.2" && ping -c 1 -W 1 192.168.0.2 && ssh root@192.168.0.2 $linux_poweroff_cmd; }
+
+            echo "--------------------------------------------------"
+            echo " machine 5: Vmware "
+            echo "--------------------------------------------------"
+            stop vm
+
+            echo "--------------------------------------------------"
+            echo " machine 6: Gitlab "
+            echo "--------------------------------------------------"
+            stop vb
         ;;
         *)
             read -p "shutdown computer $HOSTNAME? (y/n): " input
@@ -844,6 +855,7 @@ function set_alias()
     alias cgdb='cgdb -q'
     alias config='gvim --remote-silent D:\\cygwin64\\home\\mianb\\\.bash_profile &'
     alias diff='colordiff --exclude=*.git*'
+    alias dmidecode='systeminfo'
     alias cplinux='_cplinux'
     alias cpt430='_cplinux t430'
     alias cpserver='_cplinux server'
@@ -870,6 +882,8 @@ function set_alias()
     alias iperf2s='iperf -u -s -m -i 1'
     alias iso='_login_machine iso'
     alias ls='ls --color=auto'
+    alias lshw='systeminfo'
+    alias lscpu='wmic cpu list brief'
     alias mac='_login_machine mac'
     alias md2pdf='_md2pdf'
     alias mydate='date +%Y%m%d%H%M%S'
