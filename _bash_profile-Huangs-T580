@@ -657,12 +657,12 @@ function _poweroff()
             echo "--------------------------------------------------"
             echo " machine 5: Vmware "
             echo "--------------------------------------------------"
-            stop vm
+            vmrun stop "D:\\Virtual Machines\\Ubuntu-14.04-Kylin\\\Ubuntu.vmx" nogui
 
             echo "--------------------------------------------------"
             echo " machine 6: Gitlab "
             echo "--------------------------------------------------"
-            stop vb
+            VBoxManage controlvm "Ubuntu-1804" poweroff
         ;;
         *)
             read -p "shutdown computer $HOSTNAME? (y/n): " input
