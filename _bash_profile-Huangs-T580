@@ -342,46 +342,30 @@ function _code()
     code $1 &> /dev/null &
 }
 
-function _cpvm()
-{
-    if [ ! -f "$1" ];then
-        print_error "file $1 does not exist !!"
-        return -1
-    fi
-    scp $1 huangmianbo@vmware:/tmp/
-}
-
-function _cpvb()
-{
-    if [ ! -f "$1" ];then
-        print_error "file $1 does not exist !!"
-        return -1
-    fi
-    scp $1 huangmianbo@gitlab:/tmp/
-}
-
 function _cplinux()
 {
+    test -f "$2" || { print_error "file $2 does not exist!!" && return 1; }  
     case $1 in 
         t430)
-            if [ ! -f "$2" ];then
-                print_error "file $2 does not exist!!"
-                return 1
-            fi
-            scp $2 huangmianbo@t430:/tmp/
+            scp "$2" huangmianbo@192.168.1.105:/tmp/
+        ;;
+        mac)
+            scp "$2" huangmianbo@192.168.1.103:/tmp/
         ;;
         server)
-            if [ ! -f "$2" ];then
-                print_error "file $2 does not exist!!"
-                return 1
-            fi
-            scp $2 huangmianbo@192.168.212.30:/tmp/
+            scp "$2" huangmianbo@192.168.212.30:/tmp/
+        ;;
+        ideabox)
+            scp "$2" root@192.168.0.2:/tmp/
+        ;;
+        vm)
+            scp "$2" huangmianbo@vmware:/tmp/
+        ;;
+        gitlab)
+            scp "$2" huangmianbo@gitlab:/tmp/
         ;;
         *)
-            scp $1 root@192.168.0.2:/tmp/
-            if [ "$?" != 0 ];then
-            scp $1 root@192.168.0.2:/tmp/
-            fi
+            scp "$2" root@192.168.0.2:/tmp/
         ;;
     esac
 }
@@ -856,11 +840,12 @@ function set_alias()
     alias config='gvim --remote-silent D:\\cygwin64\\home\\mianb\\\.bash_profile &'
     alias diff='colordiff --exclude=*.git*'
     alias dmidecode='systeminfo'
-    alias cplinux='_cplinux'
+    alias cplinux='_cplinux ideabox'
     alias cpt430='_cplinux t430'
     alias cpserver='_cplinux server'
-    alias cpvb='_cpvb'
-    alias cpvm='_cpvm'
+    alias cpmac='_cplinux mac'
+    alias cpvb='_cplinux gitlab'
+    alias cpvm='_cplinux vm'
     alias cmd='conemu64 &'
     alias dmesg='_dmesg'
     alias doc='pushd . > /dev/null && cd ~/documents/RTAI'
