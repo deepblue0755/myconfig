@@ -429,8 +429,10 @@ function _expl()
                 echo explorer "$(echo $curdir | sed 's/\//\\/g' | sed 's/^\\//g' | sed 's/\\/:\\/')"
                 explorer "$(echo $curdir | sed 's/\//\\/g' | sed 's/^\\//g' | sed 's/\\/:\\/')"
             else
-                echo explorer "$(echo $1 | sed 's/\//\\/g' | sed 's/^\\//g' | sed 's/\\/:\\/')"
-                explorer "$(echo $1 | sed 's/\//\\/g' | sed 's/^\\//g' | sed 's/\\/:\\/')"
+                mydir=$(echo $1 | sed 's/\/home\/mianb\///g')
+                mydir=/d/cygwin64/home/mianb/$mydir
+                echo explorer "$(echo $mydir | sed 's/\//\\/g' | sed 's/^\\//g' | sed 's/\\/:\\/')"
+                explorer "$(echo $mydir | sed 's/\//\\/g' | sed 's/^\\//g' | sed 's/\\/:\\/')"
             fi
         ;;
     esac
