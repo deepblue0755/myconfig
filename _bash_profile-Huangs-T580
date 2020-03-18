@@ -609,6 +609,12 @@ function _md2pdf()
     pandoc --pdf-engine=pdflatex $file -o $pdffile
 }
 
+function _netstat()
+{
+    test $# -eq 0 && \netstat -ano
+    test $# -eq 0 || \netstat $*
+}
+
 function _poweroff()
 {
     win_poweroff_cmd="shutdown /p /f"
@@ -670,6 +676,11 @@ function _poweroff()
             test "$input" == "y" || print_warning "user abort poweroff computer"
         ;;
     esac
+}
+
+function _ps()
+{
+    test $# -eq 0 && { \ps && tasklist; }
 }
 
 function _putty()
@@ -873,8 +884,10 @@ function set_alias()
     alias md2pdf='_md2pdf'
     alias mydate='date +%Y%m%d%H%M%S'
     alias mv='mv -iv'
+    alias netstat='_netstat'
     alias pdf='SumatraPDF'
     alias poweroff='_poweroff'
+    alias ps='_ps'
     alias putty='_putty'
     alias pycharm='pycharm64 &> /dev/null &'
     alias qt='qtcreator &> /dev/null &'
