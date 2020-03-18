@@ -479,10 +479,17 @@ if(has('lua'))
     let g:neocomplete#enable_at_startup=1 "enable list 
     " disable list
     autocmd FileType c,cpp let g:neocomplete#enable_at_startup=0 
+    autocmd FileType c,cpp let g:neocomplete#auto_completion_start_length=100
+    autocmd FileType text  let g:neocomplete#auto_completion_start_length=4
+    autocmd FileType tex   let g:neocomplete#auto_completion_start_length=2
+    autocmd FileType cmake let g:neocomplete#auto_completion_start_length=2
+    autocmd FileType vhdl  let g:neocomplete#auto_completion_start_length=2
     let g:neocomplete#auto_completion_start_length=4
     let g:neocomplete#sources#dictionary#dictionaries = {
     \ 'text'  : 'D:/Vim/vimfiles/dictionary/en_dictionary_tiny.dic',
-    \ 'tex'  : 'D:/Vim/vimfiles/dictionary/latex_command_dictionary.dic',
+    \ 'tex'   : 'D:/Vim/vimfiles/dictionary/latex_command_dictionary.dic',
+    \ 'cmake' : 'D:/Vim/vimfiles/dictionary/cmake_keywords.dic',
+    \ 'vhdl'  : 'D:/Vim/vimfiles/dictionary/vhdl_keywords.dic',
     \}
 endif
 
@@ -557,11 +564,17 @@ let g:gutentags_cache_dir = s:vim_tags
 let g:gutentags_ctags_extra_args = ['--fields=+niazS', '--extra=+q']
 let g:gutentags_ctags_extra_args += ['--c++-kinds=+px']
 let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
-
+" let g:gutentags_trace = 1
 " 
 if !isdirectory(s:vim_tags)
    silent! call mkdir(s:vim_tags, 'p')
 endif
+
+"--------------------------------------------------------------------------
+" < vimwiki list setting >
+"--------------------------------------------------------------------------
+let g:vimwiki_list = [{'path': '~/vimwiki/',
+                      \ 'syntax': 'markdown', 'ext': '.md'}]
 
 " -----------------------------------------------------------------------------
 "  <  Setting Put At the End To Take Effect >
@@ -569,8 +582,9 @@ endif
 let g:miniBufExplorerMoreThanOne=0
 set guifont=Consolas:h14
 set fileformat=unix
+set ff=unix
 set lines=100
-set columns=150
+set columns=180
 set clipboard+=unnamed
 autocmd Filetype text set dictionary+=$VIMRUNTIME/dictionary/en_dictionary_mediate.dic
 autocmd Filetype tex  set dictionary+=$VIMRUNTIME/dictionary/latex_command_dictionary.dic

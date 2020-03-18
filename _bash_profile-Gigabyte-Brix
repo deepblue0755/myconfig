@@ -105,47 +105,33 @@ function _backup_config()
 function _backup_all()
 {
     pushd . &> /dev/null
-
-    echo -------------------------------------------
-    echo 1, update document
-    echo -------------------------------------------
-    cd $dir/d/documents/10-github-document
-    echo
-    print_infor "git pull $(git remote | sed -n 1p) master ..."
-    echo
-    git pull $(git remote | sed -n 1p) master
-
-    if [ $? == 0 ];then
-        echo 
-        print_infor "running updating script ..."
+    cd $dir/d/documents
+    let i=0;
+    for folder in *
+    do
+        test -d "$folder" || continue
+        echo ----------------------------------------------------------
+        let i=$i+1
+        echo "$i , cd $folder ..."
+        cd "$folder"
+        check=`git remote -v 2> /dev/null | grep fetch | awk '{ print $1 }'` 
+        test -n "$check" || { echo "$folder is not a git repos!!" && cd .. && continue; } 
         echo
-        ./update_documents_from_local.sh
-    fi
-
-    echo -------------------------------------------
-    echo 2, update all config files
-    echo -------------------------------------------
-    cd $dir/d/documents/11-configs-from-github
-    echo 
-    print_infor "git pull $(git remote | sed -n 1p) master ... "
-    echo
-    git pull $(git remote | sed -n 1p) master
-
-    if [ $? == 0 ];then
-        echo 
-        print_infor "running updating script ..."
+        echo update git folder $folder 
+        echo git pull $(git remote | sed -n 1p) master ...
         echo
-        ./update_config_file.sh
-    fi
+        test -n "$(git remote)" && git pull $(git remote | sed -n 1p) master
+        cd  ..
+        echo ----------------------------------------------------------
+    done
+    popd &> /dev/null
 
-    echo -------------------------------------------
-    echo 3, update config files from T580
-    echo -------------------------------------------
-    cd $dir/d/documents/12-cygwin64-config-t580
-    echo 
-    print_infor "git pull $(git remote | sed -n 1p) master ... "
-    echo
-    git pull $(git remote | sed -n 1p) master
+    _backup_all_2
+}
+
+function _backup_all_2()
+{
+    pushd . &> /dev/null
 
     echo -------------------------------------------
     echo 4, update config files from gigabyte-brix
@@ -261,6 +247,25 @@ function _pushd()
     return 0
 }
 
+function _rand()
+{
+    test "$1" == "" && echo $RANDOM && return 0
+    test "$2" == "" && echo $RANDOM && return 0
+    let min=$1
+    let max=$(($2-$min+1))
+    num=$(cat /dev/urandom | head -n 10 | cksum | awk -F ' ' '{print $1}');
+    echo $(($num%$max+$min))
+}
+
+function _randword()
+{
+    word_list=$dir/d/documents/18-bash-utils/00_en_dictionary_huge.dic
+    test -f $word_list || { print_error "could not find file $word_list" && return 1; }
+    let word_size=$(cat $word_list | grep "^[A-Z]" | wc -l)
+    let line=$(uuidgen | cksum | cut -c 1-6)%$word_size
+    cat $word_list | grep "^[A-Z]" | sed -n "$line p"
+}
+
 function _set_alias()
 {
     alias ....='cd ../../../'
@@ -270,6 +275,7 @@ function _set_alias()
     alias ball='_backup_all'
     alias config='vim D:\\cygwin64\\home\\mianb\\.bash_profile' 
     alias diff='colordiff'
+    alias dmidecode='systeminfo'
     alias doc='cd ~/documents'
     alias es='es -highlight'
     alias expl='_expl'
@@ -279,6 +285,7 @@ function _set_alias()
     alias grep='grep --color=auto'
     alias ifconfig='ipconfig'
     alias ls='ls --color=auto'
+    alias lshw='systeminfo'
     alias mac='_login_machine mac'
     alias md2pdf='_md2pdf'
     alias mdkir='mkdir'
@@ -288,6 +295,8 @@ function _set_alias()
     alias pi3='_login_machine pi3'
     alias pi4='_login_machine pi4'
     alias pushd='_pushd $*'
+    alias rand='_rand'
+    alias randword='_randword'
     alias rasp3='_login_machine rasp3'
     alias rasp4='_login_machine rasp4'
     alias reload='source $HOME/.bash_profile' 
