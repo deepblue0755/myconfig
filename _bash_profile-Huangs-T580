@@ -426,11 +426,14 @@ function _expl()
             if [ -z "$1" ];then
                 curdir=$PWD
                 test "$PWD" == "$HOME" && curdir=/d/cygwin64/home/mianb
+                echo "$PWD" | grep "$HOME" && curdir=/d/cygwin64$PWD
+                test -d "$curdir" || { print_error "folder $curdir does not exist!!" && return 1; }
                 echo explorer "$(echo $curdir | sed 's/\//\\/g' | sed 's/^\\//g' | sed 's/\\/:\\/')"
                 explorer "$(echo $curdir | sed 's/\//\\/g' | sed 's/^\\//g' | sed 's/\\/:\\/')"
             else
                 mydir=$(echo $1 | sed 's/\/home\/mianb\///g')
                 mydir=/d/cygwin64/home/mianb/$mydir
+                test -d "$curdir" || { print_error "folder $curdir does not exist!!" && return 1; }
                 echo explorer "$(echo $mydir | sed 's/\//\\/g' | sed 's/^\\//g' | sed 's/\\/:\\/')"
                 explorer "$(echo $mydir | sed 's/\//\\/g' | sed 's/^\\//g' | sed 's/\\/:\\/')"
             fi
