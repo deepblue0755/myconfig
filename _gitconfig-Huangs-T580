@@ -1,6 +1,7 @@
 [credential]
 	helper = manager
 [alias]
+    br = branch
     st = status
     ct = commit
     ls = ls-tree -r master --name-only
