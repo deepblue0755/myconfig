@@ -126,13 +126,9 @@ function copy_config_from_cygwin()
     fi
 
 
-    diff $dir/d/Vim/_vimrc ./_vimrc-$HOSTNAME
+    copy_files $dir/d/Vim/_vimrc ./_vimrc-$HOSTNAME
+    flag=$?
 
-    if [ $? != 0 ];then
-        print_infor "copy vim _vimrc ..."
-        cp $dir/d/Vim/_vimrc ./_vimrc-$HOSTNAME
-        flag=1
-    fi
 
     ls $dir/d/Vim/vimfiles/bundle | sort > ./_vim_plugin_list-$HOSTNAME.txt 
 
@@ -150,7 +146,6 @@ function copy_config_from_cygwin()
 
     copy_files $dir/d/cwRsyncServer/rsyncd.conf ./rsyncd.conf-$HOSTNAME
     flag=$?
-
 
     print_result $flag
 
