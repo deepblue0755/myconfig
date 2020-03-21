@@ -13,7 +13,6 @@ OmniCppComplete
 repeat.vim
 supertab
 The-NERD-Commenter
-tmp.sh
 vim-airline
 vim-commentary
 vim-cpp-enhanced-highlight
