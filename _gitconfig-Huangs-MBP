@@ -1,0 +1,28 @@
+[alias]
+    br = branch
+    st = status
+    ct = commit
+    ls = ls-tree -r master --name-only
+[user]
+	email = mianbo.huang@hotmail.com
+	name = mianbo.huang.macosx
+[core]
+    autocrlf = false
+    filemode = false
+    safecrlf = true
+    sparsecheckout = true
+    editor = vim
+[winUpdater]
+	recentlySeenVersion = 2.22.0
+[color]
+	interactive = auto
+	diff = auto
+	status = auto
+	branch = auto
+	ui = true
+	pager = true
+[filter "lfs"]
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f

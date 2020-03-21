@@ -80,7 +80,7 @@ function copy_config_from_macosx()
 {
     echo 
     print_infor "pull update from github ..."
-    git pull origin master
+    git pull $(git remote | sed -n 1p) master
     echo 
 
     flag=0
