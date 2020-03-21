@@ -161,13 +161,8 @@ function copy_config_from_t430()
     
     flag=0
 
-    diff ~/.bashrc ./_bash_profile-$HOSTNAME
-
-    if [  $? != 0 ];then
-        print_infor "copy $HOME/.bashrc $PWD ..."
-        cp  $HOME/.bashrc ./_bash_profile-$HOSTNAME
-        flag=1
-    fi
+    copy_files ~/.bashrc ./_bash_profile-$HOSTNAME
+    flag=$?
 
     print_result $flag
 
