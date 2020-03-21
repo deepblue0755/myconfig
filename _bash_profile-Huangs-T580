@@ -856,9 +856,15 @@ function _sync()
 {
     case $1 in 
         1)
-            rsync -vzrt --progress --include="*.pdf" --exclude=* \
+            rsync -vzrt --progress --include=*.pdf --exclude=*.* \
             gigabyte-brix::book-linux \
-            "/cygdrive/d/Book/Linux"  \
+            "/cygdrive/d/Book/Linux/"  \
+            --port=10556
+        ;;
+        2)
+            rsync -vzrt --progress --include=*.pdf --exclude=*.* \
+            gigabyte-brix::book-cs \
+            "/cygdrive/d/Book/Computer-Science-CS/"  \
             --port=10556
         ;;
         *)
