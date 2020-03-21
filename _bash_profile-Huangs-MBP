@@ -129,6 +129,7 @@ function _config_path()
     PATH=/usr/local/opt/icu4c/bin:$PATH
     PATH=/usr/local/opt/icu4c/sbin:$PATH
     PATH=/usr/local/opt/qt/bin:$PATH
+    PATH=$HOME/scripts:$PATH
     PATH=/Users/huangmianbo/Software/V2RayX.app/Contents/MacOS/:$PATH
     PATH=/Users/huangmianbo/Software/Qt5.13.1/5.13.1/clang_64/bin/:$PATH
     export PATH

@@ -2,19 +2,22 @@
 
 function print_error()
 {
-    echo -e "\e[31merror: $1\e[0m"
+    test "$(uname)" == "Darwin" && { echo -e "\033[31merror: $1\033[0m" && return 0; }
+    test "$(uname)" == "Darwin" || { echo -e "\e[31merror: $1\e[0m" && return 0; }
 }
 
 function print_warning()
 {
 
-    echo -e "\e[33mwarning: $1\e[0m"
+    test "$(uname)" == "Darwin" && { echo -e "\033[33mwarning: $1\033[0m" && return 0; }
+    test "$(uname)" == "Darwin" || { echo -e "\e[33mwarning: $1\e[0m" && return 0; }
 }
 
 function print_infor()
 {
 
-    echo -e "\e[32minfor: $1\e[0m"
+    test "$(uname)" == "Darwin" && { echo -e "\033[32minfor: $1\033[0m" && return 0; }
+    test "$(uname)" == "Darwin" || { echo -e "\e[32minfor: $1\e[0m" && return 0; }
 }
 
 function print_result()
@@ -61,10 +64,8 @@ function copy_files()
     from=$1
     to=$2
 
-    if [ ! -f $fome ];then
-        print_error "there's no such file $from !!"
-        return 0
-    fi
+    test -f "$from" || { print_error "could not find file $from" && return 0; }
+    test -f "$to" || { print_warning "could not find file $to"; }
 
     diff $from $to 
     if [ "$?" != "0" ];then
@@ -91,6 +92,9 @@ function copy_config_from_macosx()
     flag=$?
 
     copy_files ~/.vimrc  ./_vimrc-$HOSTNAME 
+    flag=$?
+
+    copy_files ~/.gitconfig  ./_gitconfig-$HOSTNAME 
     flag=$?
 
     ls ~/.vim/bundle/ | sort -f > ./_vim_plugin_list-Huangs-MBP.txt
