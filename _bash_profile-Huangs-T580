@@ -410,6 +410,7 @@ function _export_var()
     export pnio=/d/Profinet/DevKit46/pnio_src
     export proj=/d/Profinet/DevKit46/pnio_proj/ertec/EB200P_Size_EcosNative/
     export CMAKE_ROOT=$dir/d/cmake/
+    export RSYNC_PASSWORD=123456
 }
 
 function _expl()
@@ -760,7 +761,7 @@ function _start()
     fi
 
     case $1 in
-        vm)
+        vm | ubuntu1404)
             export vm_start=true
             check=`vmrun list | grep "Ubuntu-14.04-Kylin"` 
             if [ ! -z "$check" ];then
@@ -769,9 +770,9 @@ function _start()
                 return 0
             fi
             echo start vmware machine ... 
-            vmrun start "D:\\Virtual Machines\\Ubuntu-14.04-Kylin\\\Ubuntu.vmx"  nogui 2>&1 > /dev/null &
+            vmrun start "D:\\Vmware-Machines\\Ubuntu-14.04-Kylin\\\Ubuntu.vmx"  nogui 2>&1 > /dev/null &
         ;;
-        vb)
+        vb | ubuntu1804)
             # list all vb machine
             vb_machines=`vboxmanage list vms | awk -d\" '{print $1}' | sed 's/"//g'`
             # push machine name into array buffer
@@ -822,14 +823,14 @@ function _stop()
     fi
 
     case $1 in
-        vm)
+        vm | ubuntu1404)
             echo stop vmware machine ...  
-            vmrun stop "D:\\Virtual Machines\\Ubuntu-14.04-Kylin\\\Ubuntu.vmx" nogui
+            vmrun stop "D:\\Vmware-Machines\\Ubuntu-14.04-Kylin\\\Ubuntu.vmx" nogui
             if [ "$?" == "0" ];then
                 export vm_start=false
             fi
         ;;
-        vb)
+        vb | ubuntu1804)
             echo stop virtual box machine ... 
             VBoxManage controlvm "Ubuntu-1804" poweroff
             if [ "$?" == "0" ];then
@@ -851,7 +852,22 @@ function _sudo()
     runas /user:mianb /savecred $*  
 }
 
-function set_alias()
+function _sync()
+{
+    case $1 in 
+        1)
+            rsync -vzrt --progress --include="*.pdf" --exclude=* \
+            gigabyte-brix::book-linux \
+            "/cygdrive/d/Book/Linux"  \
+            --port=10556
+        ;;
+        *)
+            print_infor "mysync [option]"
+        ;;
+    esac
+}
+
+function _set_alias()
 {
     alias ....='cd ../../../'
     alias ...='cd ../../'
@@ -900,6 +916,7 @@ function set_alias()
     alias mac='_login_machine mac'
     alias md2pdf='_md2pdf'
     alias mydate='date +%Y%m%d%H%M%S'
+    alias mysync='_sync'
     alias mv='mv -iv'
     alias netstat='_netstat'
     alias pdf='SumatraPDF'
@@ -938,7 +955,7 @@ function set_alias()
     alias ~='cd ~'
 }
 
-function set_path()
+function _set_path()
 {
     export PATH=$dir/d/Vim/vim81:$PATH
     export PATH=$dir/d/Git/bin:$PATH
@@ -969,7 +986,7 @@ function set_path()
     fi
 }
 
-function set_lang()
+function _set_lang()
 {
      export LANG=en_US.UTF-8
      export LANGUAGE=en_US.utf8
@@ -1078,9 +1095,9 @@ function _vlc()
 # ------------------------------------------------------------------- #
 
 _export_var
-set_path
-set_alias
-set_lang
+_set_path
+_set_alias
+_set_lang
 
 set -o vi
 
