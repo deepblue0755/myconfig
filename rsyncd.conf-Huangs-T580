@@ -1,0 +1,40 @@
+use chroot = false
+uid = 0
+gid = 0
+strict modes = false
+log file = rsyncd.log
+port = 10556
+
+[temp]
+path = /cygdrive/d/temp
+read only = false
+transfer logging = yes
+auth users = mianb
+secrets file = etc/testuser.pas
+hosts allow = *
+hosts deny = 0.0.0.0/0
+
+[ubuntu-1804]
+path = /cygdrive/d/VirtualBox-VMs/Ubuntu-1804
+read only = false
+transfer logging = yes
+auth users = mianb
+secrets file = etc/testuser.pas
+hosts allow = *
+hosts deny = 0.0.0.0/0
+
+[ubuntu-1404]
+path = /cygdrive/d/Vmware-Machines/Ubuntu-14.04-Kylin
+read only = false
+transfer logging = yes
+auth users = mianb
+secrets file = etc/testuser.pas
+hosts allow = *
+hosts deny = 0.0.0.0/0
+
+[mysql]
+path = /cygdrive/d/MySQL/MySQL Server 5.0/data/bbs
+auth users = testuser
+secrets file = etc/testuser.pas
+hosts allow = 192.168.1.2
+hosts deny = 0.0.0.0/0
