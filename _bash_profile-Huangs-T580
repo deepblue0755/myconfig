@@ -740,6 +740,18 @@ function _reset_known_host()
     popd > /dev/null
 }
 
+function _service()
+{
+    case $2 in 
+        start)
+            net start $1
+        ;;
+        stop)
+            net stop $1
+        ;;
+    esac
+}
+
 function _start()
 {
     if [ $# -lt 1 ];then
@@ -903,7 +915,7 @@ function set_alias()
     alias rkh='_reset_known_host'
     alias rm='rm -iv'
     alias rtai='cd ~/documents/RTAI'
-    alias src='cd $dir/d/Source'
+    alias service='_service'
     alias start='_start'
     alias stop='_stop'
     alias sudo='_sudo'
