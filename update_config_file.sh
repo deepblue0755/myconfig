@@ -69,6 +69,7 @@ function copy_files()
 
     diff $from $to 
     if [ "$?" != "0" ];then
+        print_infor "copy $from here ..." 
         cp -f "$from" "$to"
         return 1
     fi
@@ -135,37 +136,21 @@ function copy_config_from_cygwin()
 
     ls $dir/d/Vim/vimfiles/bundle | sort > ./_vim_plugin_list-$HOSTNAME.txt 
 
-    diff $dir/d/cygwin64/home/$USER/.tmux.conf ./_tmux.conf-$HOSTNAME
+    copy_files $dir/d/cygwin64/home/$USER/.tmux.conf ./_tmux.conf-$HOSTNAME
+    flag=$?
 
-    if [  $? != 0 ];then
-        print_infor "copy tmux .tmux.conf ..."
-        cp $dir/d/cygwin64/home/$USER/.tmux.conf ./_tmux.conf-$HOSTNAME
-        flag=1
-    fi
+    copy_files $dir/d/cygwin64/home/mianb/.bash_profile ./_bash_profile-$HOSTNAME
+    flag=$?
 
-    diff $dir/d/cygwin64/home/mianb/.bash_profile ./_bash_profile-$HOSTNAME
+    copy_files $dir/d/cygwin64/home/mianb/.gitconfig ./_gitconfig-$HOSTNAME
+    flag=$?
 
-    if [  $? != 0 ];then
-        print_infor "copy cygwin64 .bash_profile ..."
-        cp  $dir/d/cygwin64/home/mianb/.bash_profile ./_bash_profile-$HOSTNAME
-        flag=1
-    fi
+    copy_files $dir/d/Batch/_cvimrc ./_cvimrc-$HOSTNAME
+    flag=$?
 
-    diff $dir/d/cygwin64/home/mianb/.gitconfig ./_gitconfig-$HOSTNAME
+    copy_files $dir/d/cwRsyncServer/rsyncd.conf ./rsyncd.conf-$HOSTNAME
+    flag=$?
 
-    if [  $? != 0 ];then
-        print_infor "copy cygwin64 .gitconfig ..."
-        cp  $dir/d/cygwin64/home/mianb/.gitconfig ./_gitconfig-$HOSTNAME
-        flag=1
-    fi
-
-    diff $dir/d/Batch/_cvimrc ./_cvimrc-$HOSTNAME
-
-    if [  $? != 0 ];then
-        print_infor "copy _cvimrc ..." 
-        cp  $dir/d/Batch/_cvimrc ./_cvimrc-$HOSTNAME
-        flag=1
-    fi
 
     print_result $flag
 
