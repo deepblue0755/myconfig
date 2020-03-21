@@ -303,6 +303,7 @@ function _set_alias()
     alias rm='rm -iv -d'
     alias start='_start'
     alias stop='_stop'
+    alias service='_service'
     alias syncbash='cp -iv $HOME/.bash_profile /cygdrive/f/05-To-From-Gigabyte-MiniComputer/'
     alias synctask='pushd . && cd $HOME && git pull origin master && popd'
     alias t430='_login_machine t430'
@@ -434,6 +435,18 @@ function _stop()
 function _SumatraPDF()
 {
     SumatraPDF $* &> /dev/null &
+}
+
+function _service()
+{
+    case $2 in 
+        start)
+            net start $1
+        ;;
+        stop)
+            net stop $1
+        ;;
+    esac
 }
 
 function _sync()
