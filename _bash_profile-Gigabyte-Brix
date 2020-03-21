@@ -291,6 +291,7 @@ function _set_alias()
     alias mdkir='mkdir'
     alias mv='mv -iv'
     alias mydate='date +%Y%m%d%H%M%S'
+    alias mysync='_sync'
     alias pdf='_SumatraPDF'
     alias pi3='_login_machine pi3'
     alias pi4='_login_machine pi4'
@@ -374,7 +375,8 @@ function _start()
     fi
 
     case $1 in
-        vm)
+        vm | ubuntu1404)
+
             check=`vmrun list | grep "Ubuntu-14.04-Kylin"` 
             if [ ! -z "$check" ];then
                 echo ""
@@ -382,9 +384,9 @@ function _start()
                 return 0
             fi
             echo start vmware machine ... 
-            vmrun start "D:\\Virtual Machines\\Ubuntu-14.04-Kylin\\\Ubuntu.vmx"  nogui
+            vmrun start "D:\\Vmware-Machines\\Ubuntu-14.04-Kylin\\\Ubuntu.vmx"  nogui
         ;;
-        vb)
+        vb | ubuntu1804)
             check=`VBoxManage list runningvms | grep "Ubuntu-1804"` 
             if [ ! -z "$check" ];then
                 echo ""
@@ -416,12 +418,12 @@ function _stop()
     fi
 
     case $1 in
-        vm)
+        vm | ubuntu1404)
             echo stop vmware machine ...  
-            vmrun stop "D:\\Virtual Machines\\Ubuntu-14.04-Kylin\\\Ubuntu.vmx" nogui
+            vmrun stop "D:\\Vmware-Machines\\Ubuntu-14.04-Kylin\\\Ubuntu.vmx" nogui
             VM_START=0
         ;;
-        vb)
+        vb | ubuntu1804)
             echo stop virtual box machine ... 
             VBoxManage controlvm "Ubuntu-1804" poweroff
             VB_START=0
@@ -461,6 +463,12 @@ function _sync()
             rsync -vzrt --progress --include="*.vhd" --exclude=* \
             Huangs-T580::ubuntu-1804 \
             "/cygdrive/d/VirtualBox-VMs/Ubuntu-1804"  \
+            --port=10556
+        ;;
+        3)
+            rsync -vzrt --progress --include="*.vmdk" --exclude=* \
+            Huangs-T580::ubuntu-1404 \
+            "/cygdrive/d/Vmware-Machines/Ubuntu-14.04-Kylin"  \
             --port=10556
         ;;
         book1)
