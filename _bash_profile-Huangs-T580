@@ -344,28 +344,30 @@ function _code()
 
 function _cplinux()
 {
-    test -f "$2" || { print_error "file $2 does not exist!!" && return 1; }  
+    { test -f "$2" || test -d "$2"; } || { print_error "file $2 does not exist!!" && return 1; }  
+    test -d "$2" && { option=-pr; }
+    test -f "$2" && { option=-p; }
     case $1 in 
         t430)
-            scp "$2" huangmianbo@192.168.1.105:/tmp/
+            scp $option "$2" huangmianbo@192.168.1.105:/tmp/
         ;;
         mac)
-            scp "$2" huangmianbo@192.168.1.103:/tmp/
+            scp $option "$2" huangmianbo@192.168.1.103:/tmp/
         ;;
         server)
-            scp "$2" huangmianbo@192.168.212.30:/tmp/
+            scp $option "$2" huangmianbo@192.168.212.30:/tmp/
         ;;
         ideabox)
-            scp "$2" root@192.168.0.2:/tmp/
+            scp $option "$2" root@192.168.0.2:/tmp/
         ;;
         vm)
-            scp "$2" huangmianbo@vmware:/tmp/
+            scp $option "$2" huangmianbo@vmware:/tmp/
         ;;
         gitlab)
-            scp "$2" huangmianbo@gitlab:/tmp/
+            scp $option "$2" huangmianbo@gitlab:/tmp/
         ;;
         *)
-            scp "$2" root@192.168.0.2:/tmp/
+            scp $option "$2" root@192.168.0.2:/tmp/
         ;;
     esac
 }
