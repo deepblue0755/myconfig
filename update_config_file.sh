@@ -105,6 +105,9 @@ function copy_config_from_macosx()
     copy_files ~/.gitconfig  ./_gitconfig-$HOSTNAME 
     flag=$?
 
+    copy_files ~/.ssh/config  ./_ssh-config-$HOSTNAME 
+    flag=$?
+
     ls ~/.vim/bundle/ | sort -f > ./_vim_plugin_list-Huangs-MBP.txt
 
     print_result $flag
