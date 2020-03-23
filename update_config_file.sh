@@ -147,6 +147,9 @@ function copy_config_from_cygwin()
     copy_files $dir/d/cwRsyncServer/rsyncd.conf ./rsyncd.conf-$HOSTNAME
     flag=$?
 
+    copy_files $dir/d/cygwin64/home/mianb/.ssh/config ./ssh-config-$HOSTNAME
+    flag=$?
+
     print_result $flag
 
     upload_to_github
