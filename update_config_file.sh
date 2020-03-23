@@ -57,6 +57,13 @@ function upload_to_github()
 
     git push -u $(git remote | sed -n 1p) master
     
+    if [ "$?" != "0" ];then 
+        print_warning "try to git pull using ssh fail, try https" 
+        origin_https=$(git remote -v  | grep git@github.com | sed -n 1p | awk '{print $2}' | sed 's%git@github.com:%https://github.com/%g') 
+        git remote add origin_https $origin_https
+        git push origin_https master
+        git remote rm origin_https
+    fi
 }
 
 function copy_files()
