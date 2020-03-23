@@ -105,7 +105,7 @@ function copy_config_from_macosx()
     copy_files ~/.gitconfig  ./_gitconfig-$HOSTNAME 
     flag=$?
 
-    copy_files ~/.ssh/config  ./_ssh-config-$HOSTNAME 
+    copy_files ~/.ssh/config  ./_ssh_config-$HOSTNAME 
     flag=$?
 
     ls ~/.vim/bundle/ | sort -f > ./_vim_plugin_list-Huangs-MBP.txt
@@ -157,7 +157,7 @@ function copy_config_from_cygwin()
     copy_files $dir/d/cwRsyncServer/rsyncd.conf ./rsyncd.conf-$HOSTNAME
     flag=$?
 
-    copy_files $dir/d/cygwin64/home/mianb/.ssh/config ./ssh-config-$HOSTNAME
+    copy_files $dir/d/cygwin64/home/mianb/.ssh/config ./_ssh_config-$HOSTNAME
     flag=$?
 
     print_result $flag

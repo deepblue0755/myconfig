@@ -1,7 +1,12 @@
 HOST *
     ServerAliveInterval 30
     ServerAliveCountMax 3
+    ConnectTimeout 10
+    ConnectionAttempts 3
 
+# ------------------------------------------------------------------- #
+# Ideabox Machine
+# ------------------------------------------------------------------- #
 HOST cbpos
     user root
     hostname cbpos 
@@ -27,21 +32,25 @@ HOST cbpos
     hostname cbpos 
     identityfile ~/.ssh/id_rsa_googol_at_cbpos
 
-HOST virtualbox
-    user huangmianbo
-    hostname virtualbox 
-    identityfile ~/.ssh/id_rsa_hmb_at_virtualbox
-
+# ------------------------------------------------------------------- #
+# Vmware 
+# ------------------------------------------------------------------- #
 HOST vmware
     user huangmianbo
     hostname vmware 
     identityfile ~/.ssh/id_rsa_vmware
 
+# ------------------------------------------------------------------- #
+# Github 
+# ------------------------------------------------------------------- #
 Host github.com
     user git
     hostname github.com
     identityfile ~/.ssh/id_rsa_github
 
+# ------------------------------------------------------------------- #
+# MacOSx Machine
+# ------------------------------------------------------------------- #
 Host Huangs-MBP
     user huangmianbo
     hostname Huangs-MBP
@@ -52,6 +61,9 @@ Host 192.168.1.103
     hostname 192.168.1.103
     identityfile ~/.ssh/id_rsa_macosx
 
+# ------------------------------------------------------------------- #
+# Gigabyte-Brix Machine
+# ------------------------------------------------------------------- #
 Host gigabyte-brix
     user mianb
     hostname gigabyte-brix
@@ -62,17 +74,23 @@ Host 192.168.1.102
     hostname 192.168.1.102
     identityfile ~/.ssh/id_rsa_gigabyte
 
+# ------------------------------------------------------------------- #
+# Huangs-T580 Win10 Machine
+# ------------------------------------------------------------------- #
 Host Huangs-T580
     user mianb
     hostname Huangs-T580
     identityfile ~/.ssh/id_rsa_t580
 
+Host 192.168.0.22
+    user mianb
+    hostname 192.168.0.22
+    identityfile ~/.ssh/id_rsa_t580
 
-Host t430
-    user huangmianbo
-    hostname t430
-    identityfile ~/.ssh/id_rsa_t430
 
+# ------------------------------------------------------------------- #
+# T430 Linux Machine
+# ------------------------------------------------------------------- #
 Host 192.168.1.105
     user huangmianbo
     hostname 192.168.1.105
@@ -83,6 +101,14 @@ Host 192.168.50.28
     hostname 192.168.50.28
     identityfile ~/.ssh/id_rsa_t430
 
+Host t430
+    user huangmianbo
+    hostname t430
+    identityfile ~/.ssh/id_rsa_t430
+
+# ------------------------------------------------------------------- #
+# Virtual Box Gitlab Machine
+# ------------------------------------------------------------------- #
 Host gitlab
     user huangmianbo
     hostname gitlab
@@ -93,6 +119,9 @@ Host 192.168.56.103
     hostname 192.168.56.103
     identityfile ~/.ssh/id_rsa_gitlab
 
+# ------------------------------------------------------------------- #
+# CPAC Server
+# ------------------------------------------------------------------- #
 Host 192.168.212.30 
     user huangmianb
     hostname 192.168.212.30
