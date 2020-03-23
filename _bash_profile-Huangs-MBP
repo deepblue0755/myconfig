@@ -97,7 +97,8 @@ function _config_alias()
     alias tl='_task_list'
     alias typora='_typora'
     alias v2ray='V2RayX &> /dev/null &'
-    alias vi='vim --noplugin'
+    alias vim='mvim'
+    alias vi='mvim --noplugin'
     alias vlc='_vlc'
     alias vpn='/Applications/ShadowsocksX-NG-R8.app/Contents/MacOS/ShadowsocksX-NG &'
     alias zynq='_login_remote_machine zynq'
@@ -120,12 +121,10 @@ function _config_bash_color()
 function _config_path()
 {
     PATH=/usr/local/bin:$PATH;
-    PATH=/usr/local/Cellar/vim/8.1.1501/bin:$PATH
+    PATH=/usr/local/Cellar/vim/8.2.0423/bin:$PATH
     PATH=/usr/local/Cellar/macvim/8.1-156/bin:$PATH
     PATH=/usr/local/Cellar/git/2.22.0/bin:$PATH
-    PATH=/usr/local/Cellar/python/3.7.5/bin:$PATH
     PATH=/usr/local/texlive/2019/bin/x86_64-darwin:$PATH
-    PATH=/usr/local/Cellar/python/3.5.7/bin/:$PATH
     PATH=/usr/local/opt/icu4c/bin:$PATH
     PATH=/usr/local/opt/icu4c/sbin:$PATH
     PATH=/usr/local/opt/qt/bin:$PATH
@@ -144,9 +143,9 @@ function _config_pkg_path()
     PKG_CONFIG_PATH=/usr/local/Cellar/ncurses/6.1/lib/pkgconfig:$PKG_CONFIG_PATH;
     PKG_CONFIG_PATH=/usr/local/Cellar/nettle/3.4.1/lib/pkgconfig:$PKG_CONFIG_PATH;
     PKG_CONFIG_PATH=/usr/local/Cellar/mpfr/4.0.2/lib/pkgconfig:$PKG_CONFIG_PATH;
-    PKG_CONFIG_PATH=/usr/local/Cellar/python/3.5.7/lib/pkgconfig:$PKG_CONFIG_PATH;
-    PKG_CONFIG_PATH=/usr/local/Cellar/python/3.7.3/lib/pkgconfig:$PKG_CONFIG_PATH;
-    PKG_CONFIG_PATH=/usr/local/Cellar/python/3.7.3/Frameworks/Python.framework/Versions/3.7/lib/pkgconfig:$PKG_CONFIG_PATH;
+
+    PKG_CONFIG_PATH=/usr/local/Cellar/python/3.7.7/lib/pkgconfig:$PKG_CONFIG_PATH;
+    # PKG_CONFIG_PATH=/usr/local/Cellar/python/3.7.3/Frameworks/Python.framework/Versions/3.7/lib/pkgconfig:$PKG_CONFIG_PATH;
     PKG_CONFIG_PATH=/usr/local/Cellar/libyaml/0.2.2/lib/pkgconfig:$PKG_CONFIG_PATH;
     PKG_CONFIG_PATH=/usr/local/Cellar/readline/8.0.0_1/lib/pkgconfig:$PKG_CONFIG_PATH;
     PKG_CONFIG_PATH=/usr/local/Cellar/sqlite/3.28.0/lib/pkgconfig:$PKG_CONFIG_PATH;
@@ -189,7 +188,8 @@ function _export_environ_var()
     export HISTSIZE=10000
     export HISTFILESIZE=100000
     export HISTTIMEFORMAT="%F %T "
-    export HISTIGNORE="ls:ls *:history:clear:pwd"
+    export HISTIGNORE="ls:history:clear:pwd"
+    export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.aliyun.com/homebrew/homebrew-bottles
 }
 
 # ------------------------------------------------------------------- #
