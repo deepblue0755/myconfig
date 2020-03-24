@@ -1,5 +1,5 @@
 [credential]
-	helper = manager
+	helper = store
 [alias]
     br = branch
     st = status
