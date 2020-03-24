@@ -55,7 +55,7 @@ function upload_to_github()
 
     git commit -m "update file $comment from $USER @ $HOSTNAME"
 
-    git push -u $(git remote | sed -n 1p) master
+    git push -u $(git remote -v | grep "git@github.com" | sed -n 1p | awk '{print $1}') master
     
     if [ "$?" != "0" ];then 
         print_warning "try to git pull using ssh fail, try https" 
