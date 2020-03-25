@@ -1,0 +1,38 @@
+# use chroot = false
+# strict modes = false
+# hosts allow = *
+# log file = rsyncd.log
+
+# Module definitions
+# Remember cygwin naming conventions : c:\work becomes /cygwin/c/work
+#
+# [test]
+# path = /cygdrive/c/work
+# read only = false
+# transfer logging = yes
+
+use chroot = false
+uid = 0
+gid = 0
+strict modes = false
+log file = rsyncd.log
+port = 10556
+
+[book-linux]
+path = /cygdrive/n/01_Books/Linux
+read only = false
+transfer logging = yes
+auth users = mianb
+secrets file = etc/testuser.pas
+hosts allow = *
+hosts deny = 0.0.0.0/0
+
+[book-cs]
+path = /cygdrive/n/01_Books/Computer-Science-CS
+read only = false
+transfer logging = yes
+auth users = mianb
+secrets file = etc/testuser.pas
+hosts allow = *
+hosts deny = 0.0.0.0/0
+
