@@ -1,5 +1,6 @@
+# ------------------------------------------------------------------- #
 # for T430 Ubuntu 16.04
-#
+# ------------------------------------------------------------------- #
 Host 192.168.1.105
     user huangmianbo
     HostName 192.168.1.105
@@ -10,23 +11,33 @@ Host t430
     HostName t430
     IdentityFile ~/.ssh/id_rsa_hmb_at_t430
 
-
+# ------------------------------------------------------------------- #
 # for MacOSx
-#
+# ------------------------------------------------------------------- #
 Host Huangs-MBP
     user huangmianbo
     HostName Huangs-MBP
     IdentityFile ~/.ssh/id_rsa_hmb_at_macosx
-
+    
+# ------------------------------------------------------------------- #
 # for github
-#
+# ------------------------------------------------------------------- #
 Host github.com
     User git
     HostName github.com
     IdentityFile ~/.ssh/id_rsa_github
 
+# ------------------------------------------------------------------- #
+# for gitlab
+# ------------------------------------------------------------------- #
+Host gitlab.com
+    User git
+    HostName gitlab.com
+    IdentityFile ~/.ssh/id_rsa_gitlab_dot_com
+
+# ------------------------------------------------------------------- #
 # for gigabyte-brix mini computer
-#
+# ------------------------------------------------------------------- #
 Host 192.168.50.116
     user mianb 
     HostName 192.168.50.116
@@ -42,8 +53,9 @@ Host gigabyte-brix
     HostName gigabyte-brix
     IdentityFile ~/.ssh/id_rsa_gigabyte
 
-#  for raspberrypi3
-#
+# ------------------------------------------------------------------- #
+# for raspberrypi3
+# ------------------------------------------------------------------- #
 Host 192.168.199.102
     user bluegene 
     HostName 192.168.199.102
@@ -64,8 +76,9 @@ Host raspberrypi3
     HostName raspberrypi3
     IdentityFile ~/.ssh/id_rsa_hmb_at_raspberry3
 
-#  for raspberrypi3
-#
+# ------------------------------------------------------------------- #
+# for raspberrypi3
+# ------------------------------------------------------------------- #
 Host raspberrypi3b-xeno3
     user pi 
     HostName raspberrypi3b-xeno3
@@ -86,8 +99,9 @@ Host raspberrypi3-xeno
     HostName raspberrypi3-xeno3
     IdentityFile ~/.ssh/id_rsa_root_at_rasp3_xeno3_4980
 
-#  for raspberrypi4
-#
+# ------------------------------------------------------------------- #
+# for raspberrypi3
+# ------------------------------------------------------------------- #
 Host raspberrypi4
     user pi 
     HostName raspberrypi4
@@ -103,8 +117,9 @@ Host 192.168.50.73
     HostName 192.168.50.73
     IdentityFile ~/.ssh/id_rsa_hmb_at_raspberry4
 
-#  for beaglebone
-#
+# ------------------------------------------------------------------- #
+# for beaglebone
+# ------------------------------------------------------------------- #
 Host beaglebone
     user huangmianbo 
     HostName beaglebone
@@ -115,28 +130,34 @@ Host 192.168.50.204
     HostName 192.168.50.204
     IdentityFile ~/.ssh/id_rsa_hmb_at_beaglebone
 
-#  for beaglebone with xenomai
-#
+# ------------------------------------------------------------------- #
+# for beaglebone with xenomai
+# ------------------------------------------------------------------- #
 Host beaglebone
     user root 
     HostName beaglebone
     IdentityFile ~/.ssh/id_rsa_root_at_beaglebone_3_8_3_xenomai
 
+# ------------------------------------------------------------------- #
 # for googol's ubuntu kylin
-#
+# ------------------------------------------------------------------- #
 Host cbpos
     user root 
     HostName cbpos
     IdentityFile ~/.ssh/id_rsa_googol
 
+# ------------------------------------------------------------------- #
 # for Huangs-T580 win10
+# ------------------------------------------------------------------- #
 Host Huangs-T580
     user mianb
     HostName Huangs-T580
     IdentityFile ~/.ssh/id_rsa_t580
 
+# ------------------------------------------------------------------- #
 # for virtualbox gitlab
+# ------------------------------------------------------------------- #
 Host 192.168.56.103
     User huangmianbo
     HostName  192.168.56.103
-    IdentityFile ~/.ssh/id_rsa_gitlab
+    IdentityFile ~/.ssh/id_rsa_gitlab_virtualbox

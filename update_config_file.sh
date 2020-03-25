@@ -34,6 +34,10 @@ function print_result()
 
 function upload_to_github()
 {
+    if [ -f "../18-bash-utils/25_git_utils_for_multi_folders.sh" ];then
+        ../18-bash-utils/25_git_utils_for_multi_folders.sh 5 .
+        return 0
+    fi
 
     files=`git status | grep "modified:" | awk -F":" '{print $2}'`
 
@@ -88,7 +92,7 @@ function copy_config_from_macosx()
 {
     echo 
     print_infor "pull update from github ..."
-    git pull $(git remote | sed -n 1p) master
+    git pull  $(git remote -v | grep "github" | sed -n 1p | awk '{print $1}') master
     echo 
 
     flag=0
@@ -123,7 +127,7 @@ function copy_config_from_cygwin()
 {
     echo 
     print_infor "pull update from github ..."
-    git pull 
+    git pull  $(git remote -v | grep "github" | sed -n 1p | awk '{print $1}') master
     echo 
 
     flag=0
@@ -169,7 +173,7 @@ function copy_config_from_t430()
 {
     echo 
     print_infor "pull update from github ..."
-    git pull 
+    git pull  $(git remote -v | grep "github" | sed -n 1p | awk '{print $1}') master
     echo 
     
     flag=0
