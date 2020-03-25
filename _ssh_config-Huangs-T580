@@ -48,6 +48,10 @@ Host github.com
     hostname github.com
     identityfile ~/.ssh/id_rsa_github
 
+Host gitlab.com
+    user git
+    hostname gitlab.com
+    identityfile ~/.ssh/id_rsa_gitlab_dot_com
 # ------------------------------------------------------------------- #
 # MacOSx Machine
 # ------------------------------------------------------------------- #

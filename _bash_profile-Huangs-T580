@@ -1051,7 +1051,8 @@ function _tmux_new()
         ;;
         *)
         tmux new-session -d -s session-$tmux_cnt  -n cygwin
-        tmux new-window -d -n vmware
+        tmux new-window -d -n vmware-1
+        tmux new-window -d -n vmware-2
         tmux new-window -d -n cbpos
         ping -c 1 -W 1 192.168.212.30 &> /dev/null  && tmux new-window -d -n server 
         tmux attach-session -d -t session-$tmux_cnt
