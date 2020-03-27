@@ -192,6 +192,9 @@ function main()
     print_infor "Running Scripts $0 At $HOSTNAME !!"
     echo --------------------------------------------------------
 
+    # set working directory
+    pushd $dir/d/documents/11-configs-from-github &> /dev/null
+
     case $HOSTNAME in 
 
         Gigabyte-Brix)
@@ -209,6 +212,8 @@ function main()
             copy_config_from_t430
         ;;
     esac
+
+    popd &> /dev/null
 }
 
 
