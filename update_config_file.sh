@@ -95,6 +95,14 @@ function copy_config_from_macosx()
     git pull  $(git remote -v | grep "github" | sed -n 1p | awk '{print $1}') master
     echo 
 
+    git_utils=../18-bash-utils/25_git_utils_for_multi_folders.sh
+
+    # generate vim plugin
+    test -f $git_utils  || { print_error "could not find $git_utils" && return 1; }
+    test -f $git_utils  && {  \
+        $git_utils clone ~/.vim/bundle && \
+        mv -iv "$(ls -t /tmp/clone*.sh | head -n 1)" ./_vim_clone_plugin_$HOSTNAME.sh
+    }
     flag=0
 
     copy_files ~/.bash_profile ./_bash_profile-$HOSTNAME 
