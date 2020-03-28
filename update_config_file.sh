@@ -139,12 +139,18 @@ function copy_config_from_cygwin()
         dir=
     fi
 
+    git_utils=../18-bash-utils/25_git_utils_for_multi_folders.sh
+
+    # generate vim plugin
+    # ls $dir/d/Vim/vimfiles/bundle | sort > ./_vim_plugin_list-$HOSTNAME.txt 
+    test -f $git_utils  || { print_error "could not find $git_utils" && return 1; }
+    test -f $git_utils  && {  \
+        $git_utils clone $dir/d/vim/vimfiles/bundle && \
+        mv -iv "$(ls -t /d/temp/clone*.sh | head -n 1)" ./_vim_clone_plugin_$HOSTNAME.sh
+    }
 
     copy_files $dir/d/Vim/_vimrc ./_vimrc-$HOSTNAME
     flag=$?
-
-
-    ls $dir/d/Vim/vimfiles/bundle | sort > ./_vim_plugin_list-$HOSTNAME.txt 
 
     copy_files $dir/d/cygwin64/home/$USER/.tmux.conf ./_tmux.conf-$HOSTNAME
     flag=$?
