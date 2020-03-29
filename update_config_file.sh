@@ -100,7 +100,7 @@ function copy_config_from_macosx()
     # generate vim plugin
     test -f $git_utils  || { print_error "could not find $git_utils" && return 1; }
     test -f $git_utils  && {  \
-        $git_utils clone ~/.vim/bundle && \
+        $git_utils clone ~/.vim/bundle &> /dev/null && \
         copy_files "$(ls -t /tmp/clone*.sh | head -n 1)" ./_vim_clone_plugin_$HOSTNAME.sh &&
         flag=$?
     }
@@ -152,7 +152,7 @@ function copy_config_from_cygwin()
     # generate vim plugin
     test -f $git_utils  || { print_error "could not find $git_utils" && return 1; }
     test -f $git_utils  && {  \
-        $git_utils clone $dir/d/vim/vimfiles/bundle && \
+        $git_utils clone $dir/d/vim/vimfiles/bundle &> /dev/null && \
         copy_files "$(ls -t /d/temp/clone*.sh | head -n 1)" ./_vim_clone_plugin_$HOSTNAME.sh
         flag=$?
     }
