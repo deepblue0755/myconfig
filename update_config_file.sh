@@ -96,14 +96,14 @@ function copy_config_from_macosx()
     echo 
 
     git_utils=../18-bash-utils/25_git_utils_for_multi_folders.sh
-
+    flag=0
     # generate vim plugin
     test -f $git_utils  || { print_error "could not find $git_utils" && return 1; }
     test -f $git_utils  && {  \
         $git_utils clone ~/.vim/bundle && \
-        mv -iv "$(ls -t /tmp/clone*.sh | head -n 1)" ./_vim_clone_plugin_$HOSTNAME.sh
+        copy_files "$(ls -t /tmp/clone*.sh | head -n 1)" ./_vim_clone_plugin_$HOSTNAME.sh &&
+        flag=$?
     }
-    flag=0
 
     copy_files ~/.bash_profile ./_bash_profile-$HOSTNAME 
     flag=$?
@@ -150,11 +150,11 @@ function copy_config_from_cygwin()
     git_utils=../18-bash-utils/25_git_utils_for_multi_folders.sh
 
     # generate vim plugin
-    # ls $dir/d/Vim/vimfiles/bundle | sort > ./_vim_plugin_list-$HOSTNAME.txt 
     test -f $git_utils  || { print_error "could not find $git_utils" && return 1; }
     test -f $git_utils  && {  \
         $git_utils clone $dir/d/vim/vimfiles/bundle && \
-        mv -iv "$(ls -t /d/temp/clone*.sh | head -n 1)" ./_vim_clone_plugin_$HOSTNAME.sh
+        copy_files "$(ls -t /d/temp/clone*.sh | head -n 1)" ./_vim_clone_plugin_$HOSTNAME.sh
+        flag=$?
     }
 
     copy_files $dir/d/Vim/_vimrc ./_vimrc-$HOSTNAME

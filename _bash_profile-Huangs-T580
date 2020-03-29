@@ -444,16 +444,17 @@ function _expl()
     esac
 }
 
-function _getvb()
-{
-    scp huangmianbo@virtualbox:$1 ./
-}
-
 function _getlinux()
 {
     case $1 in
         t430)
             scp huangmianbo@t430:/tmp/$2 ./
+        ;;
+        vb | gitlab)
+            scp huangmianbo@virtualbox:$2 ./
+        ;;
+        vm | vmware)
+            scp huangmianbo@vmware:$2 ./
         ;;
         *)
             scp root@cbpos:/tmp/$2 ./
@@ -461,10 +462,13 @@ function _getlinux()
     esac
 }
 
-function _getvm()
+function _git-branch-prompt 
 {
-    scp huangmianbo@vmware:$1 ./
+    
+    local branch=$(git symbolic-ref --short -q HEAD 2>/dev/null)
+    test -n "$branch" &&  printf " [%s]" $branch
 }
+
 
 function _gvim()
 {
@@ -890,7 +894,7 @@ function _set_alias()
     alias btask='_backup_task'
     alias cbpos='_login_machine'
     alias cgdb='cgdb -q'
-    alias config='gvim --remote-silent D:\\cygwin64\\home\\mianb\\\.bash_profile &'
+    alias config='gvim --remote-silent D:\\cygwin64\\home\\mianb\\.bash_profile &'
     alias diff='colordiff --exclude=*.git*'
     alias dmidecode='systeminfo'
     alias cplinux='_cplinux ideabox'
@@ -909,8 +913,8 @@ function _set_alias()
     alias gdb='gdb -q'
     alias getlinux='_getlinux cbpos'
     alias gett430='_getlinux t430'
-    alias getvb='_getvb'
-    alias getvm='_getvm'
+    alias getvb='_getlinux vb'
+    alias getvm='_getlinux vm'
     alias gigabyte='_login_machine gigabyte'
     alias gitlab='_login_machine gitlab'
     alias googol='_login_machine googol'
@@ -925,6 +929,7 @@ function _set_alias()
     alias mac='_login_machine mac'
     alias md2pdf='_md2pdf'
     alias mydate='date +%Y%m%d%H%M%S'
+    alias mygit='/d/documents/18-bash-utils/25_git_utils_for_multi_folders.sh'
     alias mysync='_sync'
     alias mv='mv -iv'
     alias netstat='_netstat'
@@ -993,6 +998,11 @@ function _set_path()
     if [ "$SHELL" == "/bin/bash" ];then
         export PATH=$dir/d/cygwin64/bin:$PATH
     fi
+}
+
+function _set_PS1()
+{
+    PS1="\u@\h \[\033[0;36m\]\W\[\033[0m\]\[\033[0;32m\]\$(_git-branch-prompt)\[\033[0m\] \$ "
 }
 
 function _set_lang()
@@ -1103,20 +1113,24 @@ function _vlc()
 # ------------------------------------------------------------------- #
 # Customer Main Entry
 # ------------------------------------------------------------------- #
+function main ()
+{
+    _export_var
+    _set_path
+    _set_alias
+    _set_lang
+    _set_PS1
 
-_export_var
-_set_path
-_set_alias
-_set_lang
+    set -o vi
 
-set -o vi
-
-if [ "$SHELL" == "/bin/bash" ];then
-    task list
-fi
+    if [ "$SHELL" == "/bin/bash" ];then
+        task list
+    fi
 
 
-if [ "$vm_start" != "true" ];then
-    print_warning "no start vm"
-    # start vm
-fi
+    if [ "$vm_start" != "true" ];then
+        print_warning "no start vm"
+        # start vm
+    fi
+}
+main $*
