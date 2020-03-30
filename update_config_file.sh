@@ -34,10 +34,7 @@ function print_result()
 
 function upload_to_github()
 {
-    if [ -f "../18-bash-utils/25_git_utils_for_multi_folders.sh" ];then
-        ../18-bash-utils/25_git_utils_for_multi_folders.sh 5 .
-        return 0
-    fi
+    $git_utils pull .
 
     files=`git status | grep "modified:" | awk -F":" '{print $2}'`
 
@@ -95,15 +92,12 @@ function copy_config_from_macosx()
     git pull  $(git remote -v | grep "github" | sed -n 1p | awk '{print $1}') master
     echo 
 
-    git_utils=../18-bash-utils/25_git_utils_for_multi_folders.sh
-    flag=0
+    local flag=0
+
     # generate vim plugin
-    test -f $git_utils  || { print_error "could not find $git_utils" && return 1; }
-    test -f $git_utils  && {  \
-        $git_utils clone ~/.vim/bundle &> /dev/null && \
-        copy_files "$(ls -t /tmp/clone*.sh | head -n 1)" ./_vim_clone_plugin_$HOSTNAME.sh &&
-        flag=$?
-    }
+    $git_utils clone ~/.vim/bundle &> /dev/null && \
+    copy_files "$(ls -t /tmp/clone*.sh | head -n 1)" ./_vim_clone_plugin_$HOSTNAME.sh &&
+    flag=$?
 
     copy_files ~/.bash_profile ./_bash_profile-$HOSTNAME 
     flag=$?
@@ -138,7 +132,7 @@ function copy_config_from_cygwin()
     git pull  $(git remote -v | grep "github" | sed -n 1p | awk '{print $1}') master
     echo 
 
-    flag=0
+    local flag=0
 
     if [ "$shell" == "/usr/bin/bash" ];then
         dir=/cygdrive
@@ -147,15 +141,11 @@ function copy_config_from_cygwin()
         dir=
     fi
 
-    git_utils=../18-bash-utils/25_git_utils_for_multi_folders.sh
 
     # generate vim plugin
-    test -f $git_utils  || { print_error "could not find $git_utils" && return 1; }
-    test -f $git_utils  && {  \
-        $git_utils clone $dir/d/vim/vimfiles/bundle &> /dev/null && \
-        copy_files "$(ls -t /d/temp/clone*.sh | head -n 1)" ./_vim_clone_plugin_$HOSTNAME.sh
-        flag=$?
-    }
+    $git_utils clone $dir/d/vim/vimfiles/bundle &> /dev/null && \
+    copy_files "$(ls -t /d/temp/clone*.sh | head -n 1)" ./_vim_clone_plugin_$HOSTNAME.sh
+    flag=$?
 
     copy_files $dir/d/Vim/_vimrc ./_vimrc-$HOSTNAME
     flag=$?
@@ -205,6 +195,9 @@ function main()
     echo --------------------------------------------------------
     print_infor "Running Scripts $0 At $HOSTNAME !!"
     echo --------------------------------------------------------
+
+    git_utils=../18-bash-utils/25_git_utils.sh
+    test -f $git_utils  || { print_error "could not find $git_utils" && return 1; }
 
     # set working directory
     pushd $dir/d/documents/11-configs-from-github &> /dev/null
