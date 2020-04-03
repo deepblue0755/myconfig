@@ -529,31 +529,8 @@ function _ifconfig()
 function _login_machine()
 {
     case $1 in
-    1)
-        ping -c 1 cpbos > /dev/null
-        if [ "$?" == "0" ];then
-            print_infor "login cbpos ..."
-            ssh root@cbpos
-            return 0
-        fi
-    ;;
-    2)
-        ping -c 1 -W 1 192.168.50.213 > /dev/null
-        if [ "$?" == "0" ];then
-            print_infor "login 192.168.50.213 ..."
-            ssh root@192.168.50.213
-            return 0
-        fi
-    ;;
-    x)
-        ping -c 1 -W 1 192.168.0.3 > /dev/null
-        if [ "$?" == "0" ];then
-            print_infor "login 192.168.0.3 ..."
-            ssh root@192.168.0.3
-            return 0
-        else
-            print_infor "error,could not ping cbpos!!"
-        fi
+    cbpos | 3)
+        ssh root@cbpos
     ;;
     gitlab)
         ssh huangmianbo@192.168.56.103
@@ -1130,8 +1107,8 @@ function main ()
 
 
     if [ "$vm_start" != "true" ];then
-        print_warning "no start vm"
-        # start vm
+        # print_warning "no start vm"
+        _start vm  &> /dev/null
     fi
 }
 main $*
