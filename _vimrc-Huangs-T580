@@ -570,6 +570,9 @@ if !isdirectory(s:vim_tags)
    silent! call mkdir(s:vim_tags, 'p')
 endif
 
+"misc setting for gutentags plugin
+let g:gutentags_generate_on_write=0
+let g:gutentags_exclude_filetypes=['vim','dosbatch','bash','sh']
 "--------------------------------------------------------------------------
 " < vimwiki list setting >
 "--------------------------------------------------------------------------
