@@ -833,7 +833,9 @@ function _stop()
 
 function _sudo()
 {
-    runas /user:mianb /savecred $*  
+    # runas /user:mianb /savecred $*  
+    echo "under construction"
+    $*
 }
 
 function _sync()
@@ -1044,6 +1046,8 @@ function _tmux_new()
         tmux new-window -d -n cbpos-1
         tmux new-window -d -n cbpos-2
         ping -c 1 -W 1 192.168.212.30 &> /dev/null  && tmux new-window -d -n server 
+        ping -c 1 -W 1 192.168.1.105  &> /dev/null  && tmux new-window -d -n t430 
+        ping -c 1 -W 1 192.168.1.103  &> /dev/null  && tmux new-window -d -n MacOS
         tmux attach-session -d -t session-$tmux_cnt
         ;;
     esac
