@@ -272,9 +272,7 @@ function _backup_scripts()
     ./update_bash_files.sh cbpos
     ./update_bash_files.sh server
 
-
     popd &> /dev/null
-
 }
 
 function _backup_all()
@@ -650,15 +648,14 @@ function _poweroff()
             { print_infor "ping 192.168.0.2" && ping -c 1 -W 1 192.168.0.2 && ssh root@192.168.0.2 $linux_poweroff_cmd; }
 
             echo "--------------------------------------------------"
-            echo " machine 5: Vmware "
+            echo " machine 5: Vmware Ubuntu 14.04"
             echo "--------------------------------------------------"
-            # vmrun stop "D:\\Virtual Machines\\Ubuntu-14.04-Kylin\\\Ubuntu.vmx" nogui
-            stop vm
+            _stop vm
 
             echo "--------------------------------------------------"
-            echo " machine 6: Gitlab "
+            echo " machine 6: VirtualBox Gitlab Machine"
             echo "--------------------------------------------------"
-            stop vb
+            _stop vb
         ;;
         *)
             read -p "shutdown computer $HOSTNAME? (y/n): " input
@@ -841,20 +838,20 @@ function _sudo()
 function _sync()
 {
     case $1 in 
-        1)
+        1 | book1)
             rsync -vzrt --progress --include=*.pdf --exclude=*.* \
             gigabyte-brix::book-linux \
             "/cygdrive/d/Book/Linux/"  \
             --port=10556
         ;;
-        2)
+        2 | book2)
             rsync -vzrt --progress --include=*.pdf --exclude=*.* \
             gigabyte-brix::book-cs \
             "/cygdrive/d/Book/Computer-Science-CS/"  \
             --port=10556
         ;;
         *)
-            print_infor "mysync [option]"
+            print_infor "mysync 1:book1|2:book2"
         ;;
     esac
 }
@@ -908,6 +905,7 @@ function _set_alias()
     alias mac='_login_machine mac'
     alias md2pdf='_md2pdf'
     alias mydate='date +%Y%m%d%H%M%S'
+    alias myffmpeg='/d/documents/18-bash-utils/20_ffmpeg_utils.sh'
     alias mygit='/d/documents/18-bash-utils/25_git_utils.sh'
     alias mysync='_sync'
     alias mv='mv -iv'
@@ -922,6 +920,7 @@ function _set_alias()
     alias rand='_rand'
     alias reboot='shutdown /r'
     alias reload='source ~/.bash_profile'
+    alias rename='/d/documents/18-bash-utils/01_rename_utils.sh'
     alias rkh='_reset_known_host'
     alias rm='rm -iv'
     alias rtai='cd ~/documents/RTAI'
@@ -1045,7 +1044,7 @@ function _tmux_new()
         tmux new-window -d -n vmware-2
         tmux new-window -d -n cbpos-1
         tmux new-window -d -n cbpos-2
-        ping -c 1 -W 1 192.168.212.30 &> /dev/null  && tmux new-window -d -n server 
+        ping -c 2 -W 1 192.168.212.30 &> /dev/null  && tmux new-window -d -n server 
         ping -c 1 -W 1 192.168.1.105  &> /dev/null  && tmux new-window -d -n t430 
         ping -c 1 -W 1 192.168.1.103  &> /dev/null  && tmux new-window -d -n MacOS
         tmux attach-session -d -t session-$tmux_cnt
