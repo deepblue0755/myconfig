@@ -356,7 +356,7 @@ function _cplinux()
             scp $option "$2" huangmianbo@192.168.212.30:/tmp/
         ;;
         ideabox)
-            scp $option "$2" root@192.168.0.2:/tmp/
+            scp $option "$2" root@cbpos:/tmp/
         ;;
         vm)
             scp $option "$2" huangmianbo@vmware:/tmp/
@@ -365,7 +365,7 @@ function _cplinux()
             scp $option "$2" huangmianbo@gitlab:/tmp/
         ;;
         *)
-            scp $option "$2" root@192.168.0.2:/tmp/
+            scp $option "$2" root@cbpos:/tmp/
         ;;
     esac
 }
@@ -843,12 +843,22 @@ function _sync()
             ping -c 1 -W 1 192.168.212.30 &> /dev/null
             test $? -eq 0  || return 1
             rsync -vzrt --progress -e ssh \
-            --exclude=vim \
             "huangmianbo@192.168.212.30:/home/huangmianbo/git/" \
             "/cygdrive/d/backup/git/"  \
         ;;
+        4 | vim)
+            pushd $dir/d/vim/vimfiles/bundle &> /dev/null
+            for folder in *
+            do
+                test -d "$folder" || continue
+                pushd "$folder" &> /dev/null
+                git pull local master
+                popd &> /dev/null
+            done
+            popd &> /dev/null
+        ;;
         *)
-            print_infor "mysync 1:book1|2:book2"
+            print_infor "mysync 1:book1|2:book2|3:git|4:vim"
         ;;
     esac
 }
