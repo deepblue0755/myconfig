@@ -140,3 +140,14 @@ Host 192.168.212.30
     user root
     hostname 192.168.212.30
     identityfile ~/.ssh/id_rsa_root_at_cpac
+# ------------------------------------------------------------------- #
+# Beaglebone
+# ------------------------------------------------------------------- #
+Host 192.168.7.2
+    user root
+    hostname 192.168.7.2
+    identityfile ~/.ssh/id_rsa_root_at_beaglebone
+Host beaglebone
+    user root
+    hostname beaglebone
+    identityfile ~/.ssh/id_rsa_root_at_beaglebone

@@ -554,8 +554,18 @@ function _login_machine()
     server)
         ssh huangmianbo@192.168.212.30
     ;;
-    iso)
-        ssh gitlab-test@192.168.56.112
+    beaglebone)
+        case $2 in 
+        1 | usb)
+            ssh root@192.168.7.2
+        ;;
+        2 | eth0 )
+            ssh root@192.168.1.110
+        ;;
+        *)
+            ssh root@192.168.7.2
+        ;;
+        esac
     ;;
     *)
         for ((i=1;i<100;i++))
@@ -613,38 +623,45 @@ function _poweroff()
         ;;
         all)
             echo "--------------------------------------------------"
-            echo " machine 1: gigabyte-brix win10"
+            echo " Machine 1: gigabyte-brix win10"
             echo "--------------------------------------------------"
             print_infor "try to poweroff gigabyte ..."
-            { print_infor "ping 192.168.1.102 ..." && ping -c 1 -W 1 192.168.1.102 && ssh mianb@192.168.1.102 $win_poweroff_cmd; }
+            { print_infor "ping 192.168.1.102 ..." && ping -c 1 -W 1 192.168.1.102 &> /dev/null && ssh mianb@192.168.1.102 $win_poweroff_cmd; }
 
             echo "--------------------------------------------------"
-            echo " machine 2: Ubuntu Linux T430"
+            echo " Machine 2: Ubuntu Linux T430"
             echo "--------------------------------------------------"
             print_infor "try to poweroff t430 ..."
-            { print_infor "ping 192.168.1.105" && ping -c 1 -W 1 192.168.1.105 && ssh huangmianbo@192.168.1.105 $linux_poweroff_cmd; }
+            { print_infor "ping 192.168.1.105" && ping -c 1 -W 1 192.168.1.105 &> /dev/null && ssh huangmianbo@192.168.1.105 $linux_poweroff_cmd; }
 
             echo "--------------------------------------------------"
-            echo " machine 3: Mac OSx"
+            echo " Machine 3: Mac OSx"
             echo "--------------------------------------------------"
             print_infor "try to poweroff mac ..."
-            { print_infor "ping 192.168.1.103" && ping -c 1 -W 1 192.168.1.103 && ssh huangmianbo@192.168.1.103 $linux_poweroff_cmd; }
+            { print_infor "ping 192.168.1.103" && ping -c 1 -W 1 192.168.1.103 &> /dev/null && ssh huangmianbo@192.168.1.103 "sudo shutdown -h now"; }
 
             echo "--------------------------------------------------"
-            echo " machine 4: IdeaBox Pro Ubuntu 14.04 "
+            echo " Machine 4: IdeaBox Pro Ubuntu 14.04 "
             echo "--------------------------------------------------"
             print_infor "try to poweroff ideabox ..."
-            { print_infor "ping 192.168.0.2" && ping -c 1 -W 1 192.168.0.2 && ssh root@192.168.0.2 $linux_poweroff_cmd; }
+            { print_infor "ping 192.168.0.2" && ping -c 1 -W 1 192.168.0.2 &> /dev/null && ssh root@192.168.0.2 $linux_poweroff_cmd; }
 
             echo "--------------------------------------------------"
-            echo " machine 5: Vmware Ubuntu 14.04"
+            echo " Machine 5: Vmware Ubuntu 14.04"
             echo "--------------------------------------------------"
             _stop vm
 
             echo "--------------------------------------------------"
-            echo " machine 6: VirtualBox Gitlab Machine"
+            echo " Machine 6: VirtualBox Gitlab Machine"
             echo "--------------------------------------------------"
             _stop vb
+
+            echo "--------------------------------------------------"
+            echo " Machine 7: Beaglebone"
+            echo "--------------------------------------------------"
+            print_infor "try to poweroff beaglebone  ..."
+            { print_infor "ping beaglebone" && ping -c 1 -W 1 beaglebone &> /dev/null && ssh root@beaglebone $linux_poweroff_cmd; }
+            
         ;;
         *)
             read -p "shutdown computer $HOSTNAME? (y/n): " input
@@ -771,6 +788,9 @@ function _start()
             print_infor "start default virtual box machine \"Ubuntu-1804\" ... "
             VBoxManage startvm "Ubuntu-1804" --type headless 2>&1 > /dev/null &
         ;;
+        rsync | sync)
+            runas /user:mianb /savecred "net start rsyncserver"
+        ;;
         list)
             echo list virtual machines ...
             echo vmware:
@@ -780,7 +800,8 @@ function _start()
             VBoxManage list runningvms
         ;;
         *)
-            print_error "error,unknown virtual machine"
+            print_error "error,unknown machine or service"
+            print_infor "start |vb|vm|rsync|"
         ;;
     esac
 }
@@ -796,20 +817,15 @@ function _stop()
         vm | ubuntu1404)
             echo stop vmware machine ...  
             vmrun stop "D:\\Vmware-Machines\\Ubuntu-14.04-Kylin\\\Ubuntu.vmx" nogui
-            if [ "$?" == "0" ];then
-                export vm_start=false
-            fi
+            test $? -eq 0 && export vm_start=false
         ;;
         vb | ubuntu1804)
             echo stop virtual box machine ... 
             VBoxManage controlvm "Ubuntu-1804" poweroff
-            if [ "$?" == "0" ];then
-                export vb_start=false
-            fi
+            test $? -eq 0 && export vb_start=false
         ;;
-        iso)
-            echo stop iso test virtual box machine ... 
-            VBoxManage controlvm "ISO" poweroff
+        rsync | sync)
+            runas /user:mianb /savecred "net stop rsyncserver"
         ;;
         *)
             print_error "unknown virtual machine" 
@@ -873,6 +889,7 @@ function _set_alias()
     alias bcomp='_bcomp'
     alias bconfig='_backup_config'
     alias bdoc='_backup_doc'
+    alias beaglebone='_login_machine beaglebone'
     alias burn='_burn'
     alias btask='_backup_task'
     alias cbpos='_login_machine'
@@ -940,6 +957,7 @@ function _set_alias()
     alias t430='_login_machine t430'
     alias t580='_login_machine t580'
     alias t='_tmux_new'
+    alias timeout='timeout --preserve-status'
     alias tl='_task_list'
     alias tmp='cd ~/tmp'
     alias uall='_update_all'
@@ -1051,9 +1069,10 @@ function _tmux_new()
         tmux new-window -d -n vmware-2
         tmux new-window -d -n cbpos-1
         tmux new-window -d -n cbpos-2
-        ping -c 2 -W 1 192.168.212.30 &> /dev/null  && tmux new-window -d -n server 
-        ping -c 1 -W 1 192.168.1.105  &> /dev/null  && tmux new-window -d -n t430 
-        ping -c 1 -W 1 192.168.1.103  &> /dev/null  && tmux new-window -d -n MacOS
+        timeout --preserve-status 1s ping -c 1 -W 1 192.168.212.30 &> /dev/null  && tmux new-window -d -n server 
+        timeout --preserve-status 1s ping -c 1 -W 1 192.168.1.105  &> /dev/null  && tmux new-window -d -n t430 
+        timeout --preserve-status 1s ping -c 1 -W 1 192.168.1.103  &> /dev/null  && tmux new-window -d  -n MacOS 
+        # timeout --preserve-status 1s ping -c 1 -W 1 beaglebone     &> /dev/null  && tmux new-window -d  -n beaglebone 
         tmux attach-session -d -t session-$tmux_cnt
         ;;
     esac
@@ -1120,5 +1139,6 @@ function main ()
         # print_warning "no start vm"
         _start vm  &> /dev/null
     fi
+    
 }
 main $*
