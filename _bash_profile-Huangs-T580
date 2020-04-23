@@ -837,7 +837,7 @@ function _sudo()
 {
     # runas /user:mianb /savecred $*  
     echo "under construction"
-    $*
+    # $*
 }
 
 function _sync()

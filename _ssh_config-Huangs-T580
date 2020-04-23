@@ -151,3 +151,7 @@ Host beaglebone
     user root
     hostname beaglebone
     identityfile ~/.ssh/id_rsa_root_at_beaglebone
+Host 192.168.50.204
+    user root
+    hostname 192.168.50.204
+    identityfile ~/.ssh/id_rsa_root_at_beaglebone
