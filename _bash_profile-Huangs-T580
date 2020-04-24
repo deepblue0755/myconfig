@@ -788,7 +788,7 @@ function _start()
             VBoxManage startvm "Ubuntu-1804" --type headless 2>&1 > /dev/null &
         ;;
         rsync | sync)
-            runas /user:mianb /savecred "net start rsyncserver"
+            runas /user:administrator /savecred "net start rsyncserver"
         ;;
         list)
             echo list virtual machines ...
@@ -824,7 +824,7 @@ function _stop()
             test $? -eq 0 && export vb_start=false
         ;;
         rsync | sync)
-            runas /user:mianb /savecred "net stop rsyncserver"
+            runas /user:administrator /savecred "net stop rsyncserver"
         ;;
         *)
             print_error "unknown virtual machine" 
@@ -834,9 +834,7 @@ function _stop()
 
 function _sudo()
 {
-    # runas /user:mianb /savecred $*  
-    echo "under construction"
-    # $*
+    runas /user:administrator /savecred "$*"  
 }
 
 function _sync()
@@ -958,6 +956,7 @@ function _set_alias()
     alias t='_tmux_new'
     alias timeout='timeout --preserve-status'
     alias tl='_task_list'
+    alias tia='runas /user:administrator /savecred "d:\Siemens\Automation\Portal V14/Bin\Siemens.Automation.Portal.exe"'
     alias tmp='cd ~/tmp'
     alias uall='_update_all'
     alias uuid='uuidgen -r | cut -c 1-8'
