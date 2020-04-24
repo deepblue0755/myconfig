@@ -91,9 +91,7 @@ function _burn()
 
 function _backup_doc()
 {
-    pushd . > /dev/null
-    cd  $dir/d/documents/RTAI
-
+    pushd $dir/d/documents/RTAI &> /dev/null
     flag=0
     comment=""
 
@@ -126,6 +124,7 @@ function _backup_doc()
         git  commit -m "update $comment from $USER@$HOSTNAME"
         echo 
         git push -u local master
+        git push -u server master
 
         echo
         print_infor "update to common folder ..."
@@ -858,7 +857,7 @@ function _sync()
         3 | git)
             ping -c 1 -W 1 192.168.212.30 &> /dev/null
             test $? -eq 0  || return 1
-            rsync -vzrt --progress -e ssh \
+            rsync -vzrt --progress --delete -e ssh \
             "huangmianbo@192.168.212.30:/home/huangmianbo/git/" \
             "/cygdrive/d/backup/git/"  \
         ;;
