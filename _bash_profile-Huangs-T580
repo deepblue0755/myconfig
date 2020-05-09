@@ -562,21 +562,33 @@ function _login_machine()
             ssh root@192.168.1.110
         ;;
         *)
-            ssh root@192.168.7.2
+            ssh root@192.168.7.2 ||  \
+            { \
+                ssh root@192.168.7.2 2>&1 | grep -i "host key verification failed" &> /dev/null && \
+                pushd ~/.ssh &> /dev/null && \
+                line=$(cat known_hosts | egrep -n '^192.168.7.2' | cut -d: -f1) && \
+                sed -i "${line}d" known_hosts && \
+                popd &> /dev/null && \
+                ssh root@192.168.7.2 \
+            ;}
         ;;
         esac
     ;;
     *)
-        for ((i=1;i<100;i++))
-        do
-            print_infor "$i try to ping 192.168.0.2 ..."
-            ping -c 1 -W 1 192.168.0.2 > /dev/null
-            test $? -eq 0 && break;
-            sleep 1
-        done
-        print_infor "login 192.168.0.2 ..."
-        ssh root@192.168.0.2 
-        test $? != 0 &&  return 1
+        timeout --preserve-status 2s ping -c 1 -W 1 192.168.0.3 &> /dev/null && ssh root@192.168.0.3
+        timeout --preserve-status 1s ping -c 1 -W 1 192.168.0.3  &> /dev/null
+        if [ "$?" != "0" ];then
+            for ((i=1;i<100;i++))
+            do
+                print_infor "$i try to ping 192.168.0.2 ..."
+                ping -c 1 -W 1 192.168.0.2 > /dev/null
+                test $? -eq 0 && break;
+                sleep 1
+            done
+            print_infor "login 192.168.0.2 ..."
+            ssh root@192.168.0.2 
+            test $? != 0 &&  return 1
+        fi
     ;;
     esac
 }
@@ -888,7 +900,7 @@ function _set_alias()
     alias cpmac='_cplinux mac'
     alias cpvb='_cplinux gitlab'
     alias cpvm='_cplinux vm'
-    alias cmd='conemu64 &'
+    alias cmd='_sudo conemu64'
     alias dmesg='_dmesg'
     alias doc='pushd . > /dev/null && cd ~/documents/RTAI'
     alias eclipse='/d/Profinet/DevKit46/eclipse/eclipse &'
@@ -1124,6 +1136,6 @@ function main ()
         # print_warning "no start vm"
         _start vm  &> /dev/null
     fi
-    
+
 }
 main $*
