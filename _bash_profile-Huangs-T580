@@ -572,6 +572,9 @@ function _login_machine()
                 ssh root@192.168.7.2 \
             ;}
         ;;
+        rasp4)
+            ssh pi@192.168.1.106
+        ;;
         esac
     ;;
     *)
@@ -939,6 +942,7 @@ function _set_alias()
     alias qt='qtcreator &> /dev/null &'
     alias randword='_randword'
     alias rand='_rand'
+    alias rasp4='ssh pi@192.168.1.106'
     alias reboot='shutdown /r'
     alias reload='source ~/.bash_profile'
     alias rename='/d/documents/18-bash-utils/01_rename_utils.sh'
