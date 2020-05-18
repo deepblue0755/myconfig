@@ -330,8 +330,10 @@ let NERDRemoveExtraSpaces = 1
 " -----------------------------------------------------------------------------
 "  < C.vim Plugin Setting >
 " -----------------------------------------------------------------------------
-let g:C_GlobalTemplateFile='D:\Vim\vimfiles\bundle\C.vim\c-support\templates\Templates'     
-let g:C_LocalTemplateFile='D:\Vim\vimfiles\bundle\C.vim\c-support\templates\Templates'     
+" let g:C_GlobalTemplateFile='D:\Vim\vimfiles\bundle\C.vim\c-support\templates\Templates'     
+" let g:C_LocalTemplateFile='D:\Vim\vimfiles\bundle\C.vim\c-support\templates\Templates'     
+let g:C_GlobalTemplateFile='D:\Vim\vimfiles\templates\c.templates'     
+let g:C_LocalTemplateFile='D:\Vim\vimfiles\templates\c.templates'     
 
 
 
