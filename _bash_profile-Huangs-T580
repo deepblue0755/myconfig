@@ -578,20 +578,18 @@ function _login_machine()
         esac
     ;;
     *)
-        timeout --preserve-status 2s ping -c 1 -W 1 192.168.0.3 &> /dev/null && ssh root@192.168.0.3
-        timeout --preserve-status 1s ping -c 1 -W 1 192.168.0.3  &> /dev/null
-        if [ "$?" != "0" ];then
-            for ((i=1;i<100;i++))
-            do
-                print_infor "$i try to ping 192.168.0.2 ..."
-                ping -c 1 -W 1 192.168.0.2 > /dev/null
-                test $? -eq 0 && break;
-                sleep 1
-            done
-            print_infor "login 192.168.0.2 ..."
-            ssh root@192.168.0.2 
-            test $? != 0 &&  return 1
-        fi
+        # TRY TO PING 192.168.0.2
+        for ((i=1;i<100;i++))
+        do
+            print_infor "$i try to ping 192.168.0.2 ..."
+            # timeout 1s --preserve-status ping -c 1 -W 1 192.168.0.2 &> /dev/null
+            ping -c 1 -W 1 192.168.0.2 &> /dev/null
+            test $? -eq 0 && break;
+            sleep 1
+        done
+        print_infor "login 192.168.0.2 ..."
+        ssh root@192.168.0.2 
+        test $? != 0 &&  return 1
     ;;
     esac
 }
@@ -621,61 +619,60 @@ function _poweroff()
     linux_poweroff_cmd="sudo poweroff"
 
     case $1 in 
-        cbpos)
-           print_infor "try to poweroff ideabox ..."
-           { print_infor "ping cbpos ..." && ping -c 1 -W 1 cbpos &> /dev/null && ssh root@cbpos "sudo poweroff"; } || \ 
-           { print_infor "ping 192.168.0.2 ..." && ping -c 1 -W 1 192.168.0.2 &> /dev/null && ssh root@192.168.0.2 "sudo poweroff"; }
-        ;;
-        gigabyte)
-           print_infor "try to poweroff gigabyte ..."
-           { print_infor "ping gigabyte-brix ..." && ping -c 1 -W 1 gigabyte-brix && ssh mianb@gigabyte-brix "shutdown /s"; } || \ 
-           { print_infor "ping 192.168.1.102 ..." && ping -c 1 -W 1 192.168.1.102 && ssh mianb@192.168.1.102 "shutdown /s"; }
-        ;;
-        mac)
-            print_infor "try to poweroff mac ..."
-            { print_infor "ping 192.168.1.103" && ping -c 1 -W 1 192.168.1.103 && ssh huangmianbo@192.168.1.103 $linux_poweroff_cmd; }
-        ;;
-        all)
+        1 | gigabyte)
             echo "--------------------------------------------------"
             echo " Machine 1: gigabyte-brix win10"
             echo "--------------------------------------------------"
             print_infor "try to poweroff gigabyte ..."
-            { print_infor "ping 192.168.1.102 ..." && ping -c 1 -W 1 192.168.1.102 &> /dev/null && ssh mianb@192.168.1.102 $win_poweroff_cmd; }
-
+            { print_infor "ping 192.168.1.102 ..." && ping -c 1 -W 1 192.168.1.102 &> /dev/null && ssh mianb@192.168.1.102 $win_poweroff_cmd; } || \
+            { print_infor "ping gigabyte-brix ..." && ping -c 1 -W 1 gigabyte-brix &> /dev/null && ssh mianb@gigabyte-brix $win_poweroff_cmd; }
+        ;;
+        2 | t430)
             echo "--------------------------------------------------"
             echo " Machine 2: Ubuntu Linux T430"
             echo "--------------------------------------------------"
             print_infor "try to poweroff t430 ..."
             { print_infor "ping 192.168.1.105" && ping -c 1 -W 1 192.168.1.105 &> /dev/null && ssh huangmianbo@192.168.1.105 $linux_poweroff_cmd; }
-
+        ;;
+        3 | mac)
             echo "--------------------------------------------------"
             echo " Machine 3: Mac OSx"
             echo "--------------------------------------------------"
             print_infor "try to poweroff mac ..."
             { print_infor "ping 192.168.1.103" && ping -c 1 -W 1 192.168.1.103 &> /dev/null && ssh huangmianbo@192.168.1.103 "sudo shutdown -h now"; }
-
+        ;;
+        4 | cbpos)
             echo "--------------------------------------------------"
             echo " Machine 4: IdeaBox Pro Ubuntu 14.04 "
             echo "--------------------------------------------------"
             print_infor "try to poweroff ideabox ..."
-            { print_infor "ping 192.168.0.2" && ping -c 1 -W 1 192.168.0.2 &> /dev/null && ssh root@192.168.0.2 $linux_poweroff_cmd; }
-
+            { print_infor "ping 192.168.0.2" && ping -c 1 -W 1 192.168.0.2 &> /dev/null && ssh root@192.168.0.2 $linux_poweroff_cmd; } || \
+            { print_infor "ping cbpos ..." && ping -c 1 -W 1 cbpos &> /dev/null && ssh root@cbpos "sudo poweroff"; } 
+        ;;
+        5 | vm)
             echo "--------------------------------------------------"
             echo " Machine 5: Vmware Ubuntu 14.04"
             echo "--------------------------------------------------"
             _stop vm
-
+        ;;
+        6 | vb)
             echo "--------------------------------------------------"
             echo " Machine 6: VirtualBox Gitlab Machine"
             echo "--------------------------------------------------"
             _stop vb
-
+        ;;
+        7 | beaglebone)
             echo "--------------------------------------------------"
             echo " Machine 7: Beaglebone"
             echo "--------------------------------------------------"
             print_infor "try to poweroff beaglebone  ..."
             { print_infor "ping beaglebone" && ping -c 1 -W 1 beaglebone &> /dev/null && ssh root@beaglebone $linux_poweroff_cmd; }
-            
+        ;;
+        all)
+            for ((i=1;i<=$(type _poweroff | egrep ")$" | egrep "\s[0-9].*\|" | wc -l);i++))
+            do
+                _poweroff $i
+            done
         ;;
         *)
             read -p "shutdown computer $HOSTNAME? (y/n): " input
@@ -844,37 +841,42 @@ function _sync()
 {
     case $1 in 
         1 | book1)
+            ping -c 1 -W 1 192.168.1.102 &> /dev/null || return 1
             rsync -vzrt --progress --include=*.pdf --exclude=*.* \
             gigabyte-brix::book-linux \
             "/cygdrive/d/Book/Linux/"  \
             --port=10556
         ;;
         2 | book2)
+            ping -c 1 -W 1 192.168.1.102 &> /dev/null || return 1
             rsync -vzrt --progress --include=*.pdf --exclude=*.* \
             gigabyte-brix::book-cs \
             "/cygdrive/d/Book/Computer-Science-CS/"  \
             --port=10556
         ;;
         3 | git)
-            ping -c 1 -W 1 192.168.212.30 &> /dev/null
-            test $? -eq 0  || return 1
+            ping -c 1 -W 1 192.168.212.30 &> /dev/null || return 1
             rsync -vzrt --progress --delete -e ssh \
             "huangmianbo@192.168.212.30:/home/huangmianbo/git/" \
             "/cygdrive/d/backup/git/"  \
         ;;
-        4 | vim)
-            pushd $dir/d/vim/vimfiles/bundle &> /dev/null
-            for folder in *
+        4 | gitlab | gitlab-ce)
+            ping -c 1 -W 1 192.168.212.30 &> /dev/null || return 1
+            ls -t /cygdrive/s/*gitlab_backup*.tar  &> /dev/null || return 1
+            for file in $(ls -t /cygdrive/s/*gitlab_backup*.tar | head -n 1)
             do
-                test -d "$folder" || continue
-                pushd "$folder" &> /dev/null
-                git pull local master
-                popd &> /dev/null
+                test -f "$file" || continue
+                mv $file $dir/d/backup/gitlab-ce/gitlab-ce-backup.tar
             done
-            popd &> /dev/null
+        ;;
+        all)
+            _sync 1
+            _sync 2
+            _sync 3
+            _sync 4
         ;;
         *)
-            print_infor "mysync 1:book1|2:book2|3:git|4:vim"
+            print_infor "mysync 1:book1|2:book2|3:git|4:gitlab"
         ;;
     esac
 }
