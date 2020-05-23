@@ -59,85 +59,74 @@ function print_error()
 # ------------------------------------------------------------------- #
 # Customer Internal Function
 # ------------------------------------------------------------------- #
-function _backup_config()
+function _backup()
 {
-    pushd . > /dev/null
-
-    cd ~
-
-    git pull $(git remote) master
-
-    comment=""
-
-    files=`git status | grep modified: | awk -F":" '{print $2}'`
-    if [ -z "$files" ];then
-        print_infor "no task to update ..."
-        return 0
-    fi
-
-    echo ""
-    for file in $files
-    do
-        if [ -f "$file" ];then
-            print_infor "git add $file ... "
-            git add "$file"
-            comment="$comment $file"
-        fi
-    done
-
-    print_infor "git commit -m \"update file $comment from $USER $HOSTNAME\""
-    git commit -m "update file $comment from $USER $HOSTNAME"
-
-    print_infor "git push -u $(git remote) master ... "
-    git push -u $(git remote) master
-
-    echo ""
-
-    print_infor "now synchronous to all-config folder ..."
-
-    cd $dir/d/documents/11-configs-from-github
-    
-    ./update_config_file.sh
-
-    popd > /dev/null
+    case $1 in 
+        1 | config)
+            print_infor "git pull -u $(git remote | sed -n '1p') master ..."
+            pushd $dir/d/cygwin64/home/mianb/ &> /dev/null
+            print_infor "git pull -u $(git remote | sed -n '1p') master ..."
+            git pull -u $(git remote | sed -n '1p') master
+            local comment=""
+            files=`git status | grep modified: | awk -F":" '{print $2}'`
+            test -n "$files" || { print_infor "no task to update ..." && return 0; }
+            echo ""
+            for file in $files
+            do
+                test -f "$file" || continue
+                print_infor "git add $file ... "
+                git add "$file"
+                comment="$comment $file"
+            done
+            print_infor "git commit -m \"update file $comment from $USER $HOSTNAME\""
+            git commit -m "update file $comment from $USER $HOSTNAME"
+            print_infor "git push -u $(git remote | sed -n '1p') master ... "
+            git push -u $(git remote | sed -n '1p') master
+            echo ""
+            print_infor "now synchronous to all-config folder ..."
+            pushd $dir/d/documents/11-configs-from-github &> /dev/null
+            ./update_config_file.sh
+            popd &> /dev/null
+            popd > /dev/null
+        ;;
+        all)
+            _backup 1
+        ;;
+        *)
+            print_infor "do nothing"
+        ;;
+    esac
 }
 
 function _backup_all()
 {
-    pushd . &> /dev/null
-    cd $dir/d/documents
-    let i=0;
-    for folder in *
-    do
-        test -d "$folder" || continue
-        echo ----------------------------------------------------------
-        let i=$i+1
-        echo "$i , cd $folder ..."
-        cd "$folder"
-        check=`git remote -v 2> /dev/null | grep fetch | awk '{ print $1 }'` 
-        test -n "$check" || { echo "$folder is not a git repos!!" && cd .. && continue; } 
-        echo
-        echo update git folder $folder 
-        echo git pull $(git remote | sed -n 1p) master ...
-        echo
-        test -n "$(git remote)" && git pull $(git remote | sed -n 1p) master
-        cd  ..
-        echo ----------------------------------------------------------
-    done
+    echo -----------------------------------------------------------------------------
+    echo 1, cd $dir/d/documents pull update from github first
+    echo -----------------------------------------------------------------------------
+    git_utils=$dir/d/documents/18-bash-utils/25_git_utils.sh
+    test -f "$git_utils" || { print_error "could not find utils $git_utils" && return 1; }
+    $git_utils 4 $dir/d/documents
+
+    echo -----------------------------------------------------------------------------
+    echo 2, push updated config files from gigabyte-brix to myconfig repos
+    echo -----------------------------------------------------------------------------
+    pushd /d/documents/11-configs-from-github &> /dev/null
+    test -f $dir/d/documents/11-configs-from-github/update_config_file.sh && \
+    $dir/d/documents/11-configs-from-github/update_config_file.sh
     popd &> /dev/null
 
+    
+    echo -----------------------------------------------------------------------------
+    echo 3, push updated config files from $HOME to cygwin64_config_gigabyte.git repo
+    echo -----------------------------------------------------------------------------
     _backup_all_2
 }
 
 function _backup_all_2()
 {
-    pushd . &> /dev/null
 
-    echo -------------------------------------------
-    echo 4, update config files from gigabyte-brix
-    echo -------------------------------------------
     comment=
-    cd ~
+    pushd $HOME &> /dev/null
     files=`git status | grep "modified:" | awk -F":" '{ print $2 }'`
     if [ -z "$files" ];then
         print_infor "no update config files from $HOME"
@@ -153,13 +142,16 @@ function _backup_all_2()
         done
         print_infor "git commit -m \"update $comment from $USER @ $HOSTNAME\""
         git commit -m "update $comment from $USER @ $HOSTNAME"
-        print_infor "git push -u $(git remote | sed -n 1p) master"
-        git push -u $(git remote | sed -n 1p) master
+        print_infor "git push -u $(git remote | sed -n '1p') master"
+        git push -u $(git remote | sed -n '1p') master
         echo
     fi
-    
-
     popd  &> /dev/null
+}
+
+function _code()
+{
+    $dir/d/Microsoft\ VS\ Code/Code.exe $* &
 }
 
 function _expl()
@@ -188,34 +180,34 @@ function _gvim()
 function _login_machine()
 {
     case $1 in
-        mac)
+        1 | mac)
             ssh huangmianbo@192.168.1.103
         ;;
-        t430)
-            ssh huangmianbo@t430
+        2 | t430)
+            ssh huangmianbo@192.168.1.105
         ;;
-        t580)
+        3 | t580)
             ssh mianb@Huangs-T580
         ;;
-        pi3)
+        4 | pi3)
             ssh huangmianbo@raspberry3
         ;;
-        pi4)
+        5 | pi4)
             ssh pi@raspberrypi4
         ;;
-        rasp3)
+        6 | rasp3)
             ssh huangmianbo@raspberry3
         ;;
-        rasp4)
+        7 | rasp4)
             ssh huangmianbo@raspberrypi4
         ;;
-        gitlab)
+        8 | gitlab)
             ssh huangmianbo@192.168.56.103
         ;;
-        vm)
+        9 | vm)
             ssh huangmianbo@vmware
         ;;
-        zynq)
+        10 | zynq)
             ssh root@192.168.1.10
         ;;
         *)
@@ -233,18 +225,6 @@ function _md2pdf()
         return -1
     fi
     pandoc --pdf-engine=pdflatex $file -o $pdffile 
-}
-
-function _pushd()
-{
-    test -n "$1" || { pushd . && return 0; }
-
-    for((i=0;i<5;i++))
-    do
-        pushd $*
-    done
-
-    return 0
 }
 
 function _rand()
@@ -274,6 +254,8 @@ function _set_alias()
     alias aspell-tex='aspell --mode=tex --list'
     alias ball='_backup_all'
     alias config='vim D:\\cygwin64\\home\\mianb\\.bash_profile' 
+    alias cmd='_sudo conemu'
+    alias code='_code'
     alias diff='colordiff'
     alias dmidecode='systeminfo'
     alias doc='cd ~/documents'
@@ -283,6 +265,7 @@ function _set_alias()
     alias gbash='git-bash'
     alias gitlab='_login_machine gitlab'
     alias grep='grep --color=auto'
+    alias gvim='_gvim'
     alias ifconfig='ipconfig'
     alias ls='ls --color=auto'
     alias lshw='systeminfo'
@@ -290,21 +273,23 @@ function _set_alias()
     alias md2pdf='_md2pdf'
     alias mdkir='mkdir'
     alias mv='mv -iv'
+    alias mygit='$dir/d/documents/18-bash-utils/25_git_utils.sh'
     alias mydate='date +%Y%m%d%H%M%S'
     alias mysync='_sync'
     alias pdf='_SumatraPDF'
     alias pi3='_login_machine pi3'
     alias pi4='_login_machine pi4'
-    alias pushd='_pushd $*'
     alias rand='_rand'
     alias randword='_randword'
     alias rasp3='_login_machine rasp3'
     alias rasp4='_login_machine rasp4'
     alias reload='source $HOME/.bash_profile' 
+    alias rename='$dir/d/documents/18-bash-utils/01_rename_utils.sh'
     alias rm='rm -iv -d'
     alias start='_start'
     alias stop='_stop'
     alias service='_service'
+    alias sudo='_sudo'
     alias syncbash='cp -iv $HOME/.bash_profile /cygdrive/f/05-To-From-Gigabyte-MiniComputer/'
     alias synctask='pushd . && cd $HOME && git pull origin master && popd'
     alias t430='_login_machine t430'
@@ -313,7 +298,7 @@ function _set_alias()
     alias tl='_task_list'
     alias typora='_typora'
     alias vb='gitlab'
-    alias vi='vim'
+    alias vi='\vim --no-plugin'
     alias videos='cd ~/videos'
     alias vivado='vivado -mode tcl'
     alias vim='_gvim'
@@ -346,6 +331,7 @@ function _set_path()
     PATH=$dir/d/Typora/bin:$PATH
     PATH=$dir/d/MKVToolNix:$PATH
     PATH=$dir/d/ImageMagick:$PATH
+    PATH=$dir/d/ConEmu/:$PATH
 
 
     # do not add cygwin/bin to $PATH
@@ -390,7 +376,7 @@ function _start()
             check=`VBoxManage list runningvms | grep "Ubuntu-1804"` 
             if [ ! -z "$check" ];then
                 echo ""
-                echo "virtualbox machine is already starting"
+                print_warning "virtualbox machine is already starting"
                 return 0
             fi
             echo start virtual box machine ... 
@@ -403,6 +389,9 @@ function _start()
             echo
             echo virtualbox:
             VBoxManage list runningvms
+        ;;
+        rsync | sync)
+            _sudo net start rsyncserver
         ;;
         *)
             print_error "unknown virtual machine start vm|vb"
@@ -428,10 +417,18 @@ function _stop()
             VBoxManage controlvm "Ubuntu-1804" poweroff
             VB_START=0
         ;;
+        rsync | sync)
+            _sudo net stop rsyncserver
+        ;;
         *)
             print_error "unknown virtual machine,stop vm|vb"
         ;;
     esac
+}
+
+function _sudo()
+{
+    runas /user:administrator /savecred "$*"  
 }
 
 function _SumatraPDF()
@@ -454,31 +451,34 @@ function _service()
 function _sync()
 {
     case $1 in 
-        1)
+        1 | kid_videos)
             rsync -var --progress --delete  \
             /cygdrive/v/05.网络视频.YouTuBe.Downloading/  \
             /cygdrive/h/05.网络视频.YouTuBe.Downloading/ 
         ;;
-        2)
+        2 | ubuntu1804)
             rsync -vzrt --progress --include="*.vhd" --exclude=* \
             Huangs-T580::ubuntu-1804 \
             "/cygdrive/d/VirtualBox-VMs/Ubuntu-1804"  \
             --port=10556
         ;;
-        3)
+        3 | ubuntu1404)
             rsync -vzrt --progress --include="*.vmdk" --exclude=* \
             Huangs-T580::ubuntu-1404 \
             "/cygdrive/d/Vmware-Machines/Ubuntu-14.04-Kylin"  \
             --port=10556
         ;;
-        book1)
-            rsync -var --progress --delete  \
-            /cygdrive/n/01_Books/Linux  \
-            /cygdrive/t/
-
+        4 | git | local_git_repo)
+            rsync -vzrt --progress \
+            Huangs-T580::local_git_repo \
+            "/cygdrive/e/git"  \
+            --port=10556
+        ;;
+        -h | --help)
+            echo "$0 1:kid_videos|2:ubuntu1804|3:ubuntu1404|4:local_git_repo"
         ;;
         *)
-            rsync -varzt --progress --delete Huangs-T580::temp /cygdrive/d/temp --port=10556
+            echo "$0 1:kid_videos|2:ubuntu1804|3:ubuntu1404|4:local_git_repo"
         ;;
     esac
 }
