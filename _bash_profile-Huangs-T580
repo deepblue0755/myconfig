@@ -396,6 +396,31 @@ function _done_102()
     popd  &> /dev/null
 }
 
+function _duty()
+{
+    ping -c 1 -W 1 192.168.212.30 &> /dev/null || return 1;
+    test -f $dir/d/temp/duty_file && return 0
+    test -f $dir/d/temp/duty_file || touch $dir/d/temp/duty_file
+    case $1 in 
+        1 | rsync)
+            test $(date +%H) -eq 9 &&  \
+            test $(date +%M) -lt 30 &&  \
+            _sync git
+        ;;
+        2 | gitlab-backup)
+            local gitlab_backup_file=`ssh huangmianbo@192.168.212.30 "ls -t /home/huangmianbo/share/*gitlab_backup*.tar | head -n 1"`
+            test -n "$gitlab_backup_file" || return 1;
+            test $(date +%H) -eq 9 &&  \
+            test $(date +%M) -lt 30 &&  \
+            rsync -vzrt --progress -e ssh huangmianbo@192.168.212.30:$gitlab_backup_file $dir/d/backup/gitlab-ce/gitlab_backup.tar
+        ;;
+        all)
+            _duty 1
+            _duty 2
+        ;;
+    esac
+}
+
 function _export_var()
 {
     export TIME_STYLE="+%Y/%m/%d %H:%M:%S"
@@ -1142,6 +1167,9 @@ function main ()
         # print_warning "no start vm"
         _start vm  &> /dev/null
     fi
+
+    _duty all & 
+
 
 }
 main $*
