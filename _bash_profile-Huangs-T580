@@ -398,25 +398,32 @@ function _done_102()
 
 function _duty()
 {
-    ping -c 1 -W 1 192.168.212.30 &> /dev/null || return 1;
-    test -f $dir/d/temp/duty_file && return 0
-    test -f $dir/d/temp/duty_file || touch $dir/d/temp/duty_file
+    ping -c 1 -W 1 192.168.212.30 &> /dev/null || return 1
+    local logfile1=$dir/d/temp/duty_file_1
+    local logfile2=$dir/d/temp/duty_file_2
     case $1 in 
         1 | rsync)
+            test -f $logfile1 && return 0
+            test -f $logfile1 || touch $logfile1
             test $(date +%H) -eq 9 &&  \
             test $(date +%M) -lt 30 &&  \
             _sync git
+            return 0;
         ;;
         2 | gitlab-backup)
+            test -f $logfile2 && return 0
+            test -f $logfile2 || touch $logfile2
             local gitlab_backup_file=`ssh huangmianbo@192.168.212.30 "ls -t /home/huangmianbo/share/*gitlab_backup*.tar | head -n 1"`
-            test -n "$gitlab_backup_file" || return 1;
+            test -n "$gitlab_backup_file" || return 1
             test $(date +%H) -eq 9 &&  \
             test $(date +%M) -lt 30 &&  \
             rsync -vzrt --progress -e ssh huangmianbo@192.168.212.30:$gitlab_backup_file $dir/d/backup/gitlab-ce/gitlab_backup.tar
+            return 0;
         ;;
         all)
             _duty 1
             _duty 2
+            return 0;
         ;;
     esac
 }
