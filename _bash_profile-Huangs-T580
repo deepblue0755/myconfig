@@ -363,6 +363,9 @@ function _cplinux()
         gitlab)
             scp $option "$2" huangmianbo@gitlab:/tmp/
         ;;
+        debian)
+            scp $option "$2" huangmianbo@192.168.56.118:/tmp/
+        ;;
         *)
             scp $option "$2" root@cbpos:/tmp/
         ;;
@@ -401,6 +404,8 @@ function _duty()
     ping -c 1 -W 1 192.168.212.30 &> /dev/null || return 1
     local logfile1=$dir/d/temp/duty_file_1
     local logfile2=$dir/d/temp/duty_file_2
+    local logfile3=$dir/d/temp/start_vm
+    local logfile4=$dir/d/temp/sync_cpac
     case $1 in 
         1 | rsync)
             test -f $logfile1 && return 0
@@ -415,14 +420,39 @@ function _duty()
             test -f $logfile2 || touch $logfile2
             local gitlab_backup_file=`ssh huangmianbo@192.168.212.30 "ls -t /home/huangmianbo/share/*gitlab_backup*.tar | head -n 1"`
             test -n "$gitlab_backup_file" || return 1
+            local cnt=1
+            for file in $(ls -t $dir/d/backup/*gitlab_backup*.tar)
+            do
+                test $cnt -lt 5 && rm -fv $file
+                let cnt=$((cnt+1))
+            done
             test $(date +%H) -eq 9 &&  \
             test $(date +%M) -lt 30 &&  \
-            rsync -vzrt --progress -e ssh huangmianbo@192.168.212.30:$gitlab_backup_file $dir/d/backup/gitlab-ce/gitlab_backup.tar
+            rsync -vzrt --progress -e ssh huangmianbo@192.168.212.30:$gitlab_backup_file $dir/d/backup/gitlab-ce/$(basename $gitlab_backup_file)
             return 0;
+        ;;
+        3 | start_vm)
+            test -f $logfile3 && return 0
+            test -f $logfile3 || touch $logfile3
+            test $(date +%H) -eq 9 &&  \
+            test $(date +%M) -lt 30 &&  \
+            _start vm
+            return 0;
+        ;;
+        4 | sync_cpac)
+            test -f $logfile4 && return 0
+            test -f $logfile4 || touch $logfile4
+            test $(date +%H) -eq 9 &&  \
+            test $(date +%M) -lt 30 &&  \
+            pushd $dir/d/documents/23-CPAC_Products &> /dev/null && \
+            git pull origin master && \
+            popd &> /dev/null
         ;;
         all)
             _duty 1
             _duty 2
+            _duty 3
+            _duty 4
             return 0;
         ;;
     esac
@@ -560,6 +590,9 @@ function _login_machine()
     case $1 in
     cbpos | 3)
         ssh root@cbpos
+    ;;
+    debian | 3)
+        ssh huangmianbo@192.168.56.118
     ;;
     gitlab)
         ssh huangmianbo@192.168.56.103
@@ -779,7 +812,7 @@ function _start()
     fi
 
     case $1 in
-        vm | ubuntu1404)
+        1 | vm | ubuntu1404)
             export vm_start=true
             check=`vmrun list | grep "Ubuntu-14.04-Kylin"` 
             if [ ! -z "$check" ];then
@@ -790,10 +823,10 @@ function _start()
             echo start vmware machine ... 
             vmrun start "D:\\Vmware-Machines\\Ubuntu-14.04-Kylin\\\Ubuntu.vmx"  nogui 2>&1 > /dev/null &
         ;;
-        vb | ubuntu1804)
-            # list all vb machine
+        2 | vb | ubuntu1804)
+            # LIST ALL VB MACHINE
             vb_machines=`vboxmanage list vms | awk -d\" '{print $1}' | sed 's/"//g'`
-            # push machine name into array buffer
+            # PUSH MACHINE NAME INTO ARRAY BUFFER
             let vb_machine_id=1
             for vb_machine in $vb_machines 
             do
@@ -803,14 +836,13 @@ function _start()
             done
             let vb_machine_id=$vb_machine_id-1
             test "$2" == "i" && read -p "please select which id to start 1-$vb_machine_id: " vb_machine_id
-            # start the selected machine 
+            # START THE SELECTED MACHINE 
             test "$2" == "i" && ( \
             (print_infor "start virtualbox machine ${machines_array[$vb_machine_id]} ...") &&  \
             (VBoxManage list runningvms | grep "${machines_array[$vb_machine_id]}")  || \
             (VBoxManage startvm ${machines_array[$vb_machine_id]} --type headless 2>&1 > /dev/null &) &&  \
             return 0 )
-            # start the default vb machine
-            export vb_start=true
+            # START THE DEFAULT VB MACHINE
             check=`VBoxManage list runningvms | grep "Ubuntu-1804"` 
             if [ ! -z "$check" ];then
                 print_warning "virtualbox machine is already starting"
@@ -819,16 +851,16 @@ function _start()
             print_infor "start default virtual box machine \"Ubuntu-1804\" ... "
             VBoxManage startvm "Ubuntu-1804" --type headless 2>&1 > /dev/null &
         ;;
-        rsync | sync)
+        3 | rsync | sync)
             _sudo net start rsyncserver
         ;;
         list)
-            echo list virtual machines ...
+            echo list running virtual machines ...
             echo vmware:
-            vmrun list
+            vmrun list | cat -n
             echo
             echo virtualbox:
-            VBoxManage list runningvms
+            VBoxManage list runningvms | cat -n
         ;;
         *)
             print_error "error,unknown machine or service"
@@ -853,7 +885,6 @@ function _stop()
         vb | ubuntu1804)
             echo stop virtual box machine ... 
             VBoxManage controlvm "Ubuntu-1804" poweroff
-            test $? -eq 0 && export vb_start=false
         ;;
         rsync | sync)
             _sudo net stop rsyncserver
@@ -892,20 +923,10 @@ function _sync()
             "huangmianbo@192.168.212.30:/home/huangmianbo/git/" \
             "/cygdrive/d/backup/git/"  \
         ;;
-        4 | gitlab | gitlab-ce)
-            ping -c 1 -W 1 192.168.212.30 &> /dev/null || return 1
-            ls -t /cygdrive/s/*gitlab_backup*.tar  &> /dev/null || return 1
-            for file in $(ls -t /cygdrive/s/*gitlab_backup*.tar | head -n 1)
-            do
-                test -f "$file" || continue
-                mv $file $dir/d/backup/gitlab-ce/gitlab-ce-backup.tar
-            done
-        ;;
         all)
             _sync 1
             _sync 2
             _sync 3
-            _sync 4
         ;;
         *)
             print_infor "mysync 1:book1|2:book2|3:git|4:gitlab"
@@ -929,11 +950,13 @@ function _set_alias()
     alias cbpos='_login_machine'
     alias cgdb='cgdb -q'
     alias config='gvim --remote-silent D:\\cygwin64\\home\\mianb\\.bash_profile &'
+    alias debian='_login_machine debian'
     alias diff='colordiff --exclude=*.git*'
     alias dmidecode='systeminfo'
     alias cplinux='_cplinux ideabox'
     alias cpt430='_cplinux t430'
     alias cpserver='_cplinux server'
+    alias cpdebian='_cplinux debian'
     alias cpmac='_cplinux mac'
     alias cpvb='_cplinux gitlab'
     alias cpvm='_cplinux vm'
@@ -1169,14 +1192,7 @@ function main ()
         task list
     fi
 
-
-    if [ "$vm_start" != "true" ];then
-        # print_warning "no start vm"
-        _start vm  &> /dev/null
-    fi
-
     _duty all & 
-
 
 }
 main $*
