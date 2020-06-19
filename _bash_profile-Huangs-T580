@@ -401,13 +401,14 @@ function _done_102()
 
 function _duty()
 {
-    ping -c 1 -W 1 192.168.212.30 &> /dev/null || return 1
     local logfile1=$dir/d/temp/duty_file_1
     local logfile2=$dir/d/temp/duty_file_2
     local logfile3=$dir/d/temp/start_vm
     local logfile4=$dir/d/temp/sync_cpac
+    local logfile5=$dir/d/temp/rsync_start
     case $1 in 
         1 | rsync)
+            ping -c 1 -W 1 192.168.212.30 &> /dev/null || return 1
             test -f $logfile1 && return 0
             test -f $logfile1 || touch $logfile1
             test $(date +%H) -eq 9 &&  \
@@ -416,14 +417,15 @@ function _duty()
             return 0;
         ;;
         2 | gitlab-backup)
+            ping -c 1 -W 1 192.168.212.30 &> /dev/null || return 1
             test -f $logfile2 && return 0
             test -f $logfile2 || touch $logfile2
             local gitlab_backup_file=`ssh huangmianbo@192.168.212.30 "ls -t /home/huangmianbo/share/*gitlab_backup*.tar | head -n 1"`
             test -n "$gitlab_backup_file" || return 1
             local cnt=1
-            for file in $(ls -t $dir/d/backup/*gitlab_backup*.tar)
+            for file in $(ls -t $dir/d/backup/gitlab-ce/*gitlab_backup*.tar)
             do
-                test $cnt -lt 5 && rm -fv $file
+                test $cnt -gt 5 && rm -fv $file
                 let cnt=$((cnt+1))
             done
             test $(date +%H) -eq 9 &&  \
@@ -432,6 +434,7 @@ function _duty()
             return 0;
         ;;
         3 | start_vm)
+            ping -c 1 -W 1 192.168.212.30 &> /dev/null || return 1
             test -f $logfile3 && return 0
             test -f $logfile3 || touch $logfile3
             test $(date +%H) -eq 9 &&  \
@@ -440,6 +443,7 @@ function _duty()
             return 0;
         ;;
         4 | sync_cpac)
+            ping -c 1 -W 1 192.168.212.30 &> /dev/null || return 1
             test -f $logfile4 && return 0
             test -f $logfile4 || touch $logfile4
             test $(date +%H) -eq 9 &&  \
@@ -448,11 +452,19 @@ function _duty()
             git pull origin master && \
             popd &> /dev/null
         ;;
+        5 | start_rsync)
+            tasklist | grep rsync &> /dev/null && return 0
+            test $(date +%H) -lt 20 && return 0
+            test -f $logfile5 && return 0 
+            test -f $logfile5 || touch $logfile5 
+            _start rsync
+        ;;
         all)
             _duty 1
             _duty 2
             _duty 3
             _duty 4
+            _duty 5
             return 0;
         ;;
     esac
@@ -588,74 +600,71 @@ function _ifconfig()
 function _login_machine()
 {
     case $1 in
-    cbpos | 3)
-        ssh root@cbpos
-    ;;
-    debian | 3)
-        ssh huangmianbo@192.168.56.118
-    ;;
-    gitlab)
-        ssh huangmianbo@192.168.56.103
-    ;;
-    googol)
-        ssh googol@cbpos
-    ;;
-    gigabyte)
-        ssh mianb@192.168.1.102
-    ;;
-    mac)
-        ssh huangmianbo@192.168.1.103
-    ;;
-    t430)
-        ssh huangmianbo@192.168.1.105
-    ;;
-    t580)
-        ssh mianb@Huangs-T580
-    ;;
-    vm)
-        ssh huangmianbo@vmware
-    ;;
-    server)
-        ssh huangmianbo@192.168.212.30
-    ;;
-    beaglebone)
-        case $2 in 
-        1 | usb)
-            ssh root@192.168.7.2
+        debian | 3)
+            ssh huangmianbo@192.168.56.118
         ;;
-        2 | eth0 )
-            ssh root@192.168.1.110
+        gitlab)
+            ssh huangmianbo@192.168.56.103
         ;;
-        *)
-            ssh root@192.168.7.2 ||  \
-            { \
-                ssh root@192.168.7.2 2>&1 | grep -i "host key verification failed" &> /dev/null && \
-                pushd ~/.ssh &> /dev/null && \
-                line=$(cat known_hosts | egrep -n '^192.168.7.2' | cut -d: -f1) && \
-                sed -i "${line}d" known_hosts && \
-                popd &> /dev/null && \
-                ssh root@192.168.7.2 \
-            ;}
+        googol)
+            ssh googol@cbpos
         ;;
-        rasp4)
-            ssh pi@192.168.1.106
+        gigabyte)
+            ssh mianb@192.168.1.102
         ;;
-        esac
-    ;;
-    *)
-        # TRY TO PING 192.168.0.2
-        for ((i=1;i<100;i++))
-        do
-            print_infor "$i try to ping 192.168.0.2 ..."
-            # timeout 1s --preserve-status ping -c 1 -W 1 192.168.0.2 &> /dev/null
-            ping -c 1 -W 1 192.168.0.2 &> /dev/null
-            test $? -eq 0 && break;
-            sleep 1
-        done
-        print_infor "login 192.168.0.2 ..."
-        ssh root@192.168.0.2 
-        test $? != 0 &&  return 1
-    ;;
+        mac)
+            ssh huangmianbo@192.168.1.103
+        ;;
+        t430)
+            ssh huangmianbo@192.168.1.105
+        ;;
+        t580)
+            ssh mianb@Huangs-T580
+        ;;
+        vm)
+            ssh huangmianbo@vmware
+        ;;
+        server)
+            ssh huangmianbo@192.168.212.30
+        ;;
+        beaglebone)
+            case $2 in 
+            1 | usb)
+                ssh root@192.168.7.2
+            ;;
+            2 | eth0 )
+                ssh root@192.168.1.110
+            ;;
+            *)
+                ssh root@192.168.7.2 ||  \
+                { \
+                    ssh root@192.168.7.2 2>&1 | grep -i "host key verification failed" &> /dev/null && \
+                    pushd ~/.ssh &> /dev/null && \
+                    line=$(cat known_hosts | egrep -n '^192.168.7.2' | cut -d: -f1) && \
+                    sed -i "${line}d" known_hosts && \
+                    popd &> /dev/null && \
+                    ssh root@192.168.7.2 \
+                ;}
+            ;;
+            rasp4)
+                ssh pi@192.168.1.106
+            ;;
+            esac
+        ;;
+        cbpos)
+            # TRY TO PING 192.168.0.2
+            local server=192.168.0.2
+            test -n "$2" && server=192.168.0.$2
+            for ((i=1;i<100;i++))
+            do
+                print_infor "$i try to ping $server ..."
+                ping -c 1 -W 1 $server &> /dev/null && break
+                sleep 1
+            done
+            print_infor "login $server ..."
+            ssh root@$server
+            test $? != 0 &&  return 1
+        ;;
     esac
 }
 
@@ -947,7 +956,7 @@ function _set_alias()
     alias beaglebone='_login_machine beaglebone'
     alias burn='_burn'
     alias btask='_backup_task'
-    alias cbpos='_login_machine'
+    alias cbpos='_login_machine cbpos'
     alias cgdb='cgdb -q'
     alias config='gvim --remote-silent D:\\cygwin64\\home\\mianb\\.bash_profile &'
     alias debian='_login_machine debian'
