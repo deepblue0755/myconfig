@@ -1009,7 +1009,6 @@ function _set_alias()
     alias randword='_randword'
     alias rand='_rand'
     alias rasp4='ssh pi@192.168.1.106'
-    alias reboot='shutdown /r'
     alias reload='source ~/.bash_profile'
     alias rename='/d/documents/18-bash-utils/01_rename_utils.sh'
     alias rkh='_reset_known_host'
