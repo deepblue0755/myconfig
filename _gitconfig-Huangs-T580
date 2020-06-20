@@ -5,6 +5,7 @@
     st = status
     ct = commit
     ls = ls-tree -r master --name-only
+    wdiff = diff --word-diff=color --unified=1
 [http]
 	; proxy = 139.24.192.8:8080
 [user]
