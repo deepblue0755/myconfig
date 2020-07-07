@@ -425,7 +425,7 @@ function _duty()
             local cnt=1
             for file in $(ls -t $dir/d/backup/gitlab-ce/*gitlab_backup*.tar)
             do
-                test $cnt -gt 5 && rm -fv $file
+                test $cnt -gt 10 && rm -fv $file
                 let cnt=$((cnt+1))
             done
             test $(date +%H) -eq 9 &&  \
@@ -484,6 +484,7 @@ function _export_var()
     export proj=/d/Profinet/DevKit46/pnio_proj/ertec/EB200P_Size_EcosNative/
     export CMAKE_ROOT=$dir/d/cmake/
     export RSYNC_PASSWORD=123456
+    export DISPLAY=:0.0
 }
 
 function _expl()
@@ -616,7 +617,7 @@ function _login_machine()
             ssh huangmianbo@192.168.1.103
         ;;
         t430)
-            ssh huangmianbo@192.168.1.105
+            ssh -Y huangmianbo@192.168.1.105
         ;;
         t580)
             ssh mianb@Huangs-T580
@@ -1203,4 +1204,5 @@ function main ()
     _duty all & 
 
 }
-main $*
+
+main $* 
