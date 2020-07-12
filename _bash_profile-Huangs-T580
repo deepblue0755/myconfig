@@ -623,7 +623,7 @@ function _login_machine()
             ssh mianb@Huangs-T580
         ;;
         vm)
-            ssh huangmianbo@vmware
+            ssh -Y huangmianbo@vmware
         ;;
         server)
             ssh huangmianbo@192.168.212.30
@@ -663,7 +663,7 @@ function _login_machine()
                 sleep 1
             done
             print_infor "login $server ..."
-            ssh root@$server
+            ssh -Y root@$server
             test $? != 0 &&  return 1
         ;;
     esac
