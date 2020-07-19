@@ -154,6 +154,27 @@ function _code()
     $dir/d/Microsoft\ VS\ Code/Code.exe $* &
 }
 
+function _duty()
+{
+    ping -c 1  -W 1 192.168.0.22 &> /dev/null || return 1
+    local logfile1=$dir/d/temp/duty_file_1
+    case $1 in 
+        1 | rsync)
+            test -d /cygdrive/e/git || return 1
+            test -f $logfile1 && return 0
+            test -f $logfile1 || touch $logfile1
+            test $(date +%H) -ge 20 &&  \
+            _sync git
+            return 0;
+        ;;
+        all)
+            _duty 1
+            return 0;
+        ;;
+    esac
+
+}
+
 function _expl()
 {
     if [ -z "$1" ];then
@@ -184,7 +205,7 @@ function _login_machine()
             ssh huangmianbo@192.168.1.103
         ;;
         2 | t430)
-            ssh huangmianbo@192.168.1.105
+            ssh -Y huangmianbo@192.168.1.105
         ;;
         3 | t580)
             ssh mianb@Huangs-T580
@@ -209,6 +230,9 @@ function _login_machine()
         ;;
         10 | zynq)
             ssh root@192.168.1.10
+        ;;
+        11 | cbpos)
+            ssh root@192.168.0.2
         ;;
         *)
             :
@@ -254,6 +278,7 @@ function _set_alias()
     alias aspell-tex='aspell --mode=tex --list'
     alias ball='_backup_all'
     alias config='vim D:\\cygwin64\\home\\mianb\\.bash_profile' 
+    alias cbpos='_login_machine cbpos'
     alias cmd='_sudo conemu'
     alias code='_code'
     alias diff='colordiff'
@@ -351,6 +376,7 @@ function _set_env_var()
 {
     export RSYNC_PASSWORD=123456
     export EDITOR=$dir/d/Vim/vim81/gvim
+    export DISPLAY=":0.0"
 }
 
 function _start()
@@ -452,9 +478,13 @@ function _sync()
 {
     case $1 in 
         1 | kid_videos)
+            local source_folder="/cygdrive/v/05.网络视频.YouTuBe.Downloading/"
+            local dest_folder="/cygdrive/h/05.网络视频.YouTuBe.Downloading/"
+            test -d "$source_folder"  || { print_error "could not find source folder $source_folder" && return 1; }
+            test -d "$dest_folder"  || { print_error "could not find dest folder $dest_folder" && return 1; }
             rsync -var --progress --delete  \
-            /cygdrive/v/05.网络视频.YouTuBe.Downloading/  \
-            /cygdrive/h/05.网络视频.YouTuBe.Downloading/ 
+            $source_folder  \
+            $dest_folder
         ;;
         2 | ubuntu1804)
             rsync -vzrt --progress --include="*.vhd" --exclude=* \
@@ -472,6 +502,13 @@ function _sync()
             rsync -vzrt --progress \
             Huangs-T580::local_git_repo \
             "/cygdrive/e/git"  \
+            --port=10556
+        ;;
+        5 | slide )
+            test -d "/cygdrive/n/04_Multimedia/02_Slides/" || { print_error "could not find source folder" && return 1; }
+            rsync -vzrt --progress \
+            Huangs-T580::slide  \
+            "/cygdrive/n/04_Multimedia/02_Slides/" \
             --port=10556
         ;;
         -h | --help)
@@ -588,12 +625,18 @@ function _vlc()
 # ------------------------------------------------------------------- #
 # Customer Main Function
 # ------------------------------------------------------------------- #
-_set_path
-_set_alias
-_set_env_var
+function main()
+{
+    _set_path
+    _set_alias
+    _set_env_var
 
-if [ "$SHELL" == "/bin/bash" ];then
-    task list
-fi
+    if [ "$SHELL" == "/bin/bash" ];then
+        task list
+    fi
 
-set -o vi
+    set -o vi
+    _duty all &
+}
+
+main $*

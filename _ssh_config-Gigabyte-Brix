@@ -18,6 +18,11 @@ Host Huangs-MBP
     user huangmianbo
     HostName Huangs-MBP
     IdentityFile ~/.ssh/id_rsa_hmb_at_macosx
+
+Host 192.168.1.103
+    user huangmianbo
+    HostName 192.168.1.103
+    IdentityFile ~/.ssh/id_rsa_hmb_at_macosx
     
 # ------------------------------------------------------------------- #
 # for github
@@ -139,12 +144,17 @@ Host beaglebone
     IdentityFile ~/.ssh/id_rsa_root_at_beaglebone
 
 # ------------------------------------------------------------------- #
-# for googol's ubuntu kylin
+# for googol's cbpos machine  ubuntu kylin
 # ------------------------------------------------------------------- #
 Host cbpos
     user root 
     HostName cbpos
-    IdentityFile ~/.ssh/id_rsa_googol
+    IdentityFile ~/.ssh/id_rsa_root_at_cbpos
+
+Host 192.168.0.2
+    user root 
+    HostName 192.168.0.2
+    IdentityFile ~/.ssh/id_rsa_root_at_cbpos
 
 # ------------------------------------------------------------------- #
 # for Huangs-T580 win10
