@@ -50,6 +50,15 @@ secrets file = etc/testuser.pas
 hosts allow = *
 hosts deny = 0.0.0.0/0
 
+[t580-videos]
+path = /cygdrive/d/102-delivery/play-list
+read only = false
+transfer logging = yes
+auth users = mianb
+secrets file = etc/testuser.pas
+hosts allow = *
+hosts deny = 0.0.0.0/0
+
 [mysql]
 path = /cygdrive/d/MySQL/MySQL Server 5.0/data/bbs
 auth users = testuser
