@@ -207,7 +207,7 @@ function _backup_bash()
 
 function _backup_config()
 {
-    print_infor "cd $dir/d/documents/11-configs-from-github"
+    print_infor "entering $dir/d/documents/11-configs-from-github ..."
     pushd $dir/d/documents/11-configs-from-github &> /dev/null
 
     print_infor "executing local update script files ..."
@@ -233,17 +233,17 @@ function _backup_config()
     git push -u origin master
 
     echo 
-    print_infor "---------------------------------------------------------"
-    print_infor "Now,Git Backup Config File In $home"
-    print_infor "---------------------------------------------------------"
-    cd ~
+    echo "---------------------------------------------------------"
+    print_infor "Now,Git Backup Config File In $HOME"
+    echo "---------------------------------------------------------"
+    pushd $HOME &> /dev/null
     comment=""
 
     files=`git status | grep modified | awk -F: '{print $2}'`
     files=`echo $files | grep ".bash_profile \| .tmux.conf \| .taskrc \| .task"`
     if [ -z "$files" ];then
         print_infor "no file in $HOME need to git add " 
-        popd > /dev/null
+        popd &> /dev/null
         return 0
     fi
     echo
