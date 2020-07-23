@@ -276,12 +276,36 @@ function _backup_scripts()
 function _backup_all()
 {
     case $1 in 
-        4)
+        1)
+            echo "--------------------------------------"
+            echo "1, backup doc ..."
+            echo "--------------------------------------"
+            echo 
+            _backup_doc
+            return 0
+        ;;
+        2)
+            echo "--------------------------------------"
+            echo "2, backup bash profile ..."
+            echo "--------------------------------------"
+            echo 
+            _backup_bash
+            return 0
+        ;;
+        3)
             echo "--------------------------------------"
             echo "3, backup taskwarrior ..."
             echo "--------------------------------------"
             echo 
             _backup_task
+            return 0
+        ;;
+        4)
+            echo "--------------------------------------"
+            echo "4, backup config file to github ..."
+            echo "--------------------------------------"
+            echo 
+            _backup_config
             return 0
         ;;
         5)
@@ -293,36 +317,11 @@ function _backup_all()
             return 0
         ;;
         *)
-            echo "--------------------------------------"
-            echo "1, backup doc ..."
-            echo "--------------------------------------"
-            echo 
-            _backup_doc
-
-            echo "--------------------------------------"
-            echo "2, backup bash profile ..."
-            echo "--------------------------------------"
-            echo 
-            _backup_bash
-
-            echo "--------------------------------------"
-            echo "3, backup taskwarrior ..."
-            echo "--------------------------------------"
-            echo 
-            _backup_task
-
-            echo "--------------------------------------"
-            echo "4, backup config file to github ..."
-            echo "--------------------------------------"
-            echo 
-            _backup_config
-
-            echo "--------------------------------------"
-            echo "5, backup bash scripts to github ..."
-            echo "--------------------------------------"
-            echo 
-            _backup_scripts
-
+            _backup_all 1
+            _backup_all 2
+            _backup_all 3
+            _backup_all 4
+            _backup_all 5
             return 0
         ;;
     esac
