@@ -91,6 +91,7 @@ function _burn()
 
 function _backup_doc()
 {
+    print_infor "entering $dir/d/documents/RTAI ..."
     pushd $dir/d/documents/RTAI &> /dev/null
     flag=0
     comment=""
@@ -143,10 +144,11 @@ function _backup_doc()
 
 function _backup_task()
 {
-    pushd .  > /dev/null
-    flag=0
-    
-    cd ~
+    local flag=0
+
+    print_infor "entering $HOME ..."
+    pushd $HOME &> /dev/null
+
     check=`git diff .taskrc | wc -c`
     if [ "$check" != "0" ];then
         print_infor "git add .taskrc ..."
@@ -166,7 +168,7 @@ function _backup_task()
         git  commit -m "update taskwarrior from $USER@$HOSTNAME"
         git push -u $(git remote | sed -n 1p) master
     else
-        print_infor "no update ,nothing to backup"
+        print_infor "no update ,nothing to backup taskwarrior"
     fi
     
     popd > /dev/null
@@ -174,10 +176,10 @@ function _backup_task()
 
 function _backup_bash()
 {
-    pushd .  &> /dev/null
-    flag=0
-    
-    cd ~
+    print_infor "entering directly $HOME"
+    pushd ~  &> /dev/null
+    local flag=0
+    print_infor "backup $HOME/.bash_profile ..."
     check=`git diff .bash_profile | wc -c`
     if [ "$check" != "0" ];then
         print_infor "git add .bash_profile ..."
@@ -192,32 +194,30 @@ function _backup_bash()
 
         print_infor "update to common config folders ..."
         echo
-        pushd . > /dev/null
-        cd $dir/d/documents/11-configs-from-github/
+        print_infor "entering $dir/d/documents/11-configs-from-github/"
+        pushd $dir/d/documents/11-configs-from-github/ > /dev/null
         ./update_config_file.sh
         popd > /dev/null
     else
         print_infor "no update ,nothing to backup"
     fi
 
-    
     popd &> /dev/null
 }
 
 function _backup_config()
 {
-    pushd . &> /dev/null
-
     print_infor "cd $dir/d/documents/11-configs-from-github"
-    cd $dir/d/documents/11-configs-from-github
+    pushd $dir/d/documents/11-configs-from-github &> /dev/null
 
+    print_infor "executing local update script files ..."
     ./update_config_file.sh
 
     files=`git status | grep modified | awk -F: '{print $2}'`
 
     if [ -z "$files" ];then
         print_infor "no file need to git add " 
-        popd > /dev/null
+        popd &> /dev/null
         return 0
     fi
 
@@ -262,9 +262,9 @@ function _backup_config()
 
 function _backup_scripts()
 {
-    pushd . &> /dev/null
-
-    cd $dir/d/documents/16-bash-scripts
+    pushd $dir/d/documents/16-bash-scripts &> /dev/null
+    print_infor "entering $dir/d/documents/16-bash-scripts"
+    print_infor "executing its local update scripts"
 
     ./update_bash_files.sh t580
     ./update_bash_files.sh cbpos
