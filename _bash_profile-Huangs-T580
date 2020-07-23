@@ -257,7 +257,6 @@ function _backup_config()
     git push -u $(git remote | sed -n 1p) master
     echo
 
-
     popd &> /dev/null
 }
 
