@@ -107,7 +107,7 @@ function _backup_all()
             echo -----------------------------------------------------------------------------
             git_utils=$dir/d/documents/18-bash-utils/25_git_utils.sh
             test -f "$git_utils" || { print_error "could not find utils $git_utils" && return 1; }
-            $git_utils 4 $dir/d/documents
+            $git_utils pullall $dir/d/documents
             return 0;
         ;;
         2)
