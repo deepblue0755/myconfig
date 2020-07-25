@@ -22,12 +22,11 @@ function print_infor()
 
 function print_result()
 {
-    flag=$1
-    if [ "$flag" == "1" ];then
-        print_infor "update $HOSTNAME documents !!"
+    if [ "$1" == "0" ];then
+        print_infor "nothing to update from $HOSTNAME"
         return 0
     else
-        print_infor "nothing to update from $HOSTNAME"
+        print_infor "update $HOSTNAME config files !!"
         return 0
     fi
 }
@@ -75,7 +74,7 @@ function copy_files()
     test -f "$from" || { print_error "could not find file $from" && return 0; }
     test -f "$to" || { print_warning "could not find file $to"; }
 
-    diff $from $to 
+    diff $from $to &> /dev/null
     if [ "$?" != "0" ];then
         print_infor "copy $from here ..." 
         cp -f "$from" "$to"
@@ -134,39 +133,38 @@ function copy_config_from_cygwin()
 
     local flag=0
 
+    # make it compatiable between git-bash and cygwin-bash
     if [ "$shell" == "/usr/bin/bash" ];then
         dir=/cygdrive
-
     else
         dir=
     fi
 
-
     # generate vim plugin
     $git_utils clone $dir/d/vim/vimfiles/bundle &> /dev/null && \
     copy_files "$(ls -t /d/temp/clone*.sh | head -n 1)" ./_vim_clone_plugin_$HOSTNAME.sh
-    flag=$?
+    let flag=$flag+$?
 
     copy_files $dir/d/Vim/_vimrc ./_vimrc-$HOSTNAME
-    flag=$?
+    let flag=$flag+$?
 
     copy_files $dir/d/cygwin64/home/$USER/.tmux.conf ./_tmux.conf-$HOSTNAME
-    flag=$?
+    let flag=$flag+$?
 
     copy_files $dir/d/cygwin64/home/mianb/.bash_profile ./_bash_profile-$HOSTNAME
-    flag=$?
+    let flag=$flag+$?
 
     copy_files $dir/d/cygwin64/home/mianb/.gitconfig ./_gitconfig-$HOSTNAME
-    flag=$?
+    let flag=$flag+$?
 
     copy_files $dir/d/Batch/_cvimrc ./_cvimrc-$HOSTNAME
-    flag=$?
+    let flag=$flag+$?
 
     copy_files $dir/d/cwRsyncServer/rsyncd.conf ./rsyncd.conf-$HOSTNAME
-    flag=$?
+    let flag=$flag+$?
 
     copy_files $dir/d/cygwin64/home/mianb/.ssh/config ./_ssh_config-$HOSTNAME
-    flag=$?
+    let flag=$flag+$?
 
     print_result $flag
 
