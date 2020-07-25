@@ -146,7 +146,7 @@ function _backup_task()
 {
     local flag=0
 
-    print_infor "entering $HOME ..."
+    print_infor "entering $HOME to backup taskwarrior ..."
     pushd $HOME &> /dev/null
 
     check=`git diff .taskrc | wc -c`
@@ -188,16 +188,9 @@ function _backup_bash()
     fi
 
     if [ "$flag" == "1" ];then
-        print_infor "commit change to local"
+        print_infor "commit change to $(git remote -v | sed -n 1p | cut -f2)"
         git  commit -m "update .bash_profile from $USER@$HOSTNAME"
         git push -u $(git remote | sed -n 1p) master
-
-        print_infor "update to common config folders ..."
-        echo
-        print_infor "entering $dir/d/documents/11-configs-from-github/"
-        pushd $dir/d/documents/11-configs-from-github/ > /dev/null
-        ./update_config_file.sh
-        popd > /dev/null
     else
         print_infor "no update ,nothing to backup"
     fi
@@ -209,54 +202,8 @@ function _backup_config()
 {
     print_infor "entering $dir/d/documents/11-configs-from-github ..."
     pushd $dir/d/documents/11-configs-from-github &> /dev/null
-
     print_infor "executing local update script files ..."
     ./update_config_file.sh
-
-    files=`git status | grep modified | awk -F: '{print $2}'`
-
-    if [ -z "$files" ];then
-        print_infor "no file need to git add " 
-        popd &> /dev/null
-        return 0
-    fi
-
-    for file in $files
-    do
-        print_infor "git add $file ..."
-        git add $file
-    done
-
-    print_infor "git commit -m \"udpate config file from $USER @ $HOSTNAME \" ..."
-    git commit -m "udpate config file from $USER @ $HOSTNAME "
-
-    git push -u origin master
-
-    echo 
-    echo "---------------------------------------------------------"
-    print_infor "Now,Git Backup Config File In $HOME"
-    echo "---------------------------------------------------------"
-    pushd $HOME &> /dev/null
-    comment=""
-
-    files=`git status | grep modified | awk -F: '{print $2}'`
-    files=`echo $files | grep ".bash_profile \| .tmux.conf \| .taskrc \| .task"`
-    if [ -z "$files" ];then
-        print_infor "no file in $HOME need to git add " 
-        popd &> /dev/null
-        return 0
-    fi
-    echo
-    for file in $files
-    do
-        print_infor "git add $file ..."
-        git add $file
-    done
-    print_infor "git commit -m \"update files $comment from $USER @ $HOSTNAME\""
-    git commit -m "update files $comment from $USER @ $HOSTNAME"
-    git push -u $(git remote | sed -n 1p) master
-    echo
-
     popd &> /dev/null
 }
 
