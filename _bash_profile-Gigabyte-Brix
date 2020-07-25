@@ -100,53 +100,64 @@ function _backup()
 
 function _backup_all()
 {
-    echo -----------------------------------------------------------------------------
-    echo 1, cd $dir/d/documents pull update from github first
-    echo -----------------------------------------------------------------------------
-    git_utils=$dir/d/documents/18-bash-utils/25_git_utils.sh
-    test -f "$git_utils" || { print_error "could not find utils $git_utils" && return 1; }
-    $git_utils 4 $dir/d/documents
-
-    echo -----------------------------------------------------------------------------
-    echo 2, push updated config files from gigabyte-brix to myconfig repos
-    echo -----------------------------------------------------------------------------
-    pushd /d/documents/11-configs-from-github &> /dev/null
-    test -f $dir/d/documents/11-configs-from-github/update_config_file.sh && \
-    $dir/d/documents/11-configs-from-github/update_config_file.sh
-    popd &> /dev/null
-
-    
-    echo -----------------------------------------------------------------------------
-    echo 3, push updated config files from $HOME to cygwin64_config_gigabyte.git repo
-    echo -----------------------------------------------------------------------------
-    _backup_all_2
-}
-
-function _backup_all_2()
-{
-
-    comment=
-    pushd $HOME &> /dev/null
-    files=`git status | grep "modified:" | awk -F":" '{ print $2 }'`
-    if [ -z "$files" ];then
-        print_infor "no update config files from $HOME"
-    else
-        for file in $files
-        do
-            echo 
-            if [ -f "$file" ];then
-                print_infor "git add $file ..."
-                git add "$file"
-                comment="$comment $file"
+    case $1 in 
+        1)
+            echo -----------------------------------------------------------------------------
+            echo 1, enter $dir/d/documents pull update from github first
+            echo -----------------------------------------------------------------------------
+            git_utils=$dir/d/documents/18-bash-utils/25_git_utils.sh
+            test -f "$git_utils" || { print_error "could not find utils $git_utils" && return 1; }
+            $git_utils 4 $dir/d/documents
+            return 0;
+        ;;
+        2)
+            echo -----------------------------------------------------------------------------
+            echo 2, push updated config files from $HOME to cygwin64_config_gigabyte.git repo
+            echo -----------------------------------------------------------------------------
+            local comment=""
+            print_infor "entering $HOME ..."
+            pushd $HOME &> /dev/null
+            files=`git status | grep "modified:" | awk -F":" '{ print $2 }'`
+            if [ -z "$files" ];then
+                print_infor "no update config files from $HOME"
+            else
+                for file in $files
+                do
+                    echo 
+                    if [ -f "$file" ];then
+                        print_infor "git add $file ..."
+                        git add "$file"
+                        comment="$comment $file"
+                    fi
+                done
+                print_infor "git commit -m \"update $comment from $USER@$HOSTNAME\""
+                git commit -m "update $comment from $USER@$HOSTNAME"
+                print_infor "git push -u $(git remote | sed -n '1p') master"
+                git push -u $(git remote | sed -n '1p') master
+                echo
             fi
-        done
-        print_infor "git commit -m \"update $comment from $USER @ $HOSTNAME\""
-        git commit -m "update $comment from $USER @ $HOSTNAME"
-        print_infor "git push -u $(git remote | sed -n '1p') master"
-        git push -u $(git remote | sed -n '1p') master
-        echo
-    fi
-    popd  &> /dev/null
+            popd  &> /dev/null
+            return 0;
+        ;;
+        3)
+            echo -----------------------------------------------------------------------------
+            echo 3, push updated config files to all machines config github repos
+            echo -----------------------------------------------------------------------------
+            print_infor "entering /d/documents/11-configs-from-github ..."
+            pushd /d/documents/11-configs-from-github &> /dev/null
+            test -f $dir/d/documents/11-configs-from-github/update_config_file.sh && \
+            {  \
+            print_infor "executing update_config_file.sh ..." &&  \
+            $dir/d/documents/11-configs-from-github/update_config_file.sh \
+            ;}
+            popd &> /dev/null
+            return 0;
+        ;;
+        *)
+            _backup_all 2
+            _backup_all 3
+        ;;
+    esac
 }
 
 function _code()
@@ -169,6 +180,7 @@ function _duty()
         ;;
         all)
             _duty 1
+            # _sync 5
             return 0;
         ;;
     esac
@@ -506,16 +518,25 @@ function _sync()
         ;;
         5 | slide )
             test -d "/cygdrive/n/04_Multimedia/02_Slides/" || { print_error "could not find source folder" && return 1; }
+            print_infor "rsync t580 slide ..."
             rsync -vzrt --progress \
             Huangs-T580::slide  \
             "/cygdrive/n/04_Multimedia/02_Slides/" \
             --port=10556
         ;;
+        6 | t580-videos )
+            test -d "/cygdrive/m/99-Misc/" || { print_error "could not find source folder" && return 1; }
+            print_infor "rsync t580 videos ..."
+            rsync -vzrt --progress \
+            Huangs-T580::t580-videos  \
+            "/cygdrive/m/99-Misc/" \
+            --port=10556
+        ;;
         -h | --help)
-            echo "$0 1:kid_videos|2:ubuntu1804|3:ubuntu1404|4:local_git_repo"
+            echo "$0 1:kid_videos|2:ubuntu1804|3:ubuntu1404|4:local_git_repo|5:slide|6:t580-videos"
         ;;
         *)
-            echo "$0 1:kid_videos|2:ubuntu1804|3:ubuntu1404|4:local_git_repo"
+            echo "$0 1:kid_videos|2:ubuntu1804|3:ubuntu1404|4:local_git_repo|5:slide|6:t580-videos"
         ;;
     esac
 }
