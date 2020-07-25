@@ -51,9 +51,9 @@ function upload_to_github()
         fi
     done
 
-    print_infor "git commit -m \"update file $comment from $USER @ $HOSTNAME\"  ... "
+    print_infor "git commit -m \"update file $comment from $USER@$HOSTNAME\"  ... "
 
-    git commit -m "update file $comment from $USER @ $HOSTNAME"
+    git commit -m "update file $comment from $USER@$HOSTNAME"
 
     git push -u $(git remote -v | grep "git@github.com" | sed -n 1p | awk '{print $1}') master
     
