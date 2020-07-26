@@ -160,6 +160,13 @@ function _expl()
     fi
 }
 
+function _git-branch-prompt 
+{
+    
+    local branch=$(git symbolic-ref --short -q HEAD 2>/dev/null)
+    test -n "$branch" &&  printf " [%s]" $branch
+}
+
 function _gvim()
 {
     if [ ! -z `echo $1 | grep \/` ];then
@@ -352,6 +359,7 @@ function _set_env_var()
     export EDITOR=$dir/d/Vim/vim81/gvim
     export DISPLAY=":0.0"
     export TASKDATA="$dir/d/documents/12-cygwin64-config-t580/.task"
+    export PS1="\u@\h \[\033[0;36m\]\W\[\033[0m\]\[\033[0;32m\]\$(_git-branch-prompt)\[\033[0m\] \$ "
 }
 
 function _start()
