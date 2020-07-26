@@ -59,51 +59,12 @@ function print_error()
 # ------------------------------------------------------------------- #
 # Customer Internal Function
 # ------------------------------------------------------------------- #
-function _backup()
-{
-    case $1 in 
-        1 | config)
-            print_infor "git pull -u $(git remote | sed -n '1p') master ..."
-            pushd $dir/d/cygwin64/home/mianb/ &> /dev/null
-            print_infor "git pull -u $(git remote | sed -n '1p') master ..."
-            git pull -u $(git remote | sed -n '1p') master
-            local comment=""
-            files=`git status | grep modified: | awk -F":" '{print $2}'`
-            test -n "$files" || { print_infor "no task to update ..." && return 0; }
-            echo ""
-            for file in $files
-            do
-                test -f "$file" || continue
-                print_infor "git add $file ... "
-                git add "$file"
-                comment="$comment $file"
-            done
-            print_infor "git commit -m \"update file $comment from $USER $HOSTNAME\""
-            git commit -m "update file $comment from $USER $HOSTNAME"
-            print_infor "git push -u $(git remote | sed -n '1p') master ... "
-            git push -u $(git remote | sed -n '1p') master
-            echo ""
-            print_infor "now synchronous to all-config folder ..."
-            pushd $dir/d/documents/11-configs-from-github &> /dev/null
-            ./update_config_file.sh
-            popd &> /dev/null
-            popd > /dev/null
-        ;;
-        all)
-            _backup 1
-        ;;
-        *)
-            print_infor "do nothing"
-        ;;
-    esac
-}
-
 function _backup_all()
 {
     case $1 in 
         1)
             echo -----------------------------------------------------------------------------
-            echo 1, enter $dir/d/documents pull update from github first
+            echo "1, enter $dir/d/documents pull update from github first"
             echo -----------------------------------------------------------------------------
             git_utils=$dir/d/documents/18-bash-utils/25_git_utils.sh
             test -f "$git_utils" || { print_error "could not find utils $git_utils" && return 1; }
@@ -112,7 +73,7 @@ function _backup_all()
         ;;
         2)
             echo -----------------------------------------------------------------------------
-            echo 2, push updated config files from $HOME to cygwin64_config_gigabyte.git repo
+            echo "2, push updated config files from $HOME to cygwin64_config_gigabyte.git repo"
             echo -----------------------------------------------------------------------------
             local comment=""
             print_infor "entering $HOME ..."
@@ -141,19 +102,20 @@ function _backup_all()
         ;;
         3)
             echo -----------------------------------------------------------------------------
-            echo 3, push updated config files to all machines config github repos
+            echo "3, push updated config files to all machines config github repos"
             echo -----------------------------------------------------------------------------
-            print_infor "entering /d/documents/11-configs-from-github ..."
+            print_infor "entering $dir/d/documents/11-configs-from-github ..."
             pushd /d/documents/11-configs-from-github &> /dev/null
             test -f $dir/d/documents/11-configs-from-github/update_config_file.sh && \
             {  \
-            print_infor "executing update_config_file.sh ..." &&  \
-            $dir/d/documents/11-configs-from-github/update_config_file.sh \
+                print_infor "executing update_config_file.sh ..." &&  \
+                $dir/d/documents/11-configs-from-github/update_config_file.sh \
             ;}
             popd &> /dev/null
             return 0;
         ;;
         *)
+            # _backup_all 1
             _backup_all 2
             _backup_all 3
         ;;
@@ -389,6 +351,7 @@ function _set_env_var()
     export RSYNC_PASSWORD=123456
     export EDITOR=$dir/d/Vim/vim81/gvim
     export DISPLAY=":0.0"
+    export TASKDATA="$dir/d/documents/12-cygwin64-config-t580/.task"
 }
 
 function _start()
@@ -653,7 +616,7 @@ function main()
     _set_env_var
 
     if [ "$SHELL" == "/bin/bash" ];then
-        task list
+        task list 2> /dev/null
     fi
 
     set -o vi
