@@ -301,6 +301,12 @@ function _cplinux()
     esac
 }
 
+function _dirdos2unix
+{
+    echo $1 | sed -e 's#^/cygdrive##' |  sed -e 's#^/##' | sed 's#/#:\\#' | sed 's#/#\\#g'
+    return 0;
+}
+
 function _dmesg()
 {
     case $1 in
@@ -473,7 +479,14 @@ function _git-branch-prompt
 
 function _gvim()
 {
-    gvim --remote-silent $* > /dev/null &
+    local args=""
+    for opt in $*
+    do
+        test -f $opt  && args=$args\ $(_dirdos2unix "$opt") && continue;
+        test -d $opt  && args=$args\ $(_dirdos2unix "$opt") && continue;
+        args=$args\ $opt
+    done
+    gvim --remote-silent $args > /dev/null &
 }
 
 function _ifconfig()
@@ -721,6 +734,12 @@ function _randword()
     cat $word_list | grep "^[A-Z]" | sed -n "$line p"
 }
 
+function _relay()
+{
+    ping -c 1 -W 1 192.168.1.106 &> /dev/null || { print_error "could not find rasp4" && return 1 ;}
+    ssh pi@192.168.1.106 "/usr/local/bin/relay.sh $*"
+}
+
 function _reset_known_host()
 {
     pushd . > /dev/null
@@ -940,6 +959,7 @@ function _set_alias()
     alias rand='_rand'
     alias rasp4='ssh pi@192.168.1.106'
     alias reload='source ~/.bash_profile'
+    alias relay='_relay'
     alias rename='/d/documents/18-bash-utils/01_rename_utils.sh'
     alias rkh='_reset_known_host'
     alias rm='rm -iv'
@@ -1112,6 +1132,7 @@ function _vlc()
 {
     vlc $1 &> /dev/null &
 }
+
 
 # ------------------------------------------------------------------- #
 # Customer Main Entry
