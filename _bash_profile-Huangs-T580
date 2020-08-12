@@ -303,7 +303,11 @@ function _cplinux()
 
 function _dirdos2unix
 {
-    echo $1 | sed -e 's#^/cygdrive##' |  sed -e 's#^/##' | sed 's#/#:\\#' | sed 's#/#\\#g'
+    local dirs=""
+    dirs=$(echo $1 | sed -e 's#^/cygdrive##' |  sed -e 's#^/##' | sed -e 's#/#:\\#' | sed 's#/#\\#g')
+    echo "$dirs" | egrep ".{2,}:[\]" &> /dev/null && dirs=$(echo $dirs | sed 's#:##g')
+    echo $dirs
+    
     return 0;
 }
 
