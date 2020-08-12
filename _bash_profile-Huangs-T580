@@ -306,6 +306,7 @@ function _dirdos2unix
     local dirs=""
     dirs=$(echo $1 | sed -e 's#^/cygdrive##' |  sed -e 's#^/##' | sed -e 's#/#:\\#' | sed 's#/#\\#g')
     echo "$dirs" | egrep ".{2,}:[\]" &> /dev/null && dirs=$(echo $dirs | sed 's#:##g')
+    echo "$dirs" | egrep "^\.:[\]" &> /dev/null && dirs=$(echo $dirs | sed 's#:##g')
     echo $dirs
     
     return 0;
