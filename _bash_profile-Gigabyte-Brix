@@ -127,6 +127,17 @@ function _code()
     $dir/d/Microsoft\ VS\ Code/Code.exe $* &
 }
 
+function _dirdos2unix
+{
+    local dirs=""
+    dirs=$(echo $1 | sed -e 's#^/cygdrive##' |  sed -e 's#^/##' | sed -e 's#/#:\\#' | sed 's#/#\\#g')
+    echo "$dirs" | egrep ".{2,}:[\]" &> /dev/null && dirs=$(echo $dirs | sed 's#:##g')
+    echo "$dirs" | egrep "^\.:[\]" &> /dev/null && dirs=$(echo $dirs | sed 's#:##g')
+    echo $dirs
+    
+    return 0;
+}
+
 function _duty()
 {
     ping -c 1  -W 1 192.168.0.22 &> /dev/null || return 1
@@ -169,14 +180,14 @@ function _git-branch-prompt
 
 function _gvim()
 {
-    if [ ! -z `echo $1 | grep \/` ];then
-        echo vim $(_win_dir $1)
-        $dir/d/Vim/vim81/gvim "$(_win_dir $1)" &
-    else
-        $dir/d/Vim/vim81/gvim --remote-silent $* &
-    fi
-
-    return  0
+    local args=""
+    for opt in $*
+    do
+        test -f $opt  && args=$args\ $(_dirdos2unix "$opt") && continue;
+        test -d $opt  && args=$args\ $(_dirdos2unix "$opt") && continue;
+        args=$args\ $opt
+    done
+    $dir/d/Vim/vim81/gvim --remote-silent $args &> /dev/null &
 }
 
 function _login_machine()
@@ -469,6 +480,15 @@ function _sync()
             $source_folder  \
             $dest_folder
         ;;
+        1b | music_videos)
+            local source_folder="/cygdrive/x/01-古典音乐-Classical-Music"
+            local dest_folder="/cygdrive/h/01.音乐.Music/"
+            test -d "$source_folder"  || { print_error "could not find source folder $source_folder" && return 1; }
+            test -d "$dest_folder"  || { print_error "could not find dest folder $dest_folder" && return 1; }
+            rsync -var --progress --delete --exclude=backup  \
+            $source_folder  \
+            $dest_folder
+        ;;
         2 | ubuntu1804)
             rsync -vzrt --progress --include="*.vhd" --exclude=* \
             Huangs-T580::ubuntu-1804 \
@@ -482,9 +502,11 @@ function _sync()
             --port=10556
         ;;
         4 | git | local_git_repo)
+            local dest_folder="/cygdrive/e/git"
+            test -d "$dest_folder" || { print_error "could not find dest folder $dest_folder" && return 1; }
             rsync -vzrt --progress \
             Huangs-T580::local_git_repo \
-            "/cygdrive/e/git"  \
+            $dest_folder  \
             --port=10556
         ;;
         5 | slide )
@@ -498,7 +520,7 @@ function _sync()
         6 | t580-videos )
             test -d "/cygdrive/m/99-Misc/" || { print_error "could not find source folder" && return 1; }
             print_infor "rsync t580 videos ..."
-            rsync -vzrt --progress \
+            rsync -vzrt --progress --delete \
             Huangs-T580::t580-videos  \
             "/cygdrive/m/99-Misc/" \
             --port=10556
@@ -576,38 +598,6 @@ function _update_task()
         git push -u git@github.com:deepblue0755/cygwin64_config_gigabyte.git master
     fi
     popd > /dev/null
-}
-
-function _win_dir()
-{
-    # this function is under debugging
-    if [ $# -lt 1 ];then
-        print_error "please input dir string"
-        return 1
-    fi
-
-
-    if [ ! -z `echo $1 | grep cygdrive` ];then
-        echo $1 | awk -F"/"   \
-        '{ \
-            for (i=3;i<=NF;i++)  \
-                if ( i==3 )
-                    printf("%s:\\", $i);  \
-                else
-                    printf("%s\\", $i);  \
-                print "" \
-         }'
-     else
-        echo $1 | awk -F"/"   \
-        '{ \
-            for (i=2;i<=NF;i++)  \
-                if ( i==2 )
-                    printf("%s:\\", $i);  \
-                else
-                    printf("%s\\", $i);  \
-                print "" \
-         }'
-    fi
 }
 
 function _vlc()
