@@ -485,13 +485,19 @@ function _git-branch-prompt
 function _gvim()
 {
     local args=""
+    echo $* | grep "/" &> /dev/null
+    if [ $? -eq 1 ];then
+        gvim --remote-silent $* &> /dev/null & 
+        return 0
+    fi
+
     for opt in $*
     do
         test -f $opt  && args=$args\ $(_dirdos2unix "$opt") && continue;
         test -d $opt  && args=$args\ $(_dirdos2unix "$opt") && continue;
         args=$args\ $opt
     done
-    gvim --remote-silent $args > /dev/null &
+    gvim --remote-silent $args &> /dev/null &
 }
 
 function _ifconfig()
