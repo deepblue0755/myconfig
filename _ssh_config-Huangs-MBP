@@ -15,6 +15,7 @@ Host 192.168.1.105
     user huangmianbo
     HostName 192.168.1.105
     IdentityFile ~/.ssh/id_rsa_hmb_at_t430
+    XAuthLocation /usr/bin/xauth
 
 
 # ------------------------------------------------------------------- #
@@ -31,7 +32,7 @@ Host Huangs-MBP
 Host github.com
     User git
     HostName github.com
-    IdentityFile ~/.ssh/id_rsa_github
+    IdentityFile ~/.ssh/id_rsa_github_dot_com
 
 # ------------------------------------------------------------------- #
 # for bitbucket
@@ -39,7 +40,7 @@ Host github.com
 Host bitbucket.org
     USer deepblue0755
     Hostname bitbucket.org
-    IdentityFile ~/.ssh/id_rsa_bitbucket
+    IdentityFile ~/.ssh/id_rsa_bitbucket_dot_org
 
 # ------------------------------------------------------------------- #
 # for gigabyte-brix mini computer
@@ -59,6 +60,9 @@ Host gigabyte-brix
     HostName gigabyte-brix
     IdentityFile ~/.ssh/id_rsa_gigabyte
 
+# ------------------------------------------------------------------- #
+# for Huangs-T580
+# ------------------------------------------------------------------- #
 Host 192.168.0.22
     user mianb 
     HostName 192.168.0.22
@@ -68,6 +72,30 @@ Host Huangs-T580
     user mianb 
     HostName Huangs-T580
     IdentityFile ~/.ssh/id_rsa_gigabyte
+
+# ------------------------------------------------------------------- #
+# for cbpos
+# ------------------------------------------------------------------- #
+Host 192.168.0.2
+    user root 
+    HostName 192.168.0.2
+    IdentityFile ~/.ssh/id_rsa_root_at_cbpos
+
+Host 192.168.0.3
+    user root 
+    HostName 192.168.0.3
+    IdentityFile ~/.ssh/id_rsa_root_at_cbpos
+
+Host 192.168.0.5
+    user root 
+    HostName 192.168.0.5
+    IdentityFile ~/.ssh/id_rsa_root_at_cbpos
+
+Host cbpos
+    user root 
+    HostName cbpos
+    IdentityFile ~/.ssh/id_rsa_root_at_cbpos
+
 # ------------------------------------------------------------------- #
 #  for raspberrypi3
 # ------------------------------------------------------------------- #
@@ -169,3 +197,15 @@ Host Huangs-T580
     HostName Huangs-T580
     IdentityFile ~/.ssh/id_rsa_t580
 
+# ------------------------------------------------------------------- #
+# for CPAC server
+# ------------------------------------------------------------------- #
+Host 192.168.212.30 
+    user huangmianbo
+    HostName 192.168.212.30 
+    IdentityFile ~/.ssh/id_rsa_server
+
+# Host *
+#     ForwardX11Trusted yes
+#     ForwardX11 yes
+#     ForwardAgent yes

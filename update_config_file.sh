@@ -96,22 +96,25 @@ function copy_config_from_macosx()
     # generate vim plugin
     $git_utils clone ~/.vim/bundle &> /dev/null && \
     copy_files "$(ls -t /tmp/clone*.sh | head -n 1)" ./_vim_clone_plugin_$HOSTNAME.sh &&
-    flag=$?
+    flag=$flag+$?
 
     copy_files ~/.bash_profile ./_bash_profile-$HOSTNAME 
-    flag=$?
+    flag=$flag+$?
+
+    copy_files ~/.bash_profile ./_zshrc-$HOSTNAME 
+    flag=$flag+$?
 
     copy_files ~/.tmux.conf  ./_tmux.conf-$HOSTNAME 
-    flag=$?
+    flag=$flag+$?
 
     copy_files ~/.vimrc  ./_vimrc-$HOSTNAME 
-    flag=$?
+    flag=$flag+$?
 
     copy_files ~/.gitconfig  ./_gitconfig-$HOSTNAME 
-    flag=$?
+    flag=$flag+$?
 
     copy_files ~/.ssh/config  ./_ssh_config-$HOSTNAME 
-    flag=$?
+    flag=$flag+$?
 
     ls ~/.vim/bundle/ | sort -f > ./_vim_plugin_list-Huangs-MBP.txt
 
