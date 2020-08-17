@@ -429,31 +429,12 @@ function _export_var()
 
 function _expl()
 {
-    # echo $1 | grep "\" > /dev/null && print_error "not a cygdrive path" &&  return 1
-    case $1 in 
-        youtube)
-           explorer "D:\\Batch\\97-YouTube-Downloading"
-        ;;
-        tmp)
-            explorer "D:\\temp"
-        ;;
-        *)
-            if [ -z "$1" ];then
-                curdir=$PWD
-                test "$PWD" == "$HOME" && curdir=/d/cygwin64/home/mianb
-                echo "$PWD" | grep "$HOME" && curdir=/d/cygwin64$PWD
-                test -d "$curdir" || { print_error "folder $curdir does not exist!!" && return 1; }
-                echo explorer "$(echo $curdir | sed 's/\//\\/g' | sed 's/^\\//g' | sed 's/\\/:\\/')"
-                explorer "$(echo $curdir | sed 's/\//\\/g' | sed 's/^\\//g' | sed 's/\\/:\\/')"
-            else
-                mydir=$(echo $1 | sed 's/\/home\/mianb\///g')
-                mydir=/d/cygwin64/home/mianb/$mydir
-                test -d "$curdir" || { print_error "folder $curdir does not exist!!" && return 1; }
-                echo explorer "$(echo $mydir | sed 's/\//\\/g' | sed 's/^\\//g' | sed 's/\\/:\\/')"
-                explorer "$(echo $mydir | sed 's/\//\\/g' | sed 's/^\\//g' | sed 's/\\/:\\/')"
-            fi
-        ;;
-    esac
+    if [ -z "$1" ];then
+        explorer $(_dirdos2unix "$(echo $PWD | sed 's#/home/mianb#/d/cygwin64/home/mianb#')")
+    else
+        test -d "$1" || { print_error "$1 is not a dir" && return 1; }
+        explorer $(_dirdos2unix "$1")
+    fi
 }
 
 function _getlinux()
