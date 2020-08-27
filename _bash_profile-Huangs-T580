@@ -754,6 +754,33 @@ function _reset_known_host()
     popd > /dev/null
 }
 
+function _saverm()
+{
+    local force=0
+    local verbose="-v"
+    local interact="-i"
+    local files=""
+    for para in $*
+    do
+        test "$para" == "-f" &&  force=1
+        test "$para" == "-fr" && force=1
+        echo "$para" | grep "v" &> /dev/null && verbose=""
+        echo "$para" | grep "i" &> /dev/null && interact=""
+        test -f "$para" &&  files="$para\n$files"
+        test -d "$para" &&  files="$para\n$files"
+    done
+
+    test $force -eq 0 && \
+        \rm $verbose $interact $* && return 0
+
+    echo -e "$files" | cat -n | head -n 10
+    echo -e "... ... ... ... \n"
+    read -p "do you want to delete aboves files (type \"yes i want\"): " input
+
+    test "$input" == "yes i want" && { \rm $verbose $* && return 0; }
+    test "$input" == "yes i want" || { print_warning "user abort operation"  && return 1; }
+}
+
 function _start()
 {
     if [ $# -lt 1 ];then
@@ -847,6 +874,11 @@ function _stop()
 
 function _sudo()
 {
+    for para in $*
+    do
+        test "$para" == "poweroff" &&  _poweroff && return 0
+    done
+
     runas /user:administrator /savecred "$*"  
 }
 
@@ -954,7 +986,8 @@ function _set_alias()
     alias relay='_relay'
     alias rename='/d/documents/18-bash-utils/01_rename_utils.sh'
     alias rkh='_reset_known_host'
-    alias rm='rm -iv'
+    # alias rm='rm -iv'
+    alias rm='_saverm'
     alias rtai='cd ~/documents/RTAI'
     alias start='_start'
     alias stop='_stop'
