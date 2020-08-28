@@ -760,7 +760,7 @@ function _saverm()
     local verbose="-v"
     local interact="-i"
     local files=""
-    for para in $*
+    for para in "$@"
     do
         test "$para" == "-f" &&  force=1
         test "$para" == "-fr" && force=1
@@ -770,14 +770,16 @@ function _saverm()
         test -d "$para" &&  files="$para\n$files"
     done
 
+    test -n "$files" || { print_error "rm target files is not found" && return 1; }
+
     test $force -eq 0 && \
-        \rm $verbose $interact $* && return 0
+        \rm $verbose $interact "$@" && return 0
 
     echo -e "$files" | cat -n | head -n 10
-    echo -e "... ... ... ... \n"
+    echo -e "        ... ... ... ...          \n"
     read -p "do you want to delete aboves files (type \"yes i want\"): " input
 
-    test "$input" == "yes i want" && { \rm $verbose $* && return 0; }
+    test "$input" == "yes i want" && { \rm $verbose $interact "$@" && return 0; }
     test "$input" == "yes i want" || { print_warning "user abort operation"  && return 1; }
 }
 
