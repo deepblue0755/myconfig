@@ -998,6 +998,7 @@ function _set_alias()
     alias server='_login_machine server'
     alias t430='_login_machine t430'
     alias t580='_login_machine t580'
+    alias traceroute='tracert'
     alias t='_tmux_new'
     alias timeout='timeout --preserve-status'
     alias tl='_task_list'
