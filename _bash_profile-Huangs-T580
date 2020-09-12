@@ -807,7 +807,7 @@ function _start()
         ;;
         2 | vb | ubuntu1804)
             # START THE DEFAULT VB MACHINE
-            test -n "$(VBoxManage list runningvms | grep "Ubuntu-1804")"  || \
+            test -n "$(VBoxManage list runningvms | grep "Ubuntu-1804")"  && \
             { \
             print_warning "virtualbox machine is already starting" && \
             return 1 \
