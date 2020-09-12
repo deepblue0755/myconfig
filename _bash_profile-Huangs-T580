@@ -535,6 +535,9 @@ function _ifconfig()
 function _login_machine()
 {
     case $1 in
+        am4376)
+            ssh root@192.168.0.114
+        ;;
         debian | 3)
             ssh huangmianbo@192.168.56.118
         ;;
@@ -803,30 +806,12 @@ function _start()
             vmrun start "D:\\Vmware-Machines\\Ubuntu-14.04-Kylin\\\Ubuntu.vmx"  nogui 2>&1 > /dev/null &
         ;;
         2 | vb | ubuntu1804)
-            # LIST ALL VB MACHINE
-            vb_machines=`vboxmanage list vms | awk -d\" '{print $1}' | sed 's/"//g'`
-            # PUSH MACHINE NAME INTO ARRAY BUFFER
-            let vb_machine_id=1
-            for vb_machine in $vb_machines 
-            do
-                echo $vb_machine_id $vb_machine 
-                machines_array[$vb_machine_id]=$vb_machine
-                let vb_machine_id=$vb_machine_id+1
-            done
-            let vb_machine_id=$vb_machine_id-1
-            test "$2" == "i" && read -p "please select which id to start 1-$vb_machine_id: " vb_machine_id
-            # START THE SELECTED MACHINE 
-            test "$2" == "i" && ( \
-            (print_infor "start virtualbox machine ${machines_array[$vb_machine_id]} ...") &&  \
-            (VBoxManage list runningvms | grep "${machines_array[$vb_machine_id]}")  || \
-            (VBoxManage startvm ${machines_array[$vb_machine_id]} --type headless 2>&1 > /dev/null &) &&  \
-            return 0 )
             # START THE DEFAULT VB MACHINE
-            check=`VBoxManage list runningvms | grep "Ubuntu-1804"` 
-            if [ ! -z "$check" ];then
-                print_warning "virtualbox machine is already starting"
-                return 1
-            fi
+            test -n "$(VBoxManage list runningvms | grep "Ubuntu-1804")"  || \
+            { \
+            print_warning "virtualbox machine is already starting" && \
+            return 1 \
+            ;}
             print_infor "start default virtual box machine \"Ubuntu-1804\" ... "
             VBoxManage startvm "Ubuntu-1804" --type headless 2>&1 > /dev/null &
         ;;
@@ -923,6 +908,7 @@ function _set_alias()
     alias ....='cd ../../../'
     alias ...='cd ../../'
     alias ..='cd ../'
+    alias am4376='_login_machine am4376'
     alias ball='_backup_all'
     alias bbash='_backup_bash'
     alias bcomp='_bcomp'
