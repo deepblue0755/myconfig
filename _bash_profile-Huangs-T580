@@ -121,11 +121,11 @@ function _backup_doc()
     fi
 
     if [ "$flag" == "1" ];then
-        print_infor "commit change to local  ..."
+        print_infor "commit change to local  ... ..."
         git  commit -m "update $comment from $USER@$HOSTNAME"
         echo 
-        git push -u local master
-        git push -u server master
+        test -n $(git remote | grep local) && git push -u local master
+        ping -c 1 -W 1 192.168.212.30 &> /dev/null && git push -u server master
 
         echo
         print_infor "update to common folder ..."
@@ -543,6 +543,10 @@ function _login_machine()
         ;;
         gitlab)
             ssh huangmianbo@192.168.56.103
+        ;;
+        ubuntu1804)
+            ping -W 1 -c 1 ubuntu1804 &> /dev/null && ssh huangmianbo@ubuntu1804 && return 0;
+            ping -W 1 -c 1 192.168.110.183 &> /dev/null && ssh huangmianbo@192.168.110.183 && return 0;
         ;;
         googol)
             ssh googol@cbpos
@@ -991,6 +995,7 @@ function _set_alias()
     alias tia='runas /user:administrator /savecred "d:\Siemens\Automation\Portal V14/Bin\Siemens.Automation.Portal.exe"'
     alias tmp='cd ~/tmp'
     alias uall='_update_all'
+    alias ubuntu1804='_login_machine ubuntu1804'
     alias uuid='uuidgen -r | cut -c 1-8'
     alias vim='_gvim'
     alias vivado='vivado -mode tcl'
