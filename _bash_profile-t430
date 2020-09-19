@@ -119,9 +119,138 @@ fi
 # --------------------------------------------------------------------------- #
 # user setting
 # --------------------------------------------------------------------------- #
+function print_error()
+{
+     echo -e "\e[31merror: $1\e[0m" && return 0
+}
+
+function print_warning()
+{
+     echo -e "\e[33mwarning: $1\e[0m" && return 0
+}
+
+function print_infor()
+{
+     echo -e "\e[32minfor: $1\e[0m" && return 0
+}
+
+function _backup_all()
+{
+
+    pushd . &> /dev/null
+
+    cd ~/documents
+
+    for folder in *
+    do
+        test -d "$folder" || continue
+        cd "$folder"
+        test -n "$(git status | grep "not a git repository")" && { cd ../ && continue; }
+        git pull
+        cd ../
+    done
+
+    popd
+}
+
+function _cp_linux()
+{
+    local the_machine=""
+    case $1 in 
+        mac)
+            ping -c 1 -W 1 192.168.1.103 && 
+            the_machine=huangmianbo@192.168.1.103
+        ;;
+        rasp4)
+            ping -c 1 -W 1 192.168.1.106 && 
+            the_machine=pi@192.168.1.106
+        ;;
+        *)
+        :
+        ;;
+    esac
+
+    test -n "$the_machine" || return 1
+    test -d $2 && scp -r $2 $the_machine:/tmp/
+    test -f $2 && scp -f $2 $the_machine:/tmp/
+}
+
+function _export_var()
+{
+    export HISTSIZE=10000
+    export HISTFILESIZE=100000
+    export HISTTIMEFORMAT="%F %T "
+    export HISTIGNORE="ls::history:clear:pwd"
+    export EDITOR=vim
+    # export LLVM_PATH=/usr/local/clang/9.0.0/
+    export LLVM_PATH=/usr/local/llvm/10.0.0/
+    export LLVM_CONFI=/usr/local/llvm/10.0.0/bin/llvm-config
+    export DISPLAY="localhost:10.0"
+    export LANG=en_US.UTF-8
+    export LANGUAGE=en_US:en
+    export LC_CTYPE="en_US.UTF-8"
+    export LC_NUMERIC=en_US.UTF-8
+    export LC_TIME=en_US.UTF-8
+    export LC_COLLATE="en_US.UTF-8"
+    export LC_MONETARY=en_US.UTF-8
+    export LC_MESSAGES="en_US.UTF-8"
+    export LC_PAPER=en_US.UTF-8
+    export LC_NAME=en_US.UTF-8
+    export LC_ADDRESS=en_US.UTF-8
+    export LC_TELEPHONE=en_US.UTF-8
+    export LC_MEASUREMENT=en_US.UTF-8
+    export LC_IDENTIFICATION=en_US.UTF-8
+    export LC_ALL=en_US.UTF-8
+    export TASKDATA=~/documents/12-cygwin64-config-t580/.task
+}
+
+function _git-branch-prompt 
+{
+    local branch=$(git symbolic-ref --short -q HEAD 2>/dev/null)
+    test -n "$branch" &&  printf " [%s]" $branch
+}
+
+function _gitlab()
+{
+        case $1 in
+        on)
+            test -n "$(sudo systemctl status gitlab-runsvdir.service  | grep Active | grep running)" || \
+            { echo "start gitlab service" && sudo systemctl start gitlab-runsvdir.service; }
+        ;;
+        off)
+            test -n "$(sudo systemctl status gitlab-runsvdir.service  | grep Active | grep running)" && \
+            { echo "stop gitlab service" && sudo systemctl stop gitlab-runsvdir.service; }
+        ;;
+        backup)
+            sudo gitlab-rake gitlab:backup:create
+        ;;
+        restore)
+            read -p "do you want to restore to $2? y/n: " input
+            test "$input" == "y" && test -n "$2" && sudo gitlab-rake gitlab:backup:restore BACKUP=$2
+            test "$input" == "y" && { test -n "$2" || sudo gitlab-rake gitlab:backup:restore;  }
+        ;;
+        *)
+            echo "gitlab on|off|backup|restore"
+        ;;
+        esac
+}
+
 function _login_machine()
 {
     case $1 in
+    beaglebone)
+        case $2 in 
+            1 | usb)
+                ssh root@192.168.7.2
+            ;;
+            2 | eth0)
+                ssh root@192.168.1.110
+            ;;
+            *)
+                ssh root@192.168.1.110
+            ;;
+        esac
+    ;;
     gitlab)
         ssh huangmianbo@192.168.56.103
     ;;
@@ -131,8 +260,11 @@ function _login_machine()
     gigabyte)
         ssh mianb@gigabyte-brix
     ;;
+    giga)
+        ssh mianb@192.168.1.102
+    ;;
     mac)
-        ssh huangmianbo@Huangs-MBP
+        ssh huangmianbo@192.168.1.103
     ;;
     t430)
         ssh huangmianbo@t430
@@ -149,36 +281,202 @@ function _login_machine()
     esac
 }
 
-function set_alias()
+function _log()
 {
-	alias reload='source ~/.bashrc'
-	alias config='vim ~/.bashrc'
-	alias ..='cd ../'
-	alias ...='cd ../../'
-	alias ....='cd ../../../'
-    alias mac='_login_machine mac'
+    test $# -eq 0 && { pushd ~/log/ &> /dev/null && return 0; }
+
+    file=$(ls -t $* | head -n 1)
+    test -f "$file" && vim "$file"
 }
 
-function set_path()
+function _mydate()
+{
+	test -n "$1" || { echo $(date "+%Y%m%d-%H%M%S") && return 0; }
+	test -f "$1" || test -d "$1" || return 1
+
+	echo $(stat -c %y "$1" | sed 's/://g' | sed 's/-//g' | sed 's/ /_/g' | cut -d"." -f1 )
+}
+
+function _nohup()
+
+{
+    local file=/tmp/$(uuidgen | cut -c1-8)
+    \nohup $* &> $file &
+    tail -f $file
+}
+
+function _rand()
+{
+    test "$1" == "" && echo $RANDOM && return 0
+    test "$2" == "" && echo $RANDOM && return 0
+    let min=$1
+    let max=$(($2-$min+1))
+    num=$(cat /dev/urandom | head -n 10 | cksum | awk -F ' ' '{print $1}');
+    echo $(($num%$max+$min))
+}
+
+function _randword()
+{
+    test "$(uname)"  == "Linux" && word_list=~/documents/18-bash-utils/00_en_dictionary_huge.dic
+    test -n "$(uname | grep -i "cygwin")" && word_list=$dir/d/documents/18-bash-utils/00_en_dictionary_huge.dic
+    test -f $word_list || { print_error "could not find file $word_list" && return 1; }
+    let word_size=$(cat $word_list | grep "^[A-Z]" | wc -l)
+    let line=$(uuidgen | cksum | cut -c 1-6)%$word_size
+    cat $word_list | grep "^[A-Z]" | sed -n "$line p"
+}
+
+function _check_import_folder()
+{
+    case $1 in 
+        /bin|/boot|/cdrom|/dev|\
+        /etc|/home|/lib|/lib64|\
+        /lost+found|/media|/mnt|\
+        /opt|/proc|/root|/run|/sbin|\
+        /snap|/srv|/sys|/tmp|/usr|/var|/home/huangmianbo)
+            return 0
+        ;;
+        /bin/|/boot/|/cdrom/|/dev/|\
+        /etc/|/home/|/lib/|/lib64/|\
+        /lost+found/|/media/|/mnt/|\
+        /opt/|/proc/|/root/|/run/|/sbin/|\
+        /snap/|/srv/|/sys/|/tmp/|/usr/|/var/|/home/huangmianbo/)
+            return 0
+        ;;
+        *)
+            return 1
+        ;;
+    esac
+
+    return 1;
+}
+
+function _sudo()
+{
+    local dest_folder_flag=1
+    test "$1" == "mv" && \
+    {
+        for arg in $*
+        do
+            test "$arg" == "/dev/null" && print_error "mv to /dev/null is an error" && return 1;
+            test -f "$arg"  && dest_folder_flag=0
+            test -d "$arg"  && { _check_import_folder "$arg" || dest_folder_flag=0; }
+            test $dest_folder_flag -eq 1 && test -d "$arg" &&  _check_import_folder "$arg" && print_error "mv $arg in not allowed!!" && return 1
+        done;
+    }
+
+    test "$1" == "rm" && \
+    {
+        for arg in $*
+        do
+            test "$arg" == "/" && print_error "rm root dir is not allowed" && return 1;
+            test -d "$arg" && _check_import_folder "$arg" && print_error "rm $arg is not allowed!!"  && return 1
+        done;
+    }
+
+    \sudo $*
+}
+
+function _savemv()
+{
+    local dest_folder_flag=1
+
+    for arg in $*
+    do
+        test "$arg" == "/dev/null" &&  \
+        print_error "mv to /dev/null is not allowed!!"  && \
+        return 1
+        test -f "$arg"  && dest_folder_flag=0
+        test -d "$arg"  && { _check_import_folder "$arg" || dest_folder_flag=0; }
+        test $dest_folder_flag -eq 1 && test -d "$arg" &&  _check_import_folder "$arg" && print_error "mv $arg in not allowed!!" && return 1
+    done
+
+    \mv -iv $*
+}
+
+function _saverm()
+{
+    for arg in $*
+    do
+        test "$arg" == "/" && print_error "rm root dir is not allowed" && return 1;
+        test -d "$arg" && _check_import_folder "$arg" && print_error "rm $arg is not allowed!!"  && return 1
+    done;
+
+    \rm -iv --preserve-root $*
+}
+
+function _set_alias()
+{
+	alias ....='cd ../../../'
+	alias ...='cd ../../'
+	alias ..='cd ../'
+	alias config='vim ~/.bashrc'
+	alias reload='source ~/.bashrc'
+    alias bbb='beaglebone'
+    alias beaglebone='_login_machine beaglebone'
+    alias build='~/documents/18-bash-utils/07_build_src.sh'
+    alias cp='cp -iv'
+    alias cp='cp -iv'
+    alias cpmac='_cp_linux mac'
+    alias cprasp4='_cp_linux rasp4'
+    alias diff='colordiff'
+    alias doc='cd ~/documents'
+    alias giga='_login_machine giga'
+    alias gitlab='_gitlab'
+    alias log='_log'
+    alias mac='_login_machine mac'
+    alias mv='_savemv'
+    alias mydate='_mydate'
+    alias mygit='~/documents/18-bash-utils/25_git_utils.sh'
+    alias nohup='_nohup'
+    alias rand='_rand'
+    alias randword='_randword'
+    alias rasp4='ssh pi@192.168.1.106'
+    alias rm='_saverm'
+    alias sudo='_sudo'
+    alias temp='sensors | grep "Core"'
+    alias tl='task list'
+}
+
+function _set_path()
 {
 	PATH=/usr/local/vim/bin:$PATH
+    PATH=/usr/local/llvm/10.0.0/bin:$PATH
+    PATH=/usr/local/clang/10.0.0/bin:$PATH
+    PATH=/usr/local/cmake/bin:$PATH
+    # PATH=/usr/local/clang/9.0.0/bin:$PATH
+    PATH=/usr/local/gcc/9.3.0/bin:$PATH
     PATH=/opt/Xilinx/Vivado/2019.2/bin:$PATH
     PATH=/opt/Xilinx/DocNav:$PATH
     PATH=/opt/Xilinx/xic/bin:$PATH
+    PATH=/opt/sda1/Xilinx-Vitis/Vitis/2019.2/bin:$PATH
+    PATH=$HOME/scripts/:$PATH
 	export PATH
 }
 
-function set_pkg_config_path()
+function _set_PS1()
 {
-	PKG_CONFIG_PATH=/usr/local/readline/lib/pkgconfig:$PKG_CONFIG_PATH
-	export PKG_CONFIG_PATH
+    PS1="\u@\h \[\033[0;36m\]\W\[\033[0m\]\[\033[0;32m\]\$(_git-branch-prompt)\[\033[0m\] \$ "
 }
 
-set_path
-set_alias
-set_pkg_config_path
+function _set_pkg_config_path()
+{
+	PKG_CONFIG_PATH=/usr/local/readline/lib/pkgconfig:$PKG_CONFIG_PATH
+}
 
-# xmodmap -e "keycode 66 = Escape"
-set -o vi
+# ------------------------------------------------------------------
+# ------------------------------------------------------------------
+# ------------------------------------------------------------------
+# Main Function 
+function main()
+{
+    _export_var
+    _set_path
+    _set_alias
+    _set_pkg_config_path
+    _set_PS1
 
+    # xmodmap -e "keycode 66 = Escape"
+    set -o vi
+}
 
+main $*
