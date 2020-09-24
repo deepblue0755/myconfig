@@ -623,6 +623,12 @@ function _md2pdf()
     pandoc --pdf-engine=pdflatex $file -o $pdffile
 }
 
+function _mydate()
+{
+    test -f "$1" && date '+%Y%m%d%H%M%S' -d "$(stat -c '%z' "$1")" && return 0;
+    date +%Y%m%d%H%M%S
+}
+
 function _netstat()
 {
     test $# -eq 0 && \netstat -ano
@@ -959,7 +965,7 @@ function _set_alias()
     alias lscpu='wmic cpu list brief'
     alias mac='_login_machine mac'
     alias md2pdf='_md2pdf'
-    alias mydate='date +%Y%m%d%H%M%S'
+    alias mydate='_mydate'
     alias myffmpeg='/d/documents/18-bash-utils/20_ffmpeg_utils.sh'
     alias mygit='/d/documents/18-bash-utils/25_git_utils.sh'
     alias mysync='_sync'
