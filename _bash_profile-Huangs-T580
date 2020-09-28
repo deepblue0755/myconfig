@@ -570,28 +570,10 @@ function _login_machine()
             ssh huangmianbo@192.168.212.30
         ;;
         beaglebone)
-            case $2 in 
-            1 | usb)
-                ssh root@192.168.7.2
-            ;;
-            2 | eth0 )
-                ssh root@192.168.1.110
-            ;;
-            *)
-                ssh root@192.168.7.2 ||  \
-                { \
-                    ssh root@192.168.7.2 2>&1 | grep -i "host key verification failed" &> /dev/null && \
-                    pushd ~/.ssh &> /dev/null && \
-                    line=$(cat known_hosts | egrep -n '^192.168.7.2' | cut -d: -f1) && \
-                    sed -i "${line}d" known_hosts && \
-                    popd &> /dev/null && \
-                    ssh root@192.168.7.2 \
-                ;}
-            ;;
-            rasp4)
+            ssh root@192.168.1.110
+        ;;
+        rasp4)
                 ssh pi@192.168.1.106
-            ;;
-            esac
         ;;
         cbpos)
             # TRY TO PING 192.168.0.2
