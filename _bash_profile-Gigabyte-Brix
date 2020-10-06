@@ -496,6 +496,7 @@ function _sync()
             --port=10556
         ;;
         3 | ubuntu1404)
+            print_infor "rsync vmware ubuntu 1404 ..."
             rsync -vzrt --progress --include="*.vmdk" --exclude=* \
             Huangs-T580::ubuntu-1404 \
             "/cygdrive/d/Vmware-Machines/Ubuntu-14.04-Kylin"  \
@@ -529,7 +530,7 @@ function _sync()
             echo "$0 1:kid_videos|2:ubuntu1804|3:ubuntu1404|4:local_git_repo|5:slide|6:t580-videos"
         ;;
         *)
-            echo "$0 1:kid_videos|2:ubuntu1804|3:ubuntu1404|4:local_git_repo|5:slide|6:t580-videos"
+            echo "$0 |1:kid_videos|2:ubuntu1804|3:ubuntu1404|4:local_git_repo|5:slide|6:t580-videos|"
         ;;
     esac
 }
