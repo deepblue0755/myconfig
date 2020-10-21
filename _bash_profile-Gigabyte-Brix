@@ -144,7 +144,7 @@ function _duty()
     local logfile1=$dir/d/temp/duty_file_1
     case $1 in 
         1 | rsync)
-            test -d /cygdrive/e/git || return 1
+            test -d /cygdrive/i/git || return 1
             test -f $logfile1 && return 0
             test -f $logfile1 || touch $logfile1
             test $(date +%H) -ge 20 &&  \
@@ -503,7 +503,7 @@ function _sync()
             --port=10556
         ;;
         4 | git | local_git_repo)
-            local dest_folder="/cygdrive/e/git"
+            local dest_folder="/cygdrive/i/git"
             test -d "$dest_folder" || { print_error "could not find dest folder $dest_folder" && return 1; }
             rsync -vzrt --progress \
             Huangs-T580::local_git_repo \
@@ -521,7 +521,7 @@ function _sync()
         6 | t580-videos )
             test -d "/cygdrive/m/99-Misc/" || { print_error "could not find source folder" && return 1; }
             print_infor "rsync t580 videos ..."
-            rsync -vzrt --progress --delete \
+            rsync -vzrt --progress \
             Huangs-T580::t580-videos  \
             "/cygdrive/m/99-Misc/" \
             --port=10556
