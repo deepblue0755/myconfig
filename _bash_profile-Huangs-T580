@@ -72,23 +72,6 @@ function print_error()
     echo -e "\e[31merror: $1\e[0m"
 }
 
-function _burn()
-{
-    if [ ! -f "$1" ];then
-        print_error "file $1 could not be found"
-        return
-    fi
-
-    if [ $# -lt 2 ];then
-        ip=192.168.0.2
-    else
-        ip=$2
-    fi
-
-    scp $1 root@$ip:/tmp/
-    ssh root@$ip "burn /tmp/$1"
-}
-
 function _backup_doc()
 {
     print_infor "entering $dir/d/documents/RTAI ..."
@@ -310,15 +293,6 @@ function _dirdos2unix
     echo $dirs
     
     return 0;
-}
-
-function _dmesg()
-{
-    case $1 in
-        *)
-        ssh root@192.168.0.2 "dmesg"
-        ;;
-    esac
 }
 
 function _done_102()
@@ -578,7 +552,12 @@ function _login_machine()
         cbpos)
             # TRY TO PING 192.168.0.2
             local server=192.168.0.2
-            test -n "$2" && server=192.168.0.$2
+            for opt in $*
+            do
+                echo "$opt" | grep "\-\-ip=" &> /dev/null && \
+                server=$(echo $opt | cut -d"=" -f2)
+            done
+            test $(echo $server | wc -c) -lt 3 && server=192.168.0.$server
             for ((i=1;i<100;i++))
             do
                 print_infor "$i try to ping $server ..."
@@ -907,8 +886,6 @@ function _set_alias()
     alias bconfig='_backup_config'
     alias bdoc='_backup_doc'
     alias beaglebone='_login_machine beaglebone'
-    alias burn='_burn'
-    alias btask='_backup_task'
     alias cbpos='_login_machine cbpos'
     alias cgdb='cgdb -q'
     alias config='gvim --remote-silent D:\\cygwin64\\home\\mianb\\.bash_profile &'
@@ -923,11 +900,9 @@ function _set_alias()
     alias cpvb='_cplinux gitlab'
     alias cpvm='_cplinux vm'
     alias cmd='_sudo conemu64'
-    alias dmesg='_dmesg'
     alias doc='pushd . > /dev/null && cd ~/documents/RTAI'
     alias eclipse='/d/Profinet/DevKit46/eclipse/eclipse &'
     alias expl='_expl'
-    alias fpga_version='ssh root@192.168.0.2 \"fpga_version\"'
     alias fv='fpga_version'
     alias gdb='gdb -q'
     alias getlinux='_getlinux cbpos'
@@ -965,7 +940,6 @@ function _set_alias()
     alias reload='source ~/.bash_profile'
     alias relay='_relay'
     alias rename='/d/documents/18-bash-utils/01_rename_utils.sh'
-    alias rkh='_reset_known_host'
     # alias rm='rm -iv'
     alias rm='_saverm'
     alias rtai='cd ~/documents/RTAI'
@@ -991,7 +965,6 @@ function _set_alias()
     alias vm='_login_machine vm'
     alias vmware='vm'
     alias vscode='_code'
-    alias vsco='vscode'
     alias ~='cd ~'
 }
 

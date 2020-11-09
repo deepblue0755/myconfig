@@ -7,39 +7,21 @@ HOST *
 # ------------------------------------------------------------------- #
 # Ideabox Machine
 # ------------------------------------------------------------------- #
-HOST cbpos
+HOST 192.168.0.2 192.168.0.5 cbpos
     user root
-    hostname cbpos 
-    identityfile ~/.ssh/id_rsa_root_at_cbpos
-    
-HOST 192.168.0.2
-    user root
-    hostname 192.168.0.2 
     identityfile ~/.ssh/id_rsa_root_at_cbpos
 
-HOST 192.168.0.3
+HOST 192.168.50.213 192.168.50.203
     user root
-    hostname 192.168.0.3
-    identityfile ~/.ssh/id_rsa_root_at_cbpos
-
-HOST 192.168.0.5
-    user root
-    hostname 192.168.0.5
-    identityfile ~/.ssh/id_rsa_root_at_cbpos
-
-HOST 192.168.0.7
-    user root
-    hostname 192.168.0.7
-    identityfile ~/.ssh/id_rsa_root_at_cbpos
-
-HOST 192.168.50.213
-    user root
-    hostname 192.168.50.213
     identityfile ~/.ssh/id_rsa_root_at_cbpos
 
 HOST cbpos
     user googol
     hostname cbpos 
+    identityfile ~/.ssh/id_rsa_googol_at_cbpos
+
+HOST 192.168.0.2 192.168.0.5
+    user googol
     identityfile ~/.ssh/id_rsa_googol_at_cbpos
 
 # ------------------------------------------------------------------- #
@@ -170,9 +152,29 @@ Host 192.168.50.204
 # rasp4
 # ------------------------------------------------------------------- #
 Host 192.168.1.106
-    user pi
+    user pi 
     hostname 192.168.1.106
     identityfile ~/.ssh/id_rsa_pi_at_rasp4
+
+Host 192.168.1.106
+    user root 
+    hostname 192.168.1.106
+    identityfile ~/.ssh/id_rsa_root_at_rasp4-6e4ace
+
+Host 192.168.1.107
+    user root 
+    hostname 192.168.1.107
+    identityfile ~/.ssh/id_rsa_root_at_rockchip
+
+Host 192.168.1.107
+    user linaro
+    hostname 192.168.1.107
+    identityfile ~/.ssh/id_rsa_linaro_at_rockchip
+
+Host linaro-alip
+    user linaro
+    hostname linaro-alip
+    identityfile ~/.ssh/id_rsa_linaro_at_rockchip
 
 # ------------------------------------------------------------------- #
 # Debian 10 Buster
