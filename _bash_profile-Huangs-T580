@@ -72,180 +72,6 @@ function print_error()
     echo -e "\e[31merror: $1\e[0m"
 }
 
-function _backup_doc()
-{
-    print_infor "entering $dir/d/documents/RTAI ..."
-    pushd $dir/d/documents/RTAI &> /dev/null
-    flag=0
-    comment=""
-
-    check=`git diff 00-rtai-x86-ubuntu-1404.md | wc -c`
-    if [ "$check" != "0" ];then
-        print_infor "git add 00-rtai-x86-ubuntu-1404.md ..."
-        git add 00-rtai-x86-ubuntu-1404.md
-        flag=1
-        comment=$comment" 00-rtai-x86-ubuntu-1404.md"
-    fi
-
-    check=`git diff Makefile | wc -c`
-    if [ "$check" != "0" ];then
-        print_infor "git add Makefile ..."
-        git add Makefile
-        flag=1
-        comment=$comment" Makefile"
-    fi
-
-    check=`git diff .gitignore | wc -c`
-    if [ "$check" != "0" ];then
-        print_infor "git add .gitignore ..."
-        git add .gitignore
-        flag=1
-        comment=$comment" .gitignore"
-    fi
-
-    if [ "$flag" == "1" ];then
-        print_infor "commit change to local  ... ..."
-        git  commit -m "update $comment from $USER@$HOSTNAME"
-        echo 
-        test -n $(git remote | grep local) && git push -u local master
-        ping -c 1 -W 1 192.168.212.30 &> /dev/null && git push -u server master
-
-        echo
-        print_infor "update to common folder ..."
-
-        pushd . > /dev/null
-        cd $dir/d/documents/10-github-documents/ 
-        ./update_documents_from_local.sh 
-        popd > /dev/null
-
-    else
-        print_infor "no update ,nothing to backup"
-    fi
-
-    popd > /dev/null
-}
-
-function _backup_task()
-{
-    local flag=0
-
-    print_infor "entering $HOME to backup taskwarrior ..."
-    pushd $HOME &> /dev/null
-
-    check=`git diff .taskrc | wc -c`
-    if [ "$check" != "0" ];then
-        print_infor "git add .taskrc ..."
-        git add .taskrc
-        flag=1
-    fi
-
-    check=`git diff .task | wc -c`
-    if [ "$check" != "0" ];then
-        print_infor "git add .task ..."
-        git add .task
-        flag=1
-    fi
-
-    if [ "$flag" == "1" ];then
-        print_infor "commit change to local "
-        git  commit -m "update taskwarrior from $USER@$HOSTNAME"
-        git push -u $(git remote | sed -n 1p) master
-    else
-        print_infor "no update ,nothing to backup taskwarrior"
-    fi
-    
-    popd > /dev/null
-}
-
-function _backup_bash()
-{
-    print_infor "entering directly $HOME"
-    pushd ~  &> /dev/null
-    local flag=0
-    print_infor "backup $HOME/.bash_profile ..."
-    check=`git diff .bash_profile | wc -c`
-    if [ "$check" != "0" ];then
-        print_infor "git add .bash_profile ..."
-        git add .bash_profile
-        flag=1
-    fi
-
-    if [ "$flag" == "1" ];then
-        print_infor "commit change to $(git remote -v | sed -n 1p | cut -f2)"
-        git  commit -m "update .bash_profile from $USER@$HOSTNAME"
-        git push -u $(git remote | sed -n 1p) master
-    else
-        print_infor "no update ,nothing to backup"
-    fi
-
-    popd &> /dev/null
-}
-
-function _backup_config()
-{
-    print_infor "entering $dir/d/documents/11-configs-from-github ..."
-    pushd $dir/d/documents/11-configs-from-github &> /dev/null
-    print_infor "executing local update script files ..."
-    ./update_config_file.sh
-    popd &> /dev/null
-}
-
-function _backup_scripts()
-{
-    pushd $dir/d/documents/16-bash-scripts &> /dev/null
-    print_infor "entering $dir/d/documents/16-bash-scripts"
-    print_infor "executing its local update scripts"
-
-    ./update_bash_files.sh t580
-    ./update_bash_files.sh cbpos
-    ./update_bash_files.sh server
-
-    popd &> /dev/null
-}
-
-function _backup_all()
-{
-    case $1 in 
-        1)
-            echo "--------------------------------------"
-            echo "1, backup doc ..."
-            echo "--------------------------------------"
-            echo 
-            _backup_doc
-            return 0
-        ;;
-        2)
-            echo "--------------------------------------"
-            echo "2, backup cygwin64 configs $HOME to github ..."
-            echo "--------------------------------------"
-            echo 
-            _backup_bash
-            _backup_task
-            _backup_config
-            return 0
-        ;;
-        3)
-            echo "--------------------------------------"
-            echo "3, backup bash scripts to github ..."
-            echo "--------------------------------------"
-            echo 
-            _backup_scripts
-            return 0
-        ;;
-        *)
-            _backup_all 1
-            _backup_all 2
-            _backup_all 3
-            return 0
-        ;;
-    esac
-}
-
-function _bcomp()
-{
-    BCompare $* &> /dev/null &
-}
-
 function _code()
 {
     code $1 &> /dev/null &
@@ -253,33 +79,48 @@ function _code()
 
 function _cplinux()
 {
-    { test -f "$2" || test -d "$2"; } || { print_error "file $2 does not exist!!" && return 1; }  
-    test -d "$2" && { option=-pr; }
-    test -f "$2" && { option=-p; }
+    test $# -lt 1 && { print_error "need at least one file or folder name" && return 1; }
+    local option=-p
+    local filelist=""
+    local ipaddr=''
+    local destdir=''
+    for opt in $*
+    do
+        test -f "$opt" && filelist=$opt\ $filelist
+        test -d "$opt" && filelist=$opt\ $filelist
+        test -d "$opt" && option=-pr
+        echo $opt | grep "\-\-ip=" &>/dev/null && \
+        ipaddr=192.168.0.$(echo $opt | cut -d'=' -f2)
+        echo $opt | grep "\-\-dir=" &>/dev/null && \
+        destdir=$(echo $opt | cut -d'=' -f2)
+    done
     case $1 in 
         t430)
-            scp $option "$2" huangmianbo@192.168.1.105:/tmp/
+            scp $option $filelist huangmianbo@192.168.1.105:/tmp/
         ;;
         mac)
-            scp $option "$2" huangmianbo@192.168.1.103:/tmp/
+            scp $option $filelist huangmianbo@192.168.1.103:/tmp/
         ;;
         server)
-            scp $option "$2" huangmianbo@192.168.212.30:/tmp/
+            scp $option $filelist huangmianbo@192.168.212.30:/tmp/
         ;;
         ideabox)
-            scp $option "$2" root@cbpos:/tmp/
+            test -n "$destdir" || destdir=/tmp/
+            test -n "$ipaddr" && scp $option $filelist root@${ipaddr}:${destdir}
+            test -n "$ipaddr" || scp $option $filelist root@cbpos:${destdir}
         ;;
         vm)
-            scp $option "$2" huangmianbo@vmware:/tmp/
+            scp $option $filelist huangmianbo@vmware:/tmp/
         ;;
         gitlab)
-            scp $option "$2" huangmianbo@gitlab:/tmp/
+            scp $option $filelist huangmianbo@gitlab:/tmp/
         ;;
         debian)
-            scp $option "$2" huangmianbo@192.168.56.118:/tmp/
+            scp $option $filelist huangmianbo@192.168.56.118:/tmp/
         ;;
         *)
-            scp $option "$2" root@cbpos:/tmp/
+            test -n "$ipaddr" && scp $option $filelist root@${ipaddr}:/tmp/
+            test -n "$ipaddr" || scp $option $filelist root@cbpos:/tmp/
         ;;
     esac
 }
@@ -295,24 +136,6 @@ function _dirdos2unix
     return 0;
 }
 
-function _done_102()
-{
-    the_date=`date +%Y%m%d`
-    pushd . &> /dev/null
-    cd  $dir/d/102-delivery/
-
-    mkdir -p done_$the_date
-
-    for file in *
-    do
-        if [ -f "$file" ];then
-            mv "$file" done_$the_date
-        fi
-    done
-
-    popd  &> /dev/null
-}
-
 function _duty()
 {
     local logfile1=$dir/d/temp/duty_file_1
@@ -320,6 +143,7 @@ function _duty()
     local logfile3=$dir/d/temp/start_vm
     local logfile4=$dir/d/temp/sync_cpac
     local logfile5=$dir/d/temp/rsync_start
+    local flag=0;
     case $1 in 
         1 | rsync)
             ping -c 1 -W 1 192.168.212.30 &> /dev/null || return 1
@@ -328,6 +152,7 @@ function _duty()
             test $(date +%H) -eq 9 &&  \
             test $(date +%M) -lt 30 &&  \
             _sync git
+            flag=1
             return 0;
         ;;
         2 | gitlab-backup)
@@ -345,6 +170,7 @@ function _duty()
             test $(date +%H) -eq 9 &&  \
             test $(date +%M) -lt 30 &&  \
             rsync -vzrt --progress -e ssh huangmianbo@192.168.212.30:$gitlab_backup_file $dir/d/backup/gitlab-ce/$(basename $gitlab_backup_file)
+            flag=1
             return 0;
         ;;
         3 | start_vm)
@@ -354,6 +180,7 @@ function _duty()
             test $(date +%H) -eq 9 &&  \
             test $(date +%M) -lt 30 &&  \
             _start vm
+            flag=1
             return 0;
         ;;
         4 | sync_cpac)
@@ -364,7 +191,9 @@ function _duty()
             test $(date +%M) -lt 30 &&  \
             pushd $dir/d/documents/23-CPAC_Products &> /dev/null && \
             git pull origin master && \
+            flag=1
             popd &> /dev/null
+            return 0;
         ;;
         5 | start_rsync)
             tasklist | grep rsync &> /dev/null && return 0
@@ -372,6 +201,8 @@ function _duty()
             test -f $logfile5 && return 0 
             test -f $logfile5 || touch $logfile5 
             _start rsync
+            flag=1
+            return 0;
         ;;
         all)
             _duty 1
@@ -379,6 +210,7 @@ function _duty()
             _duty 3
             _duty 4
             _duty 5
+            test $flag -eq 1 && echo -e "\e[32mjob is done \e[0m"
             return 0;
         ;;
     esac
@@ -403,6 +235,7 @@ function _export_var()
 
 function _expl()
 {
+    echo $(uname)
     if [ -z "$1" ];then
         explorer $(_dirdos2unix "$(echo $PWD | sed 's#/home/mianb#/d/cygwin64/home/mianb#')")
     else
@@ -533,6 +366,9 @@ function _login_machine()
         ;;
         t430)
             ssh -Y huangmianbo@192.168.1.105
+        ;;
+        t430-32)
+            ssh -Y huangmianbo@192.168.1.106
         ;;
         t580)
             ssh mianb@Huangs-T580
@@ -700,12 +536,6 @@ function _randword()
     cat $word_list | grep "^[A-Z]" | sed -n "$line p"
 }
 
-function _relay()
-{
-    ping -c 1 -W 1 192.168.1.106 &> /dev/null || { print_error "could not find rasp4" && return 1 ;}
-    ssh pi@192.168.1.106 "/usr/local/bin/relay.sh $*"
-}
-
 function _reset_known_host()
 {
     pushd . > /dev/null
@@ -832,6 +662,7 @@ function _stop()
 
 function _sudo()
 {
+    # simulation of sudo in cygwin
     for para in $*
     do
         test "$para" == "poweroff" &&  _poweroff && return 0
@@ -880,14 +711,11 @@ function _set_alias()
     alias ...='cd ../../'
     alias ..='cd ../'
     alias am4376='_login_machine am4376'
-    alias ball='_backup_all'
-    alias bbash='_backup_bash'
-    alias bcomp='_bcomp'
-    alias bconfig='_backup_config'
-    alias bdoc='_backup_doc'
+    alias bcomp='BCompare $* &> /dev/null'
     alias beaglebone='_login_machine beaglebone'
     alias cbpos='_login_machine cbpos'
     alias cgdb='cgdb -q'
+    alias ctags='ctags -f .tags'
     alias config='gvim --remote-silent D:\\cygwin64\\home\\mianb\\.bash_profile &'
     alias debian='_login_machine debian'
     alias diff='colordiff --exclude=*.git*'
@@ -938,7 +766,6 @@ function _set_alias()
     alias rand='_rand'
     alias rasp4='ssh pi@192.168.1.106'
     alias reload='source ~/.bash_profile'
-    alias relay='_relay'
     alias rename='/d/documents/18-bash-utils/01_rename_utils.sh'
     # alias rm='rm -iv'
     alias rm='_saverm'
@@ -949,6 +776,7 @@ function _set_alias()
     alias svn='svn --username huang.mb --password huang.mb'
     alias server='_login_machine server'
     alias t430='_login_machine t430'
+    alias t430-32='_login_machine t430-32'
     alias t580='_login_machine t580'
     alias traceroute='tracert'
     alias t='_tmux_new'
@@ -956,12 +784,11 @@ function _set_alias()
     alias tl='_task_list'
     alias tia='runas /user:administrator /savecred "d:\Siemens\Automation\Portal V14/Bin\Siemens.Automation.Portal.exe"'
     alias tmp='cd ~/tmp'
-    alias uall='_update_all'
     alias ubuntu1804='_login_machine ubuntu1804'
     alias uuid='uuidgen -r | cut -c 1-8'
     alias vim='_gvim'
     alias vivado='vivado -mode tcl'
-    alias vlc='_vlc'
+    alias vlc='vlc $* &> /dev/null'
     alias vm='_login_machine vm'
     alias vmware='vm'
     alias vscode='_code'
@@ -1073,46 +900,6 @@ function _tmux_new()
         ;;
     esac
 }
-
-function _update_all()
-{
-    pushd . > /dev/null
-
-    echo
-    echo -------------------------------------------------
-    echo 1, update $dir/d/documents/10-github-documents 
-    echo -------------------------------------------------
-    echo 
-
-    cd $dir/d/documents/10-github-documents
-    git pull
-
-    echo
-    echo -------------------------------------------------
-    echo 2, $dir/d/documents/11-configs-from-github
-    echo -------------------------------------------------
-    echo
-
-    cd $dir/d/documents/11-configs-from-github
-    git pull
-
-    echo
-    echo -------------------------------------------------
-    echo 3,$dir/d/documents/09-latex-tikz-demo
-    echo -------------------------------------------------
-    echo
-
-    cd $dir/d/documents/09-latex-tikz-demo
-    git pull
-
-    popd
-}
-
-function _vlc()
-{
-    vlc $1 &> /dev/null &
-}
-
 
 # ------------------------------------------------------------------- #
 # Customer Main Entry

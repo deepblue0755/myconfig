@@ -7,22 +7,17 @@ HOST *
 # ------------------------------------------------------------------- #
 # Ideabox Machine
 # ------------------------------------------------------------------- #
-HOST 192.168.0.2 192.168.0.5 cbpos
+HOST 192.168.50.98 192.168.0.*
     user root
     identityfile ~/.ssh/id_rsa_root_at_cbpos
 
-HOST 192.168.50.213 192.168.50.203
+HOST 192.168.0.*
+    user googol
+    identityfile ~/.ssh/id_rsa_googol_at_cbpos
+
+HOST 192.168.50.213 192.168.50.203 192.168.50.98
     user root
     identityfile ~/.ssh/id_rsa_root_at_cbpos
-
-HOST cbpos
-    user googol
-    hostname cbpos 
-    identityfile ~/.ssh/id_rsa_googol_at_cbpos
-
-HOST 192.168.0.2 192.168.0.5
-    user googol
-    identityfile ~/.ssh/id_rsa_googol_at_cbpos
 
 # ------------------------------------------------------------------- #
 # Vmware 
@@ -88,19 +83,9 @@ Host 192.168.0.22
 # ------------------------------------------------------------------- #
 # T430 Linux Machine
 # ------------------------------------------------------------------- #
-Host 192.168.1.105
+# 192.168.1.106 192.168.50.28 t430 t430-32
+Host 192.168.1.105 
     user huangmianbo
-    hostname 192.168.1.105
-    identityfile ~/.ssh/id_rsa_t430
-
-Host 192.168.50.28
-    user huangmianbo
-    hostname 192.168.50.28
-    identityfile ~/.ssh/id_rsa_t430
-
-Host t430
-    user huangmianbo
-    hostname t430
     identityfile ~/.ssh/id_rsa_t430
 
 # ------------------------------------------------------------------- #
@@ -161,21 +146,6 @@ Host 192.168.1.106
     hostname 192.168.1.106
     identityfile ~/.ssh/id_rsa_root_at_rasp4-6e4ace
 
-Host 192.168.1.107
-    user root 
-    hostname 192.168.1.107
-    identityfile ~/.ssh/id_rsa_root_at_rockchip
-
-Host 192.168.1.107
-    user linaro
-    hostname 192.168.1.107
-    identityfile ~/.ssh/id_rsa_linaro_at_rockchip
-
-Host linaro-alip
-    user linaro
-    hostname linaro-alip
-    identityfile ~/.ssh/id_rsa_linaro_at_rockchip
-
 # ------------------------------------------------------------------- #
 # Debian 10 Buster
 # ------------------------------------------------------------------- #
@@ -199,9 +169,16 @@ Host 192.168.110.183
     hostname 192.168.110.183
     identityfile ~/.ssh/id_rsa_ubunt1804_vmware
 # ------------------------------------------------------------------- #
-# Ubuntu1804@Vmware
+# root@yanzhi
 # ------------------------------------------------------------------- #
-Host ubuntu1804
-    user huangmianbo
-    hostname ubuntu1804
-    identityfile ~/.ssh/id_rsa_ubunt1804_vmware
+Host 192.168.1.119 yz
+    user root
+    hostname 192.168.1.119 
+    identityfile ~/.ssh/id_rsa_root_at_yanzhi
+# ------------------------------------------------------------------- #
+# yz@yanzhi
+# ------------------------------------------------------------------- #
+Host 192.168.1.119 yz
+    user yz
+    hostname 192.168.1.119 
+    identityfile ~/.ssh/id_rsa_yz_at_yanzhi
