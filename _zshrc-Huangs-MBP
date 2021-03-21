@@ -247,6 +247,7 @@ function _export_environ_var()
     # export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.aliyun.com/homebrew/homebrew-bottles
     export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles
     export DISPLAY=localhost:10.0
+    export RSYNC_PASSWORD=123456
 }
 
 # ------------------------------------------------------------------- #
@@ -434,26 +435,30 @@ function _rand()
 # ------------------------------------------------------------------- #
 function _sync()
 {
+    local gigabyte_brix=192.168.1.102
     case $1 in 
         1 | book1)
             ping -c 1 -W 1 192.168.1.102 &> /dev/null || return 1
             rsync -vzrt --progress --include='*.pdf' --exclude='*.*' \
-            gigabyte-brix::book-linux \
-            "~/Documents/Books/Linux/"  \
+            --password-file=/Users/huangmianbo/.rsync.pas \
+            ${gigabyte_brix}::book-linux \
+            "Documents/Books/Linux/"  \
             --port=10556
         ;;
         2 | book2)
             ping -c 1 -W 1 192.168.1.102 &> /dev/null || return 1
             rsync -vzrt --progress --include='*.pdf' --exclude='*.*' \
-            gigabyte-brix::book-cs \
-            "~/Documents/Books/Computer-Science-CS/"  \
+            --password-file=/Users/huangmianbo/.rsync.pas \
+            ${gigabyte_brix}::book-cs \
+            "Documents/Books/Computer-Science-CS/"  \
             --port=10556
         ;;
         3 | book3)
             ping -c 1 -W 1 192.168.1.102 &> /dev/null || return 1
             rsync -vzrt --progress --include='*.pdf' --exclude='*.*' \
-            gigabyte-brix::book-control \
-            "~/Documents/Books/Computer-Science-CS/"  \
+            --password-file=/Users/huangmianbo/.rsync.pas \
+            ${gigabyte_brix}::book-control \
+            "Documents/Books/Computer-Science-CS/"  \
             --port=10556
         ;;
         all)

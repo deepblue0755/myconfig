@@ -16,7 +16,7 @@ function print_warning()
 function print_infor()
 {
 
-    test "$(uname)" == "Darwin" && { echo -e "\033[32minfor: $1\033[0m" && return 0; }
+    test "$(uname)" == "Darwin" && { echo -e "\033[32m|$(date +%Y%m%d%H%M%S)|$(basename $BASH_SOURCE):$BASH_LINENO|infor|$1|\033[0m" && return 0; }
     test "$(uname)" == "Darwin" || { echo -e "\e[32minfor: $1\e[0m" && return 0; }
 }
 
