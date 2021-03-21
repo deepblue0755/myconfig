@@ -1,22 +1,9 @@
 # ------------------------------------------------------------------- #
 # for T430 Ubuntu 16.04
-# ------------------------------------------------------------------- #
-Host 192.168.50.28
+# ------------------------------------------------------------------- # 
+Host 192.168.50.28 192.168.1.105 192.168.1.106
     user huangmianbo
-    HostName 192.168.50.28
     IdentityFile ~/.ssh/id_rsa_hmb_at_t430
-
-Host ThinkPad-T430
-    user huangmianbo
-    HostName ThinkPad-T430
-    IdentityFile ~/.ssh/id_rsa_hmb_at_t430
-
-Host 192.168.1.105
-    user huangmianbo
-    HostName 192.168.1.105
-    IdentityFile ~/.ssh/id_rsa_hmb_at_t430
-    XAuthLocation /usr/bin/xauth
-
 
 # ------------------------------------------------------------------- #
 # for MacOSx
@@ -76,20 +63,13 @@ Host Huangs-T580
 # ------------------------------------------------------------------- #
 # for cbpos
 # ------------------------------------------------------------------- #
-Host 192.168.0.2
+Host 192.168.0.2 192.168.0.3 192.168.0.5
     user root 
-    HostName 192.168.0.2
     IdentityFile ~/.ssh/id_rsa_root_at_cbpos
 
-Host 192.168.0.3
-    user root 
-    HostName 192.168.0.3
-    IdentityFile ~/.ssh/id_rsa_root_at_cbpos
-
-Host 192.168.0.5
-    user root 
-    HostName 192.168.0.5
-    IdentityFile ~/.ssh/id_rsa_root_at_cbpos
+Host 192.168.0.2 192.168.0.3 192.168.0.5
+    user googol 
+    IdentityFile ~/.ssh/id_rsa_googol_at_cbpos
 
 Host cbpos
     user root 
@@ -97,27 +77,17 @@ Host cbpos
     IdentityFile ~/.ssh/id_rsa_root_at_cbpos
 
 # ------------------------------------------------------------------- #
-#  for raspberrypi3
+#  for raspberrypi3b+ 2b03b5
 # ------------------------------------------------------------------- #
-Host 192.168.199.102
-    user bluegene 
-    HostName 192.168.199.102
-    IdentityFile ~/.ssh/id_rsa_raspberry3
+Host 192.168.1.111
+    user pi
+    HostName 192.168.1.111
+    IdentityFile ~/.ssh/id_rsa_pi_at_rasp3b_2b03b5
 
-Host 192.168.50.102
-    user huangmianbo 
-    HostName 192.168.50.102
-    IdentityFile ~/.ssh/id_rsa_hmb_at_raspberry3
-
-Host raspberrypi3
-    user bluegene 
-    HostName raspberrypi3
-    IdentityFile ~/.ssh/id_rsa_raspberry3
-
-Host raspberrypi3
-    user huangmianbo 
-    HostName raspberrypi3
-    IdentityFile ~/.ssh/id_rsa_hmb_at_raspberry3
+Host rasp3b_2b03b5
+    user pi
+    HostName rasp3b_2b03b5
+    IdentityFile ~/.ssh/id_rsa_pi_at_rasp3b_2b03b5
 
 # ------------------------------------------------------------------- #
 #  for raspberrypi3
@@ -145,20 +115,10 @@ Host raspberrypi3-xeno
 # ------------------------------------------------------------------- #
 #  for raspberrypi4
 # ------------------------------------------------------------------- #
-Host raspberrypi4
+Host 192.168.1.106
     user pi 
-    HostName raspberrypi4
-    IdentityFile ~/.ssh/id_rsa_pi_at_raspberry4
-
-Host raspberrypi4
-    user huangmianbo 
-    HostName raspberrypi4
-    IdentityFile ~/.ssh/id_rsa_hmb_at_raspberry4
-
-Host 192.168.50.73
-    user huangmianbo 
-    HostName 192.168.50.73
-    IdentityFile ~/.ssh/id_rsa_hmb_at_raspberry4
+    HostName 192.168.1.106
+    IdentityFile ~/.ssh/id_rsa_pi_at_rasp4-6e4ace
 
 # ------------------------------------------------------------------- #
 #  for beaglebone

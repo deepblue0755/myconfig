@@ -2,6 +2,20 @@
 # bash setting for MacOSx
 test -f ~/.bashrc && source ~/.bashrc 
 
+function print_error()
+{
+    echo -e "\033[31merror: $1\033[0m" && return 0
+}
+
+function print_warning()
+{
+    echo -e "\033[33mwarning: $1\033[0m" && return 0
+}
+
+function print_infor()
+{
+    echo -e "\033[32minfor: $1\033[0m" && return 0
+}
 # ------------------------------------------------------------------- #
 # backup all
 # ------------------------------------------------------------------- #
@@ -55,8 +69,9 @@ function _config()
             return 0;
         ;;
         *)
-        test $SHELL = "/bin/zsh" && vim ~/.zshrc
+        test $SHELL = "/bin/zsh" && vim ~/.zshrc ~/.bash_profile
         test $SHELL = "/bin/bash" && vim ~/.bash_profile
+        return 0;
         ;;
     esac
 }
@@ -95,6 +110,7 @@ function _config_alias()
     alias log='_log'
     alias md2pdf='_md2pdf'
     alias mygit='~/documents/18-bash-utils/25_git_utils.sh'
+    alias mysync='_sync'
     alias mv='mv -iv'
     alias nohup='_nohup'
     alias pdf='_previewer'
@@ -106,9 +122,9 @@ function _config_alias()
     alias qtime='_qtime'
     alias rand='_rand'
     alias randword='_randword'
-    alias rasp3-xeno3='_login_remote_machine rasp3-xeno3'
-    alias rasp3='_login_remote_machine rasp4'
-    alias rasp4='_login_remote_machine rasp3'
+    alias rasp3='_login_remote_machine rasp3b'
+    alias rasp3b='_login_remote_machine rasp3b+'
+    alias rasp4='_login_remote_machine rasp4'
     alias rdp='/Applications/Microsoft\ Remote\ Desktop.app/Contents/MacOS/Microsoft\ Remote\ Desktop &'
     alias reload='_config reload'
     alias rm='rm -iv'
@@ -309,17 +325,14 @@ function _login_remote_machine()
         t580)
             ssh mianb@Huangs-T580
         ;;
-        pi4)
-            ssh pi@raspberrypi4
+        rasp3b+)
+            ssh pi@192.168.1.111
         ;;
-        rasp3)
-            ssh huangmianbo@192.168.50.102
-        ;;
-        rasp3-xeno3)
-            ssh pi@raspberrypi3-xeno3
+        rasp3b)
+            ssh pi@rasp3b-280b18
         ;;
         rasp4)
-            ssh huangmianbo@raspberrypi4
+            ssh pi@192.168.1.106
         ;;
         zynq)
             ssh root@192.168.1.10
@@ -414,6 +427,44 @@ function _rand()
     let max=$(($2-$min+1))
     num=$(cat /dev/urandom | head -n 10 | cksum | awk -F ' ' '{print $1}');
     echo $(($num%$max+$min))
+}
+
+# ------------------------------------------------------------------- #
+# sync
+# ------------------------------------------------------------------- #
+function _sync()
+{
+    case $1 in 
+        1 | book1)
+            ping -c 1 -W 1 192.168.1.102 &> /dev/null || return 1
+            rsync -vzrt --progress --include='*.pdf' --exclude='*.*' \
+            gigabyte-brix::book-linux \
+            "~/Documents/Books/Linux/"  \
+            --port=10556
+        ;;
+        2 | book2)
+            ping -c 1 -W 1 192.168.1.102 &> /dev/null || return 1
+            rsync -vzrt --progress --include='*.pdf' --exclude='*.*' \
+            gigabyte-brix::book-cs \
+            "~/Documents/Books/Computer-Science-CS/"  \
+            --port=10556
+        ;;
+        3 | book3)
+            ping -c 1 -W 1 192.168.1.102 &> /dev/null || return 1
+            rsync -vzrt --progress --include='*.pdf' --exclude='*.*' \
+            gigabyte-brix::book-control \
+            "~/Documents/Books/Computer-Science-CS/"  \
+            --port=10556
+        ;;
+        all)
+            _sync 1
+            _sync 2
+            _sync 3
+        ;;
+        *)
+            print_infor "mysync 1:book1|2:book2|3:book3|"
+        ;;
+    esac
 }
 
 # ------------------------------------------------------------------- #
