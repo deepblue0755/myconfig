@@ -2,14 +2,16 @@
 
 function print_error()
 {
-    test "$(uname)" == "Darwin" && { echo -e "\033[31merror: $1\033[0m" && return 0; }
+
+
+    test "$(uname)" == "Darwin" && { echo -e "\033[31m|$(date +%Y%m%d%H%M%S)|$(basename $BASH_SOURCE):$BASH_LINENO|error|$1|\033[0m" && return 0; }
     test "$(uname)" == "Darwin" || { echo -e "\e[31merror: $1\e[0m" && return 0; }
 }
 
 function print_warning()
 {
 
-    test "$(uname)" == "Darwin" && { echo -e "\033[33mwarning: $1\033[0m" && return 0; }
+    test "$(uname)" == "Darwin" && { echo -e "\033[33m|$(date +%Y%m%d%H%M%S)|$(basename $BASH_SOURCE):$BASH_LINENO|warning|$1|\033[0m" && return 0; }
     test "$(uname)" == "Darwin" || { echo -e "\e[33mwarning: $1\e[0m" && return 0; }
 }
 
