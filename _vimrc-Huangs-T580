@@ -262,6 +262,10 @@ nmap <C-c> :qa!<RETURN>
 nmap <C-a> <Nop>
 
 
+" -----------------------------------------------------------------------------
+"  < Set Python3 as python37 >
+" -----------------------------------------------------------------------------
+set pythonthreedll=python37.dll
 
 
 
@@ -483,7 +487,7 @@ let g:airline_symbols.readonly = ' '
 "--------------------------------------------------------------------------
 " < NeoComplete setting >
 "--------------------------------------------------------------------------
-if(has('lua'))
+if(has('lua')) && (v:version<802)
     let g:neocomplete#enable_at_startup=1 "enable list 
     " disable list
     autocmd FileType c,cpp let g:neocomplete#enable_at_startup=0 
@@ -494,19 +498,43 @@ if(has('lua'))
     autocmd FileType vhdl  let g:neocomplete#auto_completion_start_length=2
     let g:neocomplete#auto_completion_start_length=4
     let g:neocomplete#sources#dictionary#dictionaries = {
-    \ 'text'  : 'D:/Vim/vimfiles/dictionary/en_dictionary_tiny.dic',
-    \ 'tex'   : 'D:/Vim/vimfiles/dictionary/latex_command_dictionary.dic',
-    \ 'cmake' : 'D:/Vim/vimfiles/dictionary/cmake_keywords.dic',
-    \ 'vhdl'  : 'D:/Vim/vimfiles/dictionary/vhdl_keywords.dic',
+    \ 'text'  : '$VIM/vimfiles/dictionary/en_dictionary_tiny.dic',
+    \ 'tex'   : '$VIM/vimfiles/dictionary/latex_command_dictionary.dic',
+    \ 'cmake' : '$VIM/vimfiles/dictionary/cmake_keywords.dic',
+    \ 'vhdl'  : '$VIM/vimfiles/dictionary/vhdl_keywords.dic',
     \}
+    let g:loaded_completor_plugin = 1
+    let g:loaded_completor_dictionary_plugin = 1
 endif
 
+"--------------------------------------------------------------------------
+" < deoplete setting >
+"--------------------------------------------------------------------------
+if (v:version>801)
+let g:deoplete#enable_at_startup = 1
+let g:python3_host_prog = "python37"
+call deoplete#custom#option('sources', {
+\ 'c': ['buffer','.tags'],
+\ 'cpp': ['buffer', '.tag'],
+\ 'cmake': ['buffer', 'dictionary','file'],
+\ 'text': ['buffer', 'dictionary','file'],
+\ 'vimwiki': ['buffer', 'dictionary','file'],
+\})
+call deoplete#custom#option('num_processes', 4)
+call deoplete#custom#source(
+\ 'dictionary', 'min_pattern_length', 4)
+autocmd FileType text setlocal dictionary+=$VIM/vimfiles/dictionary/en_dictionary_mediate.dic
+autocmd FileType vimwiki setlocal dictionary+=$VIM/vimfiles/dictionary/en_dictionary_mediate.dic
+autocmd FileType cmake setlocal dictionary=$VIM/vimfiles/dictionary/cmake_keywords.dic
+autocmd FileType vhdl setlocal dictionary=$VIM/vimfiles/dictionary/vhdl_keywords.dic
+endif
 
 "--------------------------------------------------------------------------
 " < YCM setting >
 "--------------------------------------------------------------------------
-let g:ycm_python_binary_path='D:\\Python37-64\\python.exe'
-let g:ycm_server_python_interpreter='D:\\Python37-64\\python.exe'
+if (v:version>801)
+let g:ycm_python_binary_path='D:\\Python37-64\\python3.exe'
+let g:ycm_server_python_interpreter='D:\\Python37-64\\python3.exe'
 
 let g:ycm_autoclose_preview_window_after_insertion=1
 let g:ycm_auto_start_csharp_server=0
@@ -529,6 +557,9 @@ let g:ycm_semantic_triggers =  {
            \ 'c,cpp,python,java,go,erlang,perl': ['re!\w{2}'],
            \ 'cs,lua,javascript': ['re!\w{2}'],
            \ }
+else
+let g:loaded_youcompleteme = 1
+endif
 
 "--------------------------------------------------------------------------
 " < vim-preview setting >
@@ -597,11 +628,11 @@ set ff=unix
 set lines=100
 set columns=180
 set clipboard+=unnamed
-autocmd Filetype text set dictionary+=$VIMRUNTIME/dictionary/en_dictionary_mediate.dic
-autocmd Filetype tex  set dictionary+=$VIMRUNTIME/dictionary/latex_command_dictionary.dic
-autocmd Filetype tex  set dictionary+=$VIMRUNTIME/dictionary/latex_keyword_dictionary.dic
-autocmd Filetype tex  set dictionary+=$VIMRUNTIME/dictionary/latex_symbol_list.dic
-autocmd Filetype tex  set dictionary+=$VIMRUNTIME/dictionary/en_dictionary_tiny.dic
+autocmd Filetype text set dictionary+=$VIM/vimfiles/dictionary/en_dictionary_mediate.dic
+autocmd Filetype tex  set dictionary+=$VIM/vimfiles/dictionary/latex_command_dictionary.dic
+autocmd Filetype tex  set dictionary+=$VIM/vimfiles/dictionary/latex_keyword_dictionary.dic
+autocmd Filetype tex  set dictionary+=$VIM/vimfiles/dictionary/latex_symbol_list.dic
+autocmd Filetype tex  set dictionary+=$VIM/vimfiles/dictionary/en_dictionary_tiny.dic
 set magic
 set complete+=k
 set iskeyword+=_

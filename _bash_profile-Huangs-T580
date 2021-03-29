@@ -157,7 +157,7 @@ function _duty()
         ;;
         2 | gitlab-backup)
             ping -c 1 -W 1 192.168.212.30 &> /dev/null || return 1
-            test -f $logfile2 && return 0
+            test "$2" != "forced" && test -f $logfile2 && return 0
             test -f $logfile2 || touch $logfile2
             local gitlab_backup_file=`ssh huangmianbo@192.168.212.30 "ls -t /home/huangmianbo/share/*gitlab_backup*.tar | head -n 1"`
             test -n "$gitlab_backup_file" || return 1
@@ -167,9 +167,13 @@ function _duty()
                 test $cnt -gt 10 && rm -fv $file
                 let cnt=$((cnt+1))
             done
+            test "$2" == "forced" && \
+            rsync -vzrt --progress -e ssh huangmianbo@192.168.212.30:$gitlab_backup_file $dir/d/backup/gitlab-ce/$(basename $gitlab_backup_file) &
+
+            test "$2" != "forced" && \
             test $(date +%H) -eq 9 &&  \
             test $(date +%M) -lt 30 &&  \
-            rsync -vzrt --progress -e ssh huangmianbo@192.168.212.30:$gitlab_backup_file $dir/d/backup/gitlab-ce/$(basename $gitlab_backup_file)
+            rsync -vzrt --progress -e ssh huangmianbo@192.168.212.30:$gitlab_backup_file $dir/d/backup/gitlab-ce/$(basename $gitlab_backup_file) &
             flag=1
             return 0;
         ;;
@@ -195,21 +199,11 @@ function _duty()
             popd &> /dev/null
             return 0;
         ;;
-        5 | start_rsync)
-            tasklist | grep rsync &> /dev/null && return 0
-            test $(date +%H) -lt 20 && return 0
-            test -f $logfile5 && return 0 
-            test -f $logfile5 || touch $logfile5 
-            _start rsync
-            flag=1
-            return 0;
-        ;;
         all)
             _duty 1
             _duty 2
             _duty 3
             _duty 4
-            _duty 5
             test $flag -eq 1 && echo -e "\e[32mjob is done \e[0m"
             return 0;
         ;;
@@ -515,6 +509,11 @@ function _putty()
     esac
 }
 
+function _relay()
+{
+    \powershell -F "d:\batch\serial_control.ps1" -target $1 -action $2
+}
+
 function _rand()
 {
     test "$1" == "" && echo $RANDOM && return 0
@@ -688,7 +687,14 @@ function _sync()
             "/cygdrive/d/Book/Computer-Science-CS/"  \
             --port=10556
         ;;
-        3 | git)
+        3 | book4)
+            ping -c 1 -W 1 192.168.1.102 &> /dev/null || return 1
+            rsync -vzrt --progress --include=*.pdf --exclude=*.* \
+            gigabyte-brix::book-control \
+            "/cygdrive/d/Book/Control-Automation/"  \
+            --port=10556
+        ;;
+        4 | git)
             ping -c 1 -W 1 192.168.212.30 &> /dev/null || return 1
             rsync -vzrt --progress --delete -e ssh \
             "huangmianbo@192.168.212.30:/home/huangmianbo/git/" \
@@ -698,9 +704,10 @@ function _sync()
             _sync 1
             _sync 2
             _sync 3
+            _sync 4
         ;;
         *)
-            print_infor "mysync 1:book1|2:book2|3:git|4:gitlab"
+            print_infor "mysync 1:book1(linux)|2:book2(cs)|3:book3(control)|4:git"
         ;;
     esac
 }
@@ -711,13 +718,14 @@ function _set_alias()
     alias ...='cd ../../'
     alias ..='cd ../'
     alias am4376='_login_machine am4376'
+    alias batch='pushd /d/batch/ &>/dev/null'
     alias bcomp='BCompare $* &> /dev/null'
     alias beaglebone='_login_machine beaglebone'
     alias cbpos='_login_machine cbpos'
     alias cgdb='cgdb -q'
     alias ctags='ctags -f .tags'
     alias config='gvim --remote-silent D:\\cygwin64\\home\\mianb\\.bash_profile &'
-    alias debian='_login_machine debian'
+    alias debian10='_login_machine debian'
     alias diff='colordiff --exclude=*.git*'
     alias dmidecode='systeminfo'
     alias cplinux='_cplinux ideabox'
@@ -728,7 +736,7 @@ function _set_alias()
     alias cpvb='_cplinux gitlab'
     alias cpvm='_cplinux vm'
     alias cmd='_sudo conemu64'
-    alias doc='pushd . > /dev/null && cd ~/documents/RTAI'
+    alias doc='pushd ~/documents/RTAI &>/dev/null'
     alias eclipse='/d/Profinet/DevKit46/eclipse/eclipse &'
     alias expl='_expl'
     alias fv='fpga_version'
@@ -759,11 +767,13 @@ function _set_alias()
     alias pdf='SumatraPDF'
     alias poweroff='_poweroff'
     alias ps='_ps'
+    alias powershell='powershell -F'
     alias putty='_putty'
     alias pycharm='pycharm64 &> /dev/null &'
     alias qt='qtcreator &> /dev/null &'
     alias randword='_randword'
     alias rand='_rand'
+    alias relay='_relay'
     alias rasp4='ssh pi@192.168.1.106'
     alias reload='source ~/.bash_profile'
     alias rename='/d/documents/18-bash-utils/01_rename_utils.sh'
