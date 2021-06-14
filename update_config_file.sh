@@ -186,7 +186,10 @@ function copy_config_from_t430()
     flag=0
 
     copy_files ~/.bashrc ./_bash_profile-$HOSTNAME
-    flag=$?
+    flag=$flag+$?
+
+    copy_files ~/.vimrc ./_vimrc-$HOSTNAME
+    flag=$flag+$?
 
     print_result $flag
 
