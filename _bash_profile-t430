@@ -185,7 +185,7 @@ function _export_var()
     # export LLVM_PATH=/usr/local/clang/9.0.0/
     export LLVM_PATH=/usr/local/llvm/10.0.0/
     export LLVM_CONFI=/usr/local/llvm/10.0.0/bin/llvm-config
-    export DISPLAY="localhost:10.0"
+    # export DISPLAY="localhost:10.0"
     export LANG=en_US.UTF-8
     export LANGUAGE=en_US:en
     export LC_CTYPE="en_US.UTF-8"
@@ -202,6 +202,8 @@ function _export_var()
     export LC_IDENTIFICATION=en_US.UTF-8
     export LC_ALL=en_US.UTF-8
     export TASKDATA=~/documents/12-cygwin64-config-t580/.task
+    export REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/git/git-repo/' 
+    test $USER == "root"  && export TMOUT=10
 }
 
 function _git-branch-prompt 
@@ -291,10 +293,8 @@ function _log()
 
 function _mydate()
 {
-	test -n "$1" || { echo $(date "+%Y%m%d-%H%M%S") && return 0; }
-	test -f "$1" || test -d "$1" || return 1
-
-	echo $(stat -c %y "$1" | sed 's/://g' | sed 's/-//g' | sed 's/ /_/g' | cut -d"." -f1 )
+    test -e "$1" && date '+%Y%m%d%H%M%S' -d "$(stat -c '%z' "$1")" && return 0;
+    date +%Y%m%d%H%M
 }
 
 function _nohup()
@@ -353,27 +353,30 @@ function _check_import_folder()
 function _sudo()
 {
     local dest_folder_flag=1
-    test "$1" == "mv" && \
-    {
-        for arg in $*
-        do
-            test "$arg" == "/dev/null" && print_error "mv to /dev/null is an error" && return 1;
-            test -f "$arg"  && dest_folder_flag=0
-            test -d "$arg"  && { _check_import_folder "$arg" || dest_folder_flag=0; }
-            test $dest_folder_flag -eq 1 && test -d "$arg" &&  _check_import_folder "$arg" && print_error "mv $arg in not allowed!!" && return 1
-        done;
-    }
-
-    test "$1" == "rm" && \
-    {
-        for arg in $*
-        do
-            test "$arg" == "/" && print_error "rm root dir is not allowed" && return 1;
-            test -d "$arg" && _check_import_folder "$arg" && print_error "rm $arg is not allowed!!"  && return 1
-        done;
-    }
-
-    \sudo $*
+    case $1 in 
+        mv)
+            for arg in $*
+            do
+                test "$arg" == "/dev/null" && print_error "mv to /dev/null is an error" && return 1;
+                test -f "$arg"  && dest_folder_flag=0
+                test -d "$arg"  && { _check_import_folder "$arg" || dest_folder_flag=0; }
+                test $dest_folder_flag -eq 1 && test -d "$arg" &&  _check_import_folder "$arg" && print_error "mv $arg in not allowed!!" && return 1
+            done
+            \sudo $*
+        ;;
+        rm)
+            test "$PWD" == "/" && print_error "you are in root dir is not allowed"
+            for arg in $*
+            do
+                test "$arg" == "/" && print_error "rm root dir is not allowed" && return 1;
+                test -d "$arg" && _check_import_folder "$arg" && print_error "rm $arg is not allowed!!"  && return 1
+            done
+            \sudo $*
+        ;;
+        *)
+            \sudo $*
+        ;;
+    esac
 }
 
 function _savemv()
@@ -395,13 +398,14 @@ function _savemv()
 
 function _saverm()
 {
+    test "$PWD" == "/" && print_error "you are in root dir!!" && return 1
     for arg in $*
     do
         test "$arg" == "/" && print_error "rm root dir is not allowed" && return 1;
         test -d "$arg" && _check_import_folder "$arg" && print_error "rm $arg is not allowed!!"  && return 1
     done;
 
-    \rm -iv --preserve-root $*
+    \rm -iv --preserve-root $@
 }
 
 function _set_alias()
@@ -415,9 +419,11 @@ function _set_alias()
     alias beaglebone='_login_machine beaglebone'
     alias build='~/documents/18-bash-utils/07_build_src.sh'
     alias cp='cp -iv'
-    alias cp='cp -iv'
     alias cpmac='_cp_linux mac'
     alias cprasp4='_cp_linux rasp4'
+    alias ctags='ctags -f .tags --output-format=e-ctags'
+    alias cscope='cscope -Rbqk -f .cscope'
+    alias cs='cscope -Rbqk -f .cscope'
     alias diff='colordiff'
     alias doc='cd ~/documents'
     alias giga='_login_machine giga'
@@ -427,12 +433,14 @@ function _set_alias()
     alias mv='_savemv'
     alias mydate='_mydate'
     alias mygit='~/documents/18-bash-utils/25_git_utils.sh'
+    alias makearm='make ARCH=arm CROSS_COMPILE=/usr/local/arm/gcc-linaro-5.3-2016.02-x86_64_arm-linux-gnueabihf/bin/arm-linux-gnueabihf-'
     alias nohup='_nohup'
+    alias python='/usr/local/python/3.6.12/bin/python3.6'
     alias rand='_rand'
     alias randword='_randword'
     alias rasp4='ssh pi@192.168.1.106'
     alias rm='_saverm'
-    alias sudo='_sudo'
+    # alias sudo='_sudo'
     alias temp='sensors | grep "Core"'
     alias tl='task list'
 }
@@ -450,6 +458,7 @@ function _set_path()
     PATH=/opt/Xilinx/xic/bin:$PATH
     PATH=/opt/sda1/Xilinx-Vitis/Vitis/2019.2/bin:$PATH
     PATH=$HOME/scripts/:$PATH
+    PATH=/usr/local/ctags-universal/bin:$PATH
 	export PATH
 }
 
