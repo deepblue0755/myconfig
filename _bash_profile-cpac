@@ -1,0 +1,451 @@
+# ---------------------------------------------------
+# Bash's Default Setting 
+# ---------------------------------------------------
+function _bash_default()
+{
+    ps -p $$ -ocomm= | grep bash &> /dev/null || return 0
+
+    # ~/.bashrc: executed by bash(1) for non-login shells.
+    # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
+    # for examples
+
+    # If not running interactively, don't do anything
+    case $- in
+        *i*) ;;
+          *) return;;
+    esac
+
+    # don't put duplicate lines or lines starting with space in the history.
+    # See bash(1) for more options
+    HISTCONTROL=ignoreboth
+
+    # append to the history file, don't overwrite it
+    shopt -s histappend
+
+    # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+    HISTSIZE=1000000
+    HISTFILESIZE=100000
+
+    # check the window size after each command and, if necessary,
+    # update the values of LINES and COLUMNS.
+    shopt -s checkwinsize
+
+    # If set, the pattern "**" used in a pathname expansion context will
+    # match all files and zero or more directories and subdirectories.
+    #shopt -s globstar
+
+    # make less more friendly for non-text input files, see lesspipe(1)
+    [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
+    # set variable identifying the chroot you work in (used in the prompt below)
+    if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
+        debian_chroot=$(cat /etc/debian_chroot)
+    fi
+
+    # set a fancy prompt (non-color, unless we know we "want" color)
+    case "$TERM" in
+        xterm-color|*-256color) color_prompt=yes;;
+    esac
+
+    # uncomment for a colored prompt, if the terminal has the capability; turned
+    # off by default to not distract the user: the focus in a terminal window
+    # should be on the output of commands, not on the prompt
+    #force_color_prompt=yes
+
+    if [ -n "$force_color_prompt" ]; then
+        if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+        # We have color support; assume it's compliant with Ecma-48
+        # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+        # a case would tend to support setf rather than setaf.)
+        color_prompt=yes
+        else
+        color_prompt=
+        fi
+    fi
+
+    if [ "$color_prompt" = yes ]; then
+        PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+    else
+        PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+    fi
+    unset color_prompt force_color_prompt
+
+    # If this is an xterm set the title to user@host:dir
+    case "$TERM" in
+    xterm*|rxvt*)
+        PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+        ;;
+    *)
+        ;;
+    esac
+
+    # enable color support of ls and also add handy aliases
+    if [ -x /usr/bin/dircolors ]; then
+        test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+        alias ls='ls --color=auto'
+        #alias dir='dir --color=auto'
+        #alias vdir='vdir --color=auto'
+
+        alias grep='grep --color=auto --exclude=*git*'
+        alias fgrep='fgrep --color=auto'
+        alias egrep='egrep --color=auto'
+    fi
+
+    # colored GCC warnings and errors
+    #export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+
+    # some more ls aliases
+    alias ll='ls -alF'
+    alias la='ls -A'
+    alias l='ls -CF'
+
+    # Add an "alert" alias for long running commands.  Use like so:
+    #   sleep 10; alert
+    alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+
+    # Alias definitions.
+    # You may want to put all your additions into a separate file like
+    # ~/.bash_aliases, instead of adding them here directly.
+    # See /usr/share/doc/bash-doc/examples in the bash-doc package.
+
+    if [ -f ~/.bash_aliases ]; then
+        . ~/.bash_aliases
+    fi
+
+    # enable programmable completion features (you don't need to enable
+    # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+    # sources /etc/bash.bashrc).
+    if ! shopt -oq posix; then
+      if [ -f /usr/share/bash-completion/bash_completion ]; then
+        . /usr/share/bash-completion/bash_completion
+      elif [ -f /etc/bash_completion ]; then
+        . /etc/bash_completion
+      fi
+    fi
+
+}
+
+# ---------------------------------------------------
+# User Customer Setting 
+# ---------------------------------------------------
+function print_error()
+{
+    echo -e "\e[31merror: $1\e[0m"
+}
+
+function print_warning()
+{
+    echo -e "\e[33mwarning: $1\e[0m"
+}
+
+function print_infor()
+{
+    echo -e "\e[32minfor: $1\e[0m"
+}
+
+function _add_route()
+{
+    case $1 in 
+        1)
+            sudo route add -host 192.168.100.46 netmask 255.255.0.0 gw 192.168.201.254
+        ;;
+        2)
+            sudo route del -host 192.168.100.46 netmask 255.255.255.0 
+        ;;
+        3)
+            sudo route add default gw 192.168.201.254 dev enp4s0f0
+        ;;
+        4)
+            sudo route add default gw 192.168.212.254 dev enp4s0f0
+        ;;
+        *)
+            echo "Unknown Option!!"
+            return 1
+        ;;
+    esac
+}
+
+function _git-branch-prompt 
+{
+    
+    local branch=$(git symbolic-ref --short -q HEAD 2>/dev/null)
+    test -n "$branch" &&  printf " [%s]" $branch
+}
+
+function _gitlab()
+{
+    case $1 in
+        on)
+            test -n "$(sudo systemctl status gitlab-runsvdir.service  | grep Active | grep running)" || \
+            (echo "start gitlab service" && sudo systemctl start gitlab-runsvdir.service)
+        ;;
+        off)
+            test -n "$(sudo systemctl status gitlab-runsvdir.service  | grep Active | grep running)" && \
+            (echo "stop gitlab service" && sudo systemctl stop gitlab-runsvdir.service)
+        ;;
+        backup)
+            sudo gitlab-rake gitlab:backup:create 
+            sudo cp -v /var/opt/gitlab/backups/$(sudo ls -t /var/opt/gitlab/backups/ | head -n 1) /home/huangmianbo/share/ && \
+            sudo chown -R huangmianbo:huangmianbo /home/huangmianbo/share/*
+        ;;
+        restore)
+            read -p input="do you want to restore to $2? y/n: "
+            test "$input" == "y" && test -n "$2" && sudo gitlab-rake gitlab:backup:restore BACKUP=$2
+            test "$input" == "y" && { test -n "$2" || sudo gitlab-rake gitlab:backup:restore; }
+        ;;
+        version)
+            cat /var/opt/gitlab/gitlab-rails/VERSION
+        ;;
+        *)
+        echo "gitlab on|off|backup|restore|version"
+        ;;
+    esac
+}
+
+function _export_environ_var()
+{
+    # export MAKEFLAGS="CC=/usr/local/gcc/bin/gcc ARCH=i386 -j20"
+    export TIME_STYLE="+%Y/%m/%d %H:%M:%S"
+    export LANGUAGE=en_US.utf8
+    export LC_TIME="en_US.utf8"
+    export EDITOR=vim
+    export VM=ubuntu-kylin-14.04.6
+    export HISTIGNORE="history:pwd:ls:clear"
+    export HISTTIMEFORMAT="%F %T  "
+    export LLVM_PATH=/usr/local/llvm/10.0.0
+    export LLVM_CONFIG=/usr/local/llvm/10.0.0/bin/llvm-config
+    export NODE_PATH=/opt/npm/node_modules
+    export CSCOPE_DB=~/documents/26-c-programming/.cscope.out
+    export TASKDATA=~/documents/12-cygwin64-config-t580/.task
+    export REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/git/git-repo/' 
+}
+
+function _log()
+{
+    pushd ~/log &> /dev/null
+
+    test $# -eq 0 && return 0
+
+    vim $(ls -t $* | head -n 1)
+
+    popd &> /dev/null
+
+}
+
+function _mydate()
+{
+    test -f "$1" && date '+%Y%m%d%H%M%S' -d "$(stat -c '%z' "$1")" && return 0;
+    test -d "$1" && date '+%Y%m%d%H%M%S' -d "$(stat -c '%z' "$1")" && return 0;
+    date +%Y%m%d%H%M%S
+}
+
+function _cpvm()
+{
+    scp $1 huangmianbo@192.168.122.61:/tmp/
+}
+
+function _set_alias()
+{
+	alias ..='cd ../'
+	alias ...='cd ../../'
+	alias ....='cd ../../../'
+    alias ~='cd $HOME'
+    alias build='~/documents/18-bash-utils/07_build_src.sh'
+    alias cp='cp -iv'
+    alias rm='rm -iv'
+    alias rm='_saverm'
+	alias reload='source ~/.bashrc'
+	alias config='vim ~/.bashrc'
+    alias ctags='ctags -f .tags --output-format=e-ctags'
+    alias make='make -j40'
+    alias make1='make -j40'
+    alias make2='make CC=/usr/bin/i686-linux-gnu-gcc -j40'
+    alias make3='make GCC=/usr/bin/i686-linux-gnu-gcc -j40'
+    alias vbm='vboxmanage'
+    alias diff='colordiff --exclude=*\.git*'
+    alias mv='_savemv'
+    alias mygit='/home/huangmianbo/documents/18-bash-utils/25_git_utils.sh'
+    alias mydate='_mydate'
+    alias gitlab='_gitlab'
+    alias log='_log'
+    alias doc='cd ~/documents'
+    alias randword='_randword'
+    alias rand='_rand'
+    alias mysql='mysql -u debian-sys-maint -p'
+    alias makearm='make -j40 ARCH=arm CROSS_COMPILE=/usr/local/arm/gcc-linaro-5.3-2016.02-x86_64_arm-linux-gnueabihf/bin/arm-linux-gnueabihf-'
+    alias timeout='timeout --preserve-status'
+    alias test2='_test2'
+    alias svn='svn --username=huang.mb --password=huang.mb'
+    alias watchrun='_watch_run'
+    alias vm='ssh huangmianbo@192.168.122.61'
+    alias cpvm='_cpvm'
+    alias reboot='sudo ~/scripts/crontask4root.sh reboot'
+    alias poweroff='echo -e "poweroff server is not allowed"'
+    alias cbpos='ssh -Y root@192.168.201.107'
+    alias softlink='ssh huangmianbo@192.168.212.31'
+
+}
+
+function _savemv()
+{
+    for arg in $@
+    do
+        test "$arg" == "/dev/null" && print_error "mv to /dev/null is dangerous" && return 1;
+    done
+    test "$PWD" == "/" && { print_error "you are in root dir" && return 1; }
+    \mv -iv $*
+}
+
+function _set_path()
+{
+	PATH=/usr/local/vim/bin:$PATH
+	PATH=/usr/local/llvm/10.0.0/bin:$PATH
+	PATH=/usr/local/clang/10.0.0/bin:$PATH
+	PATH=/usr/local/lua/bin:$PATH
+    PATH=/usr/local/readline/bin:$PATH
+    PATH=/usr/local/m4/bin:$PATH
+    PATH=/usr/local/gcc/9.3.0/bin:$PATH
+    PATH=/usr/local/cmake/bin:$PATH
+    PATH=/usr/local/universal-ctags/bin/:$PATH
+    PATH=/usr/local/ctags58/bin/:$PATH
+    PATH=/usr/local/git/bin:$PATH
+    PATH=/usr/local/git/libexec/git-core:$PATH
+    PATH=/usr/local/curl/bin:$PATH
+    PATH=/usr/local/arm/gcc-linaro-6.5.0-2018.12-x86_64_arm-linux-gnueabihf/bin/:$PATH
+    # PATH=/usr/local/dpkg/bin:$PATH
+    PATH=$HOME/scripts:$PATH
+	export PATH
+}
+
+function _set_pkg_path()
+{
+    PKG_CONFIG_PATH=/usr/local/readline/lib/pkgconfig:$PKG_CONFIG_PATH
+    PKG_CONFIG_PATH=/usr/local/zlib/lib/pkgconfig:$PKG_CONFIG_PATH
+    PKG_CONFIG_PATH=/usr/local/curl/lib/pkgconfig:$PKG_CONFIG_PATH
+    export PKG_CONFIG_PATH
+}
+
+function _set_PS1()
+{
+    # only valid for bash
+    ps -p $$ -ocomm= | grep "bash" &> /dev/null && 
+    PS1="\u@\h \[\033[0;36m\]\W\[\033[0m\]\[\033[0;32m\]\$(_git-branch-prompt)\[\033[0m\] \$ "
+}
+
+function _reln_ld()
+{
+    case $1 in
+        386)
+            sudo mv /usr/bin/ld /usr/bin/ld.bak
+            sudo ln /usr/bin/i686-linux-gnu-ld /usr/bin/ld
+        ;;
+
+        x64)
+            test -f /usr/bin/ld.bak && sudo mv /usr/bin/ld.bak /usr/bin/ld
+        ;;
+        *)
+            echo "_reln_ld 386|x64"
+    esac
+}
+
+function _rand()
+{
+    test "$1" == "" && echo $RANDOM && return 0
+    test "$2" == "" && echo $RANDOM && return 0
+    let min=$1
+    let max=$(($2-$min+1))
+    num=$(cat /dev/urandom | head -n 10 | cksum | awk -F ' ' '{print $1}');
+    echo $(($num%$max+$min))
+}
+
+function _randword()
+{
+    test $(uname) == "Linux" && word_list=~/documents/18-bash-utils/00_en_dictionary_huge.dic
+    test -n "$(uname | grep -i "cygwin")" && word_list=$dir/d/documents/18-bash-utils/00_en_dictionary_huge.dic
+
+    test -f $word_list || { print_error "could not find file $word_list" && return 1; }
+    let word_size=$(cat $word_list | grep "^[A-Z]" | wc -l)
+    let line=$(uuidgen | cksum | cut -c 1-6)%$word_size
+    cat $word_list | grep "^[A-Z]" | sed -n "$line p"
+}
+
+function _saverm()
+{
+    local force=0
+    local verbose="-v"
+    local interact="-i"
+    local files=""
+    for para in "$@"
+    do
+        test "$para" == "--help" && { \rm --help && return 0; }
+        test "$para" == "-f" &&  force=1
+        test "$para" == "-fr" && force=1
+        echo "$para" | grep "v" &> /dev/null && verbose=""
+        echo "$para" | grep "i" &> /dev/null && interact=""
+        test -e "$para" &&  files="$para\n$files"
+        test -d "$para" &&  test "$para" == "$HOME" && print_error "rm $HOME is not allowed" && return 1
+    done
+
+    test -n "$files" || { print_error "rm target files is not found" && return 1; }
+
+    test $force -eq 0 && \
+        \rm $verbose $interact "$@" && return 0
+
+    echo -e "$files" | cat -n | head -n 10
+    echo -e "        ... ... ... ...          \n"
+    read -p "do you want to delete aboves files (type \"yes i want\"): " input
+
+    test "$input" == "yes i want" && { \rm $verbose $interact "$@" && return 0; }
+    test "$input" == "yes i want" || { print_warning "user abort operation"  && return 1; }
+}
+
+function _test2()
+{
+    test "$USER" == "root" && { echo $* | grep "\-fr /" > /dev/null && print_error "root rm / is not acceptable" && return 1;}
+    test "$USER" == "root" && print_warning "root rm things!"
+    test "$USER" == "root" && echo $* | grep "\-fr" > /dev/null  && print_warning "root rm with force,it may be dangerous!!"
+
+    echo $* | egrep "$HOME" && { print_error "user want to rm home folder,reject!!" && return 1; }
+    echo $* | egrep "~" && { print_error "user want to rm home folder ~,reject!!" && return 1; }
+
+    check=`echo $* | grep "\-fr"`
+    if [ -n "$check" ];then
+        read -p "Do you Want to Remove All? y/n: " -t 5 input
+        test "$input" == "y" && { echo "rm $*" && return 0; }
+        test "$input" == "y" || { echo -e "\e[32moperation aborted by user!!\e[0m" && return 1; }
+    else
+        echo "rm -iv $*"
+        return 0
+    fi
+}
+
+function _watch_run()
+{
+    test -f "$1" || { print_error "could not find file $1" && return 1; }
+    test -f "$2" || { print_error "could not find file $2" && return 1; }
+    inotifywait -m -q -e modify "$1" | while read event; \
+    do \
+        clear
+        sh $2 
+    done
+}
+
+function main()
+{
+    _bash_default
+    _set_alias
+    _set_path
+    _set_pkg_path
+    _set_PS1
+    _export_environ_var
+
+    test -f ~/share/WARNING_BOOT_FOLDER_IS_MODIFIED && print_warning "BOOT FOLDER IS MODIFIED!!" 
+    # test -f ~/NEED_TO_UPGRADE_GITLAB_CE && print_warning "please upgrade gitlab-ce" 
+
+    set -o vi
+}
+
+main $*
+
+
+
