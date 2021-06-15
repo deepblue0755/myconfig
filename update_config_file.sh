@@ -196,6 +196,26 @@ function copy_config_from_t430()
     upload_to_github
 }
 
+function copy_config_from_server()
+{
+    echo 
+    print_infor "pull update from github ..."
+    git pull  $(git remote -v | grep "github" | sed -n 1p | awk '{print $1}') master
+    echo 
+    
+    flag=0
+
+    copy_files ~/.bashrc ./_bash_profile-$HOSTNAME
+    flag=$flag+$?
+
+    copy_files ~/.vimrc ./_vimrc-$HOSTNAME
+    flag=$flag+$?
+
+    print_result $flag
+
+    upload_to_github
+}
+
 function main()
 {
     echo --------------------------------------------------------
@@ -223,6 +243,9 @@ function main()
         ;;
         t430)
             copy_config_from_t430
+        ;;
+        cpac)
+            copy_config_from_server
         ;;
     esac
 
