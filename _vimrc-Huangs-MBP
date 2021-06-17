@@ -238,7 +238,7 @@ let Tlist_Sort_Type = "name"
 let Tlist_Compart_Format = 1                
 let Tlist_File_Fold_Auto_Close = 0          
 let Tlist_Enable_Fold_Column = 1           
-let Tlist_Ctags_Cmd="/usr/local/ctags58/bin/ctags"
+let Tlist_Ctags_Cmd="/usr/local/bin/ctags -f .tags"
 let Tlist_Use_SingleClick=1
 let Tlist_GainFocus_On_ToggleOpen = 1     "when open taglist set focus to it
 let Tlist_Close_On_Select = 0             "close taglist after selecting tag or file
@@ -408,18 +408,43 @@ let g:airline_symbols.readonly = ' '
 "--------------------------------------------------------------------------
 " < NeoComplCache setting >
 "--------------------------------------------------------------------------
-if(has('lua'))
-    let g:neocomplete#enable_at_startup=1 "enable list" 
-    " disable list
-    autocmd FileType c,cpp let g:neocomplete#enable_at_startup=0 
-    autocmd FileType c,cpp let g:neocomplete#auto_completion_start_length=100
-    autocmd FileType text  let g:neocomplete#auto_completion_start_length=4
-    autocmd FileType tex   let g:neocomplete#auto_completion_start_length=2
-    let g:neocomplete#sources#dictionary#dictionaries = {
-    \ 'text'  : '~/.vim/dictionary/en_dictionary_tiny.dic', 
-    \ 'tex'   : '~/.vim/dictionary/en_dictionary_tiny_tex.dic',
-    \}
+if (has('lua'))  && (v:version<802)
+     let g:neocomplete#enable_at_startup=1 "enable list" 
+     " disable list
+     autocmd FileType c,cpp let g:neocomplete#enable_at_startup=0 
+     autocmd FileType c,cpp let g:neocomplete#auto_completion_start_length=100
+     autocmd FileType text  let g:neocomplete#auto_completion_start_length=4
+     autocmd FileType tex   let g:neocomplete#auto_completion_start_length=2
+     let g:neocomplete#sources#dictionary#dictionaries = {
+     \ 'text'  : '~/.vim/dictionary/en_dictionary_tiny.dic', 
+     \ 'tex'   : '~/.vim/dictionary/en_dictionary_tiny_tex.dic',
+     \}
+    let g:loaded_deoplete = 1
 endif
+
+"--------------------------------------------------------------------------
+" < deoplete setting >
+"--------------------------------------------------------------------------
+let g:deoplete#enable_at_startup = 1
+let g:python3_host_prog = "/usr/local/bin/python3"
+call deoplete#custom#option('sources', {
+\ 'c': ['buffer','.tags'],
+\ 'cpp': ['buffer', '.tag'], 
+\ 'cmake': ['buffer', 'dictionary','file'], 
+\ 'text': ['buffer', 'dictionary','file'],
+\})
+call deoplete#custom#option('num_processes', 4)
+call deoplete#custom#source(
+\ 'dictionary', 'min_pattern_length', 4)
+autocmd FileType text setlocal dictionary+=~/.vim/dictionary/en_dictionary_mediate.dic
+autocmd FileType cmake setlocal dictionary=~/.vim/dictionary/cmake_keywords.dic
+
+"--------------------------------------------------------------------------
+" < completor setting >
+"--------------------------------------------------------------------------
+let g:completor_python_binary = '/usr/local/bin/python3'
+let g:completor_auto_trigger = 0
+inoremap <expr> <Tab> pumvisible() ? "<C-N>" : "<C-R>=completor#do('complete')<CR>"
 
 "--------------------------------------------------------------------------
 " <vim-latex-preview setting>
@@ -428,14 +453,58 @@ let g:loaded_vim_live_preview = 1
 autocmd Filetype tex setl updatetime=5
 let g:livepreview_previewer='evince'
 
+"--------------------------------------------------------------------------
+" <ale settings>
+"--------------------------------------------------------------------------
+let g:ale_linters = {
+    \   'c++': ['clang'],
+    \   'c': ['clang'],
+    \   'python': ['pylint'],
+    \   'sh': ['shellcheck'],
+    \}
 
+let g:ale_linters_explicit = 1
+let g:ale_completion_delay = 500
+let g:ale_echo_delay = 20
+let g:ale_lint_delay = 500
+let g:ale_echo_msg_format = '[%linter%] %code: %%s'
+let g:ale_lint_on_text_changed = 'normal'
+let g:ale_lint_on_insert_leave = 1
+let g:airline#extensions#ale#enabled = 1
+let g:ale_c_gcc_options = '-Wall -O2 -std=c99'
+let g:ale_cpp_gcc_options = '-Wall -O2 -std=c++14'
+let g:ale_c_cppcheck_options = ''
+let g:ale_cpp_cppcheck_options = ''
+
+" let g:ale_sign_error = "\ue009\ue009"
+
+hi! clear SpellBad
+hi! clear SpellCap
+hi! clear SpellRare
+hi! SpellBad gui=undercurl guisp=red
+hi! SpellCap gui=undercurl guisp=blue
+hi! SpellRare gui=undercurl guisp=magenta
+
+let g:ale_set_signs = 1
+let g:ale_sign_column_always=1
+let g:ale_sign_error='✗'
+let g:ale_sign_warning='⚡'
+let g:ale_statusline_format = ['✗ %d', '⚡ %d', '✔ OK']
+let g:ale_echo_msg_error_str = 'E'
+let g:ale_echo_msg_warning_str = 'W'
+
+
+"--------------------------------------------------------------------------
+" <gutentags settings>
+"--------------------------------------------------------------------------
+let g:gutentags_ctags_tagfile='.tags'
 
 "--------------------------------------------------------------------------
 " < YCM setting >
 "--------------------------------------------------------------------------
 let g:ycm_global_ycm_extra_conf='~/.vim/bundle/YouCompleteMe/third_party/ycmd/.ycm_extra_conf.py'
-" let g:ycm_python_binary_path='/usr/local/bin/python3'
-" let g:ycm_server_python_interpreter='/usr/local/bin/python3'
+let g:ycm_python_binary_path='/usr/local/bin/python3'
+let g:ycm_server_python_interpreter='/usr/local/bin/python3'
 
 let g:ycm_error_symbol='>>'
 let g:ycm_warning_symbol='>'
@@ -463,6 +532,7 @@ let g:ycm_filetype_specific_completion_to_disable={
     \ 'sh' : 1,
     \ 'vim' : 1,
     \}
+autocmd FileType text let g:loaded_youcompleteme = 1
 " -----------------------------------------------------------------------------
 "  <  Setting Put At the End To Take Effect >
 " -----------------------------------------------------------------------------
@@ -478,6 +548,7 @@ set iskeyword+=_
 set iskeyword+=-
 set nowrapscan
 set nowrap
+set signcolumn=auto
 " -----------------------------------------------------------------------------
 "  < end of vim config file >
 " -----------------------------------------------------------------------------

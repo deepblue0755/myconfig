@@ -63,11 +63,11 @@ Host Huangs-T580
 # ------------------------------------------------------------------- #
 # for cbpos
 # ------------------------------------------------------------------- #
-Host 192.168.0.2 192.168.0.3 192.168.0.5
+Host 192.168.0.*
     user root 
     IdentityFile ~/.ssh/id_rsa_root_at_cbpos
 
-Host 192.168.0.2 192.168.0.3 192.168.0.5
+Host 192.168.0.*
     user googol 
     IdentityFile ~/.ssh/id_rsa_googol_at_cbpos
 

@@ -6,10 +6,12 @@ c-support
 C.vim
 ctags
 ctrlp.vim
+deoplete-dictionary
+deoplete.nvim
 minibufexpl.vim
-neocomplete.vim
 nerdcommenter
 nerdtree
+nvim-yarp
 OmniCppComplete
 supertab
 taglist.vim
@@ -19,7 +21,7 @@ vim-cmake-syntax
 vim-commentary
 vim-cpp-enhanced-highlight
 vim-gutentags
-vim-latex-live-preview
+vim-hug-neovim-rpc
 vim-repeat
 vim-surround
 vimwiki
