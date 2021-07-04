@@ -507,8 +507,3 @@ function main()
 }
 
 main "$@"
-
-
-
-
-
