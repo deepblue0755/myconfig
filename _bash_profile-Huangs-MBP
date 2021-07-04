@@ -16,45 +16,6 @@ function print_infor()
 {
     echo -e "\033[32minfor: $1\033[0m" && return 0
 }
-# ------------------------------------------------------------------- #
-# backup all
-# ------------------------------------------------------------------- #
-function _backup_all()
-{
-    pushd . &> /dev/null
-
-    cd ~/Documents/
-    let i=0;
-
-    for folder in *
-    do
-        test -d "$folder" || continue
-        echo ----------------------------------------------------------
-        let i=$i+1
-        echo "$i , cd $folder ..."
-        cd "$folder"
-        check=`git remote -v 2> /dev/null | grep fetch | awk '{ print $1 }'` 
-        test -n "$check" || { echo "$folder is not a git repos!!" && cd .. && continue; } 
-        echo
-        echo update git folder $folder 
-        echo git pull $(git remote | sed -n 1p) master ...
-        echo
-        test -n "$(git remote)" && git pull $(git remote | sed -n 1p) master
-        cd  ..
-        echo ----------------------------------------------------------
-    done
-
-    popd &> /dev/null
-}
-
-# ------------------------------------------------------------------- #
-# brew update all
-# ------------------------------------------------------------------- #
-function _brew_update_all()
-{
-    brew update
-    brew upgrade youtubedl
-}
 
 # ------------------------------------------------------------------- #
 # config for edit profile file
@@ -69,9 +30,9 @@ function _config()
             return 0;
         ;;
         *)
-        test "$SHELL" = "/bin/zsh" && vim ~/.zshrc ~/.bash_profile
-        test "$SHELL" = "/bin/bash" && vim ~/.bash_profile
-        return 0;
+            test "$SHELL" = "/bin/zsh" && vim ~/.zshrc ~/.bash_profile
+            test "$SHELL" = "/bin/bash" && vim ~/.bash_profile
+            return 0;
         ;;
     esac
 }
@@ -99,6 +60,8 @@ function _config_alias()
     alias config='_config'
     alias cpptags='ctags -R --c++-kinds=+p --fields=+iaS --extra=+q -f .tags'
     alias ctags='ctags -f .tags --output-format=e-ctags'
+    alias cscope='cscope -Rbqk -f .cscope'
+    alias cs='cscope -Rbqk -f .cscope'
     alias debian@beaglebone='_login_remote_machine beaglebone2'
     alias diff='colordiff'
     alias doc='cd ~/Documents'
@@ -108,12 +71,10 @@ function _config_alias()
     alias grep='grep --color=auto'
     alias gvim='_gvim'
     alias lldb='sudo lldb'
-    alias log='_log'
     alias md2pdf='_md2pdf'
     alias mygit='~/documents/18-bash-utils/25_git_utils.sh'
     alias mysync='_sync'
     alias mv='mv -iv'
-    alias nohup='_nohup'
     alias pdf='_previewer'
     alias pi4='_login_remote_machine pi4'
     alias poweroff='sudo shutdown -h now'
@@ -217,7 +178,7 @@ function _config_pkg_path()
 # ------------------------------------------------------------------- #
 function _code()
 {
-    /Applications/Visual\ Studio\ Code.app/Contents/MacOS/Electron $* &> /dev/null &
+    /Applications/Visual\ Studio\ Code.app/Contents/MacOS/Electron "$@" &> /dev/null &
 }
 
 # ------------------------------------------------------------------- #
@@ -260,7 +221,7 @@ function _evince()
     if [ "$1" == "--help" ] || [ "$1" == "-h" ] || [ "$1" == "--help-all" ];then
         evince --help
     else
-        evince $1 &> /dev/null &
+        evince "$1" &> /dev/null &
     fi
 }
 
@@ -269,8 +230,9 @@ function _evince()
 # ------------------------------------------------------------------- #
 function _git-branch-prompt 
 {
-    local branch=$(git symbolic-ref --short -q HEAD 2>/dev/null)
-    test -n "$branch" &&  printf " [%s]" $branch
+    local branch
+    branch=$(git symbolic-ref --short -q HEAD 2>/dev/null)
+    test -n "$branch" &&  printf " [%s]" "$branch"
 }
 
 # ------------------------------------------------------------------- #
@@ -278,7 +240,7 @@ function _git-branch-prompt
 # ------------------------------------------------------------------- #
 function _gvim()
 {
-    /usr/local/Cellar/macvim/8.1-161/bin/gvim $* &> /dev/null &
+    /usr/local/Cellar/macvim/8.1-161/bin/gvim "$@" &> /dev/null &
 }
 
 # ------------------------------------------------------------------- #
@@ -295,10 +257,10 @@ function _login_remote_machine()
         ;;
         cbpos)
             local ip=""
-            for arg in $*
+            for arg in "$@"
             do
-                echo $arg | grep "\-\-ip" &> /dev/null &&  \
-                ip=$(echo $arg | cut -d"=" -f2) 
+                echo "$arg" | grep "\-\-ip" &> /dev/null &&  \
+                ip=$(echo "$arg" | cut -d"=" -f2) 
             done
             test -n "$ip" || ssh root@192.168.0.2
             test -n "$ip" && ssh root@192.168.0.$ip
@@ -307,15 +269,14 @@ function _login_remote_machine()
             ssh mianb@gigabyte-brix
         ;;
         t430)
-            ping -c 1 192.168.1.105
-            if [ $? -eq 0 ];then
+            if ping -c 1 192.168.1.105;then
                 echo login huangmianbo@192.168.1.105
                 ssh huangmianbo@192.168.1.105
                 return 0
             fi
 
-            ping -c 1 192.168.50.28
-            if [ $? -eq 0 ];then
+            
+            if ping -c 1 192.168.50.28;then
                 echo login huangmianbo@192.168.50.28
                 ssh huangmianbo@192.168.50.28
                 return 0
@@ -348,15 +309,6 @@ function _login_remote_machine()
 }
 
 # ------------------------------------------------------------------- #
-# vim log file
-# ------------------------------------------------------------------- #
-function _log()
-{
-    test $# -eq 0 && { cd ~/log && return 1;}
-    vim $(ls -t $* | head -n 1)
-}
-
-# ------------------------------------------------------------------- #
 # md2pdf
 # ------------------------------------------------------------------- #
 function _md2pdf()
@@ -366,31 +318,7 @@ function _md2pdf()
         echo "error,there's no such file $file"
     fi
     pdffile=${file/.md/.pdf}
-    pandoc $file -o $pdffile
-}
-
-# ------------------------------------------------------------------- #
-# nohup
-# ------------------------------------------------------------------- #
-function _nohup()
-{
-    \nohup $* &> /tmp/$(uuidgen | cut -c1-8) &
-}
-
-# ------------------------------------------------------------------- #
-# PDFGURU
-# ------------------------------------------------------------------- #
-function _pdfguru()
-{
-     /Applications/PDFGuru.app/Contents/MacOS/PDFGuru $1  &> /dev/null &
-}
-
-# ------------------------------------------------------------------- #
-# Document Viewer
-# ------------------------------------------------------------------- #
-function _previewer()
-{
-    /Applications/Preview.app/Contents/MacOS/Preview $PWD/$1  &>  /dev/null &
+    pandoc "$file" -o "$pdffile"
 }
 
 # ------------------------------------------------------------------- #
@@ -489,36 +417,6 @@ function _randword()
 }
 
 # ------------------------------------------------------------------- #
-# synctask warrior
-# ------------------------------------------------------------------- #
-function _synctask()
-{
-    if [ "$1" == "--help" ];then
-       echo "synctask up : upload task to the remote origin" 
-       return 0 
-    fi
-
-    if [ "$1" == "up" ];then
-        pushd . &&  \
-        cd ~ && \
-        git push -u harddrive master && \
-        popd
-        return 0
-    fi
-
-    if [ "$1" == "down" ];then
-        pushd . &&  \
-        cd ~ && \
-        git pull origin master && \
-        popd
-        return 0
-    else
-        echo "error unknown option"
-        return 1
-    fi 
-}
-
-# ------------------------------------------------------------------- #
 # Set Prompt To Git Branch 
 # ------------------------------------------------------------------- #
 function _set_PS1()
@@ -534,7 +432,7 @@ function _set_PS1()
 # ------------------------------------------------------------------- #
 function _tmux_new()
 {
-    tmux_cnt=$(tmux list-sessions 2>&1 | grep -v "no server running" | grep ":" | wc -l )
+    tmux_cnt=$(tmux list-sessions 2>&1 | grep -v "no server running" | grep -c ":")
     let tmux_cnt=$(($tmux_cnt+1))
     case $1 in 
         1)
@@ -562,27 +460,6 @@ function _typora()
 # ------------------------------------------------------------------- #
 # check other task warrior
 # ------------------------------------------------------------------- #
-function _task_list()
-{
-    case $1 in 
-        1)
-            task list proj:RTAI
-            ;;
-        2)
-            task list proj:infra
-            ;;
-        3)
-            task list proj:FPGA
-            ;;
-        *)
-            \task list
-            ;;
-    esac
-}
-
-# ------------------------------------------------------------------- #
-# check other task warrior
-# ------------------------------------------------------------------- #
 function _task_switch()
 {
     case $1 in 
@@ -604,12 +481,8 @@ function _task_switch()
 # ------------------------------------------------------------------- #
 function _vlc()
 {
-    /Applications/VLC.app/Contents/MacOS/VLC $* &> /dev/null & 
+    /Applications/VLC.app/Contents/MacOS/VLC "$@" &> /dev/null & 
 }
-
-
-
-
 
 
 # ------------------------------------------------------------------- #
@@ -633,7 +506,7 @@ function main()
     set -o vi
 }
 
-main $*
+main "$@"
 
 
 
