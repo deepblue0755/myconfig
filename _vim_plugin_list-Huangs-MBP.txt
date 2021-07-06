@@ -14,6 +14,7 @@ nerdtree
 nvim-yarp
 OmniCppComplete
 supertab
+tagbar
 taglist.vim
 vim-airline
 vim-cmake

@@ -60,7 +60,6 @@ function _config_alias()
     alias config='_config'
     alias cpptags='ctags -R --c++-kinds=+p --fields=+iaS --extra=+q -f .tags'
     alias ctags='ctags -f .tags --output-format=e-ctags'
-    alias cscope='cscope -Rbqk -f .cscope'
     alias cs='cscope -Rbqk -f .cscope'
     alias debian@beaglebone='_login_remote_machine beaglebone2'
     alias diff='colordiff'
