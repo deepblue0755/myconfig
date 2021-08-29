@@ -5,66 +5,63 @@ HOST *
     ConnectionAttempts 3
 
 # ------------------------------------------------------------------- #
-# Ideabox Machine
+# 01 Ideabox Machine
 # ------------------------------------------------------------------- #
-HOST 192.168.50.98 192.168.0.* 192.168.56.120
+HOST 192.168.0.*
     user root
-    identityfile ~/.ssh/id_rsa_root_at_cbpos
+    identityfile ~/.ssh/01_id_rsa_root_at_cbpos
 
-HOST 192.168.0.* 192.168.56.120
+HOST 192.168.0.* 
     user googol
-    identityfile ~/.ssh/id_rsa_googol_at_cbpos
+    identityfile ~/.ssh/01_id_rsa_googol_at_cbpos
 
-HOST 192.168.50.213 192.168.50.203 192.168.50.98
+# ------------------------------------------------------------------- #
+# 02 Virtual Box Machine
+# ------------------------------------------------------------------- #
+HOST 192.168.56.*
+    identityfile ~/.ssh/02_id_rsa_vmware
+
+# ------------------------------------------------------------------- #
+# 03 CPAC Server
+# ------------------------------------------------------------------- #
+Host 192.168.212.30 
+    user huangmianb
+    hostname 192.168.212.30
+    identityfile ~/.ssh/03_id_rsa_hmb_at_cpac
+
+Host 192.168.212.30 
+    user git
+    hostname 192.168.212.30
+    identityfile ~/.ssh/03_id_rsa_hmb_at_cpac
+
+Host 192.168.212.30 
     user root
-    identityfile ~/.ssh/id_rsa_root_at_cbpos
+    hostname 192.168.212.30
+    identityfile ~/.ssh/03_id_rsa_root_at_cpac
 
 # ------------------------------------------------------------------- #
-# Vmware 
-# ------------------------------------------------------------------- #
-HOST vmware
-    user huangmianbo
-    hostname vmware 
-    identityfile ~/.ssh/id_rsa_vmware
-
-# ------------------------------------------------------------------- #
-# Github 
+# 04 Github 
 # ------------------------------------------------------------------- #
 Host github.com
     user git
     hostname github.com
-    identityfile ~/.ssh/id_rsa_github
+    identityfile ~/.ssh/04_id_rsa_github_dot_com
 
+# ------------------------------------------------------------------- #
+# 05 Gitlab
+# ------------------------------------------------------------------- #
 Host gitlab.com
     user git
     hostname gitlab.com
-    identityfile ~/.ssh/id_rsa_gitlab_dot_com
-# ------------------------------------------------------------------- #
-# MacOSx Machine
-# ------------------------------------------------------------------- #
-Host Huangs-MBP
-    user huangmianbo
-    hostname Huangs-MBP
-    identityfile ~/.ssh/id_rsa_macosx
-
-Host 192.168.1.103
-    user huangmianbo
-    hostname 192.168.1.103
-    identityfile ~/.ssh/id_rsa_macosx
-    XAuthLocation /opt/X11/bin/xauth
+    identityfile ~/.ssh/05_id_rsa_gitlab_dot_com
 
 # ------------------------------------------------------------------- #
 # Gigabyte-Brix Machine
 # ------------------------------------------------------------------- #
-Host gigabyte-brix
+Host gigabyte-brix 192.168.1.102
     user mianb
     hostname gigabyte-brix
-    identityfile ~/.ssh/id_rsa_gigabyte
-
-Host 192.168.1.102
-    user mianb
-    hostname 192.168.1.102
-    identityfile ~/.ssh/id_rsa_gigabyte
+    identityfile ~/.ssh/06_id_rsa_gigabyte
 
 # ------------------------------------------------------------------- #
 # Huangs-T580 Win10 Machine
@@ -89,36 +86,6 @@ Host 192.168.1.105
     identityfile ~/.ssh/id_rsa_t430
 
 # ------------------------------------------------------------------- #
-# Virtual Box Gitlab Machine
-# ------------------------------------------------------------------- #
-Host gitlab
-    user huangmianbo
-    hostname gitlab
-    identityfile ~/.ssh/id_rsa_gitlab
-
-Host 192.168.56.103
-    user huangmianbo
-    hostname 192.168.56.103
-    identityfile ~/.ssh/id_rsa_gitlab
-
-# ------------------------------------------------------------------- #
-# CPAC Server
-# ------------------------------------------------------------------- #
-Host 192.168.212.30 
-    user huangmianb
-    hostname 192.168.212.30
-    identityfile ~/.ssh/id_rsa_hmb_at_cpac
-
-Host 192.168.212.30 
-    user git
-    hostname 192.168.212.30
-    identityfile ~/.ssh/id_rsa_hmb_at_cpac
-
-Host 192.168.212.30 
-    user root
-    hostname 192.168.212.30
-    identityfile ~/.ssh/id_rsa_root_at_cpac
-# ------------------------------------------------------------------- #
 # Beaglebone
 # ------------------------------------------------------------------- #
 Host 192.168.7.2
@@ -133,6 +100,7 @@ Host 192.168.50.204
     user root
     hostname 192.168.50.204
     identityfile ~/.ssh/id_rsa_root_at_beaglebone
+
 # ------------------------------------------------------------------- #
 # rasp4
 # ------------------------------------------------------------------- #
@@ -146,39 +114,3 @@ Host 192.168.1.106
     hostname 192.168.1.106
     identityfile ~/.ssh/id_rsa_root_at_rasp4-6e4ace
 
-# ------------------------------------------------------------------- #
-# Debian 10 Buster
-# ------------------------------------------------------------------- #
-Host 192.168.56.118
-    user huangmianbo
-    hostname 192.168.56.118
-    identityfile ~/.ssh/id_rsa_debian_10_at_vb
-
-# ------------------------------------------------------------------- #
-# AM4376
-# ------------------------------------------------------------------- #
-Host 192.168.0.114
-    user root
-    hostname 192.168.0.114
-    identityfile ~/.ssh/id_rsa_am4376
-# ------------------------------------------------------------------- #
-# Ubuntu1804@Vmware
-# ------------------------------------------------------------------- #
-Host 192.168.110.183
-    user huangmianbo
-    hostname 192.168.110.183
-    identityfile ~/.ssh/id_rsa_ubunt1804_vmware
-# ------------------------------------------------------------------- #
-# root@yanzhi
-# ------------------------------------------------------------------- #
-Host 192.168.1.119 yz
-    user root
-    hostname 192.168.1.119 
-    identityfile ~/.ssh/id_rsa_root_at_yanzhi
-# ------------------------------------------------------------------- #
-# yz@yanzhi
-# ------------------------------------------------------------------- #
-Host 192.168.1.119 yz
-    user yz
-    hostname 192.168.1.119 
-    identityfile ~/.ssh/id_rsa_yz_at_yanzhi
