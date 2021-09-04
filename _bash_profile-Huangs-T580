@@ -77,34 +77,33 @@ function _code()
     code $1 &> /dev/null &
 }
 
-function _cplinux()
+function cplinux()
 {
     test $# -lt 1 && { print_error "need at least one file or folder name" && return 1; }
-    local option=-p
     local filelist=""
     local ipaddr=''
     local destdir=''
+    local option=-pr
     for opt in $*
     do
         test -f "$opt" && filelist=$opt\ $filelist
         test -d "$opt" && filelist=$opt\ $filelist
-        test -d "$opt" && option=-pr
-        echo $opt | grep "\-\-ip=" &>/dev/null && \
+        echo "$opt" | grep "\-\-ip=" &>/dev/null && \
         ipaddr=192.168.0.$(echo $opt | cut -d'=' -f2)
-        echo $opt | grep "\-\-dir=" &>/dev/null && \
+        echo "$opt" | grep "\-\-dir=" &>/dev/null && \
         destdir=$(echo $opt | cut -d'=' -f2)
     done
     case $1 in 
-        t430)
+        105 | t430)
             scp $option $filelist huangmianbo@192.168.1.105:/tmp/
         ;;
-        mac)
+        103 | mac)
             scp $option $filelist huangmianbo@192.168.1.103:/tmp/
         ;;
-        server)
+        30 | server)
             scp $option $filelist huangmianbo@192.168.212.30:/tmp/
         ;;
-        ideabox)
+        1 | ideabox)
             test -n "$destdir" || destdir=/tmp/
             test -n "$ipaddr" && scp $option $filelist root@${ipaddr}:${destdir}
             test -n "$ipaddr" || scp $option $filelist root@cbpos:${destdir}
@@ -116,7 +115,7 @@ function _cplinux()
             scp $option $filelist huangmianbo@gitlab:/tmp/
         ;;
         debian)
-            scp $option $filelist huangmianbo@192.168.56.118:/tmp/
+            scp $option $filelist huangmianbo@192.168.56.120:/tmp/
         ;;
         *)
             test -n "$ipaddr" && scp $option $filelist root@${ipaddr}:/tmp/
@@ -339,15 +338,8 @@ function _login_machine()
         am4376)
             ssh root@192.168.0.114
         ;;
-        debian | 3)
-            ssh huangmianbo@192.168.56.118
-        ;;
-        gitlab)
-            ssh huangmianbo@192.168.56.103
-        ;;
-        ubuntu1804)
-            ping -W 1 -c 1 ubuntu1804 &> /dev/null && ssh huangmianbo@ubuntu1804 && return 0;
-            ping -W 1 -c 1 192.168.110.183 &> /dev/null && ssh huangmianbo@192.168.110.183 && return 0;
+        debian9)
+            ssh googol@192.168.56.121
         ;;
         googol)
             ssh googol@cbpos
@@ -367,8 +359,17 @@ function _login_machine()
         t580)
             ssh mianb@Huangs-T580
         ;;
-        vm)
-            ssh -Y huangmianbo@vmware
+        ubuntu1204)
+            ssh -Y googol@192.168.56.133
+        ;;
+        ubuntu1404)
+            ssh -Y huangmianbo@192.168.56.120
+        ;;
+        ubuntu1604)
+            ssh -Y googol@192.168.56.130
+        ;;
+        ubuntu1804)
+            ssh -Y huangmianbo@192.168.56.122
         ;;
         server)
             ssh huangmianbo@192.168.212.30
@@ -378,6 +379,9 @@ function _login_machine()
         ;;
         rasp4)
                 ssh pi@192.168.1.106
+        ;;
+        softlink)
+                ssh huangmianbo@192.168.212.31
         ;;
         cbpos)
             # TRY TO PING 192.168.0.2
@@ -511,7 +515,7 @@ function _putty()
 
 function _relay()
 {
-    \powershell -F "d:\batch\serial_control.ps1" -target $1 -action $2
+    \powershell -F "d:\batch\serial_control.ps1" -target $1 -action $2 
 }
 
 function _rand()
@@ -595,21 +599,20 @@ function _start()
 
     case $1 in
         1 | vm | ubuntu1404)
-            export vm_start=true
-            check=`vmrun list | grep "Ubuntu-14.04-Kylin"` 
-            if [ ! -z "$check" ];then
-                echo ""
-                echo "vmware machine is already starting"
-                return 0
-            fi
-            echo start vmware machine ... 
-            vmrun start "D:\\Vmware-Machines\\Ubuntu-14.04-Kylin\\\Ubuntu.vmx"  nogui 2>&1 > /dev/null &
+            # START THE DEFAULT VB MACHINE
+            test -n "$(VBoxManage list runningvms | grep "Ubuntu1404")"  && \
+            { \
+            print_warning "virtualbox machine ubuntu1404 is already starting" && \
+            return 1 \
+            ;}
+            print_infor "start default virtual box machine \"Ubuntu1404\" ... "
+            VBoxManage startvm "Ubuntu1404-192.168.56.120" --type headless 2>&1 > /dev/null &
         ;;
-        2 | vb | ubuntu1804)
+        2 | ubuntu1804)
             # START THE DEFAULT VB MACHINE
             test -n "$(VBoxManage list runningvms | grep "Ubuntu-1804")"  && \
             { \
-            print_warning "virtualbox machine is already starting" && \
+            print_warning "virtualbox machine ubuntu1804 is already starting" && \
             return 1 \
             ;}
             print_infor "start default virtual box machine \"Ubuntu-1804\" ... "
@@ -617,6 +620,16 @@ function _start()
         ;;
         3 | rsync | sync)
             _sudo net start rsyncserver
+        ;;
+        4 | debian9)
+            # START THE DEFAULT VB MACHINE
+            test -n "$(VBoxManage list runningvms | grep "Debian-9-Stretch-i686")"  && \
+            { \
+            print_warning "virtualbox machine debian9 is already starting" && \
+            return 1 \
+            ;}
+            print_infor "start default virtual box machine \"Debian-9-Stretch-i686\" ... "
+            VBoxManage startvm "Debian-9-Stretch-i686" --type headless 2>&1 > /dev/null &
         ;;
         list)
             echo list running virtual machines ...
@@ -628,7 +641,7 @@ function _start()
         ;;
         *)
             print_error "error,unknown machine or service"
-            print_infor "start |vb|vm|rsync|"
+            print_infor "start |1:ubuntu1404|2:ubuntu1804|3:rsync|4:debian9|"
         ;;
     esac
 }
@@ -675,26 +688,33 @@ function _sync()
     case $1 in 
         1 | book1)
             ping -c 1 -W 1 192.168.1.102 &> /dev/null || return 1
-            rsync -vzrt --progress --include=*.pdf --exclude=*.* \
+            rsync -vzrt --progress --include=*.pdf --include=*.epub --exclude=*.* \
             gigabyte-brix::book-linux \
             "/cygdrive/d/Book/Linux/"  \
             --port=10556
         ;;
         2 | book2)
             ping -c 1 -W 1 192.168.1.102 &> /dev/null || return 1
-            rsync -vzrt --progress --include=*.pdf --exclude=*.* \
+            rsync -vzrt --progress --include=*.pdf --include=*.epub --exclude=*.* \
             gigabyte-brix::book-cs \
             "/cygdrive/d/Book/Computer-Science-CS/"  \
             --port=10556
         ;;
         3 | book4)
             ping -c 1 -W 1 192.168.1.102 &> /dev/null || return 1
-            rsync -vzrt --progress --include=*.pdf --exclude=*.* \
+            rsync -vzrt --progress --include=*.pdf --include=*.epub --exclude=*.* \
             gigabyte-brix::book-control \
             "/cygdrive/d/Book/Control-Automation/"  \
             --port=10556
         ;;
-        4 | git)
+        4 | cheat-sheet)
+            ping -c 1 -W 1 192.168.1.102 &> /dev/null || return 1
+            rsync -vzrt --progress \
+            gigabyte-brix::cheat-sheet \
+            "/cygdrive/d/Book/Cheat-Sheet-Pictures/"  \
+            --port=10556
+        ;;
+        5 | git)
             ping -c 1 -W 1 192.168.212.30 &> /dev/null || return 1
             rsync -vzrt --progress --delete -e ssh \
             "huangmianbo@192.168.212.30:/home/huangmianbo/git/" \
@@ -718,6 +738,7 @@ function _set_alias()
     alias ...='cd ../../'
     alias ..='cd ../'
     alias am4376='_login_machine am4376'
+    alias am335x='relay 1'
     alias batch='pushd /d/batch/ &>/dev/null'
     alias bcomp='BCompare $* &> /dev/null'
     alias beaglebone='_login_machine beaglebone'
@@ -728,13 +749,6 @@ function _set_alias()
     alias debian10='_login_machine debian'
     alias diff='colordiff --exclude=*.git*'
     alias dmidecode='systeminfo'
-    alias cplinux='_cplinux ideabox'
-    alias cpt430='_cplinux t430'
-    alias cpserver='_cplinux server'
-    alias cpdebian='_cplinux debian'
-    alias cpmac='_cplinux mac'
-    alias cpvb='_cplinux gitlab'
-    alias cpvm='_cplinux vm'
     alias cmd='_sudo conemu64'
     alias doc='pushd ~/documents/RTAI &>/dev/null'
     alias eclipse='/d/Profinet/DevKit46/eclipse/eclipse &'
@@ -761,6 +775,7 @@ function _set_alias()
     alias mydate='_mydate'
     alias myffmpeg='/d/documents/18-bash-utils/20_ffmpeg_utils.sh'
     alias mygit='/d/documents/18-bash-utils/25_git_utils.sh'
+    alias mysql='mysql -u huangmianbo -h 192.168.212.30 -p'
     alias mysync='_sync'
     alias mv='mv -iv'
     alias netstat='_netstat'
@@ -783,6 +798,7 @@ function _set_alias()
     alias start='_start'
     alias stop='_stop'
     alias sudo='_sudo'
+    alias softlink='_login_machine softlink'
     alias svn='svn --username huang.mb --password huang.mb'
     alias server='_login_machine server'
     alias t430='_login_machine t430'
@@ -794,20 +810,22 @@ function _set_alias()
     alias tl='_task_list'
     alias tia='runas /user:administrator /savecred "d:\Siemens\Automation\Portal V14/Bin\Siemens.Automation.Portal.exe"'
     alias tmp='cd ~/tmp'
+    alias ubuntu1204='_login_machine ubuntu1204'
+    alias ubuntu1404='_login_machine ubuntu1404'
+    alias ubuntu1604='_login_machine ubuntu1604'
     alias ubuntu1804='_login_machine ubuntu1804'
+    alias debian9='_login_machine debian9'
     alias uuid='uuidgen -r | cut -c 1-8'
     alias vim='_gvim'
     alias vivado='vivado -mode tcl'
     alias vlc='vlc $* &> /dev/null'
-    alias vm='_login_machine vm'
-    alias vmware='vm'
     alias vscode='_code'
     alias ~='cd ~'
 }
 
 function _set_path()
 {
-    export PATH=$dir/d/Vim/vim81:$PATH
+    export PATH=$dir/d/Vim/vim82:$PATH
     export PATH=$dir/d/Git/bin:$PATH
     export PATH=$dir/d/texlive/2018/bin/win32:$PATH
     export PATH=$dir/d/SumatraPDF:$PATH
@@ -830,6 +848,9 @@ function _set_path()
     export PATH=$dir/d/ffmpeg/bin:$PATH
     export PATH=$dir/d/SEGGER/JLink:$PATH
     export PATH=$dir/d/ConEmu:$PATH
+    # export PATH=$dir/d/Qt/Qt5.13.2/5.13.2/mingw73_64/bin:$PATH
+    export PATH=$dir/d/Qt/Qt5.13.2/5.13.2/msvc2017_64/bin:$PATH
+    export PATH=$dir/d/Microsoft\ Visual\ Studio\ 14.0/VC/bin/amd64:$PATH
 
     if [ "$SHELL" == "/bin/bash" ];then
         export PATH=$dir/d/cygwin64/bin:$PATH
