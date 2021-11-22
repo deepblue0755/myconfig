@@ -172,16 +172,19 @@ function _git-branch-prompt
     test -n "$branch" &&  printf " [%s]" $branch
 }
 
-function _gitlab()
+function gitlab()
 {
     case $1 in
-        on)
+        start | on)
             test -n "$(sudo systemctl status gitlab-runsvdir.service  | grep Active | grep running)" || \
             (echo "start gitlab service" && sudo systemctl start gitlab-runsvdir.service)
         ;;
-        off)
+        stop | off)
             test -n "$(sudo systemctl status gitlab-runsvdir.service  | grep Active | grep running)" && \
             (echo "stop gitlab service" && sudo systemctl stop gitlab-runsvdir.service)
+        ;;
+        status)
+            sudo systemctl status gitlab-runsvdir.service
         ;;
         backup)
             sudo gitlab-rake gitlab:backup:create 
@@ -194,7 +197,7 @@ function _gitlab()
             test "$input" == "y" && { test -n "$2" || sudo gitlab-rake gitlab:backup:restore; }
         ;;
         version)
-            cat /var/opt/gitlab/gitlab-rails/VERSION
+            echo $(cat /var/opt/gitlab/gitlab-rails/VERSION)
         ;;
         *)
         echo "gitlab on|off|backup|restore|version"
@@ -256,17 +259,18 @@ function _set_alias()
     alias rm='_saverm'
 	alias reload='source ~/.bashrc'
 	alias config='vim ~/.bashrc'
+    alias cscope='cscope -bqkR -f .cscope'
+    alias cs='cscope -f .cscope -bqkR'
     alias ctags='ctags -f .tags --output-format=e-ctags'
+    alias checkpatch='~/src/09-IDB3/linux-4.9.208/scripts/checkpatch.pl --codespell'
     alias make='make -j40'
-    alias make1='make -j40'
-    alias make2='make CC=/usr/bin/i686-linux-gnu-gcc -j40'
-    alias make3='make GCC=/usr/bin/i686-linux-gnu-gcc -j40'
+    alias make32='make CC=/usr/bin/i686-linux-gnu-gcc -j40'
     alias vbm='vboxmanage'
     alias diff='colordiff --exclude=*\.git*'
     alias mv='_savemv'
     alias mygit='/home/huangmianbo/documents/18-bash-utils/25_git_utils.sh'
     alias mydate='_mydate'
-    alias gitlab='_gitlab'
+    alias mount='sudo mount'
     alias log='_log'
     alias doc='cd ~/documents'
     alias randword='_randword'
@@ -277,12 +281,15 @@ function _set_alias()
     alias test2='_test2'
     alias svn='svn --username=huang.mb --password=huang.mb'
     alias watchrun='_watch_run'
+    alias umount='sudo umount'
     alias vm='ssh huangmianbo@192.168.122.61'
     alias cpvm='_cpvm'
     alias reboot='sudo ~/scripts/crontask4root.sh reboot'
     alias poweroff='echo -e "poweroff server is not allowed"'
     alias cbpos='ssh -Y root@192.168.201.107'
     alias softlink='ssh huangmianbo@192.168.212.31'
+    alias server='ssh huangmianbo@192.168.212.30'
+    alias shellcheck='shellcheck -s bash'
 
 }
 
@@ -298,6 +305,7 @@ function _savemv()
 
 function _set_path()
 {
+    PATH=$(echo $PATH | sed 's#:/sbin:#:#g')
 	PATH=/usr/local/vim/bin:$PATH
 	PATH=/usr/local/llvm/10.0.0/bin:$PATH
 	PATH=/usr/local/clang/10.0.0/bin:$PATH
@@ -308,8 +316,8 @@ function _set_path()
     PATH=/usr/local/cmake/bin:$PATH
     PATH=/usr/local/universal-ctags/bin/:$PATH
     PATH=/usr/local/ctags58/bin/:$PATH
-    PATH=/usr/local/git/bin:$PATH
-    PATH=/usr/local/git/libexec/git-core:$PATH
+    # PATH=/usr/local/git/bin:$PATH
+    # PATH=/usr/local/git/libexec/git-core:$PATH
     PATH=/usr/local/curl/bin:$PATH
     PATH=/usr/local/arm/gcc-linaro-6.5.0-2018.12-x86_64_arm-linux-gnueabihf/bin/:$PATH
     # PATH=/usr/local/dpkg/bin:$PATH
@@ -438,7 +446,7 @@ function main()
     _set_pkg_path
     _set_PS1
     _export_environ_var
-
+    lesspipe &>/dev/null
     test -f ~/share/WARNING_BOOT_FOLDER_IS_MODIFIED && print_warning "BOOT FOLDER IS MODIFIED!!" 
     # test -f ~/NEED_TO_UPGRADE_GITLAB_CE && print_warning "please upgrade gitlab-ce" 
 
@@ -446,6 +454,3 @@ function main()
 }
 
 main $*
-
-
-

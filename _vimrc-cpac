@@ -216,7 +216,7 @@ noremap <C-Tab> <ESC>:bn<RETURN>
 noremap <C-S-Tab> <ESC>:bp<RETURN>
 noremap <Left> <ESC>:bp <CR>
 noremap <Right> <ESC>:bn <CR>
-
+noremap <C-%> <ESC>ysiW"<RETURN>
 
 
 
@@ -416,7 +416,8 @@ let g:airline_right_alt_sep = ' '
 let g:airline_symbols.branch = ' '
 let g:airline_symbols.readonly = ' '
 
-
+" show full tag hierarchy"
+let g:airline#extensions#tagbar#flags = 'f'  
 "--------------------------------------------------------------------------
 " < NeoComplCache setting >
 "--------------------------------------------------------------------------
@@ -494,6 +495,7 @@ let g:ale_linters = {
             \ 'c++': ['clang'],
             \ 'c': ['gcc'],
             \ 'python': ['pylint'],
+            \ 'sh': ['shellcheck']
             \}
 
 " let g:ale_sign_error = "\ue009\ue009"
@@ -547,6 +549,11 @@ let g:asyncrun_bell = 1
 let g:vimwiki_list = [{'path': '~/.vim/bundle/vimwiki/',
                       \ 'syntax': 'markdown', 'ext': '.md'}]
 
+"--------------------------------------------------------------------------
+" < signify list setting >
+"--------------------------------------------------------------------------
+let g:signify_vcs_list = [ 'git' ]
+
 " -----------------------------------------------------------------------------
 "  <  Setting Put At the End To Take Effect >
 " -----------------------------------------------------------------------------
@@ -559,6 +566,34 @@ set backspace=start
 set iskeyword+=_
 set iskeyword+=-
 set nowrapscan
+set termwinsize=5x0
+set signcolumn=auto
+
+" -----------------------------------------------------------------------------
+"  < cscope setting >
+" -----------------------------------------------------------------------------
+if has("cscope")    
+    set csprg=/usr/bin/cscope    
+        "add any database in current dir  
+        if filereadable(".cscope")  
+            cs add cscope.out  
+        "else search cscope.out elsewhere  
+        else  
+            let cscope_file=findfile(".cscope", ".;")  
+            let cscope_pre=matchstr(cscope_file, ".*/")  
+            if !empty(cscope_file) && filereadable(cscope_file)  
+                exe "cs add" cscope_file cscope_pre  
+            endif        
+        endif    
+endif    
+nmap <C-@>c :cs find c <C-R>=expand("<cword>")<CR><CR>  
+nmap <C-@>d :cs find d <C-R>=expand("<cword>")<CR><CR> 
+nmap <C-@>g :cs find g <C-R>=expand("<cword>")<CR><CR>  
+nmap <C-@>s :cs find s <C-R>=expand("<cword>")<CR><CR>  
+nmap <C-@>t :cs find t <C-R>=expand("<cword>")<CR><CR>  
+nmap <C-@>e :cs find e <C-R>=expand("<cword>")<CR><CR>  
+nmap <C-@>f :cs find f <C-R>=expand("<cfile>")<CR><CR>  
+nmap <C-@>i :cs find i <C-R>=expand("<cfile>")<CR><CR>  
 " -----------------------------------------------------------------------------
 "  < end of vim config file >
 " -----------------------------------------------------------------------------
