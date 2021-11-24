@@ -158,13 +158,13 @@ function copy_config_from_cygwin()
     copy_files $dir/d/cygwin64/home/mianb/.gitconfig ./_gitconfig-$HOSTNAME
     let flag=$flag+$?
 
-    copy_files $dir/d/Batch/_cvimrc ./_cvimrc-$HOSTNAME
-    let flag=$flag+$?
-
     copy_files $dir/d/cwRsyncServer/rsyncd.conf ./rsyncd.conf-$HOSTNAME
     let flag=$flag+$?
 
     copy_files $dir/d/cygwin64/home/mianb/.ssh/config ./_ssh_config-$HOSTNAME
+    let flag=$flag+$?
+
+    copy_files $dir/C/Users/mianb/Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1 Microsoft.PowerShell_profile-$HOSTNAME.ps1
     let flag=$flag+$?
 
     print_result $flag
