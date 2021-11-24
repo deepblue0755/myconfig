@@ -59,17 +59,17 @@ fi
 #----------------------------------#
 function print_infor()
 {
-    echo -e "\e[32minfor: $1\e[0m"
+    echo -e "\e[32mINFO:$1\e[0m"
 }
 
 function print_warning()
 {
-    echo -e "\e[33mwarning: $1\e[0m"
+    echo -e "\e[33mWARNING:$1\e[0m"
 }
 
 function print_error()
 {
-    echo -e "\e[31merror: $1\e[0m"
+    echo -e "\e[31mERROR:$1\e[0m"
 }
 
 function _code()
@@ -77,22 +77,10 @@ function _code()
     code $1 &> /dev/null &
 }
 
-function cplinux()
+function _cplinux()
 {
+    local files
     test $# -lt 1 && { print_error "need at least one file or folder name" && return 1; }
-    local filelist=""
-    local ipaddr=''
-    local destdir=''
-    local option=-pr
-    for opt in $*
-    do
-        test -f "$opt" && filelist=$opt\ $filelist
-        test -d "$opt" && filelist=$opt\ $filelist
-        echo "$opt" | grep "\-\-ip=" &>/dev/null && \
-        ipaddr=192.168.0.$(echo $opt | cut -d'=' -f2)
-        echo "$opt" | grep "\-\-dir=" &>/dev/null && \
-        destdir=$(echo $opt | cut -d'=' -f2)
-    done
     case $1 in 
         105 | t430)
             scp $option $filelist huangmianbo@192.168.1.105:/tmp/
@@ -116,6 +104,10 @@ function cplinux()
         ;;
         debian)
             scp $option $filelist huangmianbo@192.168.56.120:/tmp/
+        ;;
+        rasp4)
+            files=$(echo "$@" | sed 's#rasp4 ##')
+            scp -r "$files" pi@10.0.0.11:/tmp/
         ;;
         *)
             test -n "$ipaddr" && scp $option $filelist root@${ipaddr}:/tmp/
@@ -224,6 +216,7 @@ function _export_var()
     export CMAKE_ROOT=$dir/d/cmake/
     export RSYNC_PASSWORD=123456
     export DISPLAY=:0.0
+    export PEANUT=231pj45847.imwork.net
 }
 
 function _expl()
@@ -248,6 +241,10 @@ function _getlinux()
         ;;
         vm | vmware)
             scp huangmianbo@vmware:$2 ./
+        ;;
+        rasp4)
+            files=$(echo $@ | sed 's#rasp4 ##g')
+            scp -r pi@10.0.0.11:$files ./
         ;;
         *)
             scp root@cbpos:/tmp/$2 ./
@@ -335,54 +332,6 @@ function _ifconfig()
 function _login_machine()
 {
     case $1 in
-        am4376)
-            ssh root@192.168.0.114
-        ;;
-        debian9)
-            ssh googol@192.168.56.121
-        ;;
-        googol)
-            ssh googol@cbpos
-        ;;
-        gigabyte)
-            ssh mianb@192.168.1.102
-        ;;
-        mac)
-            ssh huangmianbo@192.168.1.103
-        ;;
-        t430)
-            ssh -Y huangmianbo@192.168.1.105
-        ;;
-        t430-32)
-            ssh -Y huangmianbo@192.168.1.106
-        ;;
-        t580)
-            ssh mianb@Huangs-T580
-        ;;
-        ubuntu1204)
-            ssh -Y googol@192.168.56.133
-        ;;
-        ubuntu1404)
-            ssh -Y huangmianbo@192.168.56.120
-        ;;
-        ubuntu1604)
-            ssh -Y googol@192.168.56.130
-        ;;
-        ubuntu1804)
-            ssh -Y huangmianbo@192.168.56.122
-        ;;
-        server)
-            ssh huangmianbo@192.168.212.30
-        ;;
-        beaglebone)
-            ssh root@192.168.1.110
-        ;;
-        rasp4)
-                ssh pi@192.168.1.106
-        ;;
-        softlink)
-                ssh huangmianbo@192.168.212.31
-        ;;
         cbpos)
             # TRY TO PING 192.168.0.2
             local server=192.168.0.2
@@ -399,7 +348,7 @@ function _login_machine()
                 sleep 1
             done
             print_infor "login $server ..."
-            ssh -Y root@$server
+            ssh root@$server
             test $? != 0 &&  return 1
         ;;
     esac
@@ -430,7 +379,7 @@ function _netstat()
     test $# -eq 0 || \netstat $*
 }
 
-function _poweroff()
+function poweroff()
 {
     win_poweroff_cmd="shutdown /p /f"
     linux_poweroff_cmd="sudo poweroff"
@@ -513,6 +462,13 @@ function _putty()
     esac
 }
 
+function rmkh()
+{
+    pushd ~/.ssh &>/dev/null
+    eval sed -i '$(grep -n '$1' known_hosts | cut -d':' -f1)d' known_hosts
+    popd &>/dev/null
+}
+
 function _relay()
 {
     \powershell -F "d:\batch\serial_control.ps1" -target $1 -action $2 
@@ -590,7 +546,7 @@ function _saverm()
     test "$input" == "yes i want" || { print_warning "user abort operation"  && return 1; }
 }
 
-function _start()
+function start()
 {
     if [ $# -lt 1 ];then
         print_error "please specify which virtual machine to start"
@@ -599,7 +555,11 @@ function _start()
 
     case $1 in
         1 | vm | ubuntu1404)
-            # START THE DEFAULT VB MACHINE
+            ping -c 1 -W 1 nuc11 &> /dev/null || { print_error "could not ping remote nuc11" && return 1 ;}
+            ssh mianb@nuc11 "call D:\batch\start_vbox_machine.bat ubuntu1404"
+        ;;
+        ubuntu1404-local)
+            START THE DEFAULT VB MACHINE
             test -n "$(VBoxManage list runningvms | grep "Ubuntu1404")"  && \
             { \
             print_warning "virtualbox machine ubuntu1404 is already starting" && \
@@ -631,19 +591,25 @@ function _start()
             print_infor "start default virtual box machine \"Debian-9-Stretch-i686\" ... "
             VBoxManage startvm "Debian-9-Stretch-i686" --type headless 2>&1 > /dev/null &
         ;;
+        5 | nuc11)
+            wolcmd 1C697AACA530 10.0.0.23 255.255.255.0 7
+        ;;
         list)
-            echo list running virtual machines ...
-            echo vmware:
-            vmrun list | cat -n
-            echo
-            echo virtualbox:
+            # echo list running virtual machines ...
+            # echo vmware:
+            # vmrun list | cat -n
+            # echo
+            # echo virtualbox:
             VBoxManage list runningvms | cat -n
+            ping -c 1 -W 1 &> /dev/null  && \
+            ssh mianb@nuc11 "VBoxManage list runningvms | cat -n"
         ;;
         *)
             print_error "error,unknown machine or service"
-            print_infor "start |1:ubuntu1404|2:ubuntu1804|3:rsync|4:debian9|"
+            print_infor "start |1:ubuntu1404|2:ubuntu1804|3:rsync|4:debian9|5:nuc11|"
         ;;
     esac
+    return 0
 }
 
 function _stop()
@@ -737,15 +703,17 @@ function _set_alias()
     alias ....='cd ../../../'
     alias ...='cd ../../'
     alias ..='cd ../'
-    alias am4376='_login_machine am4376'
+    alias am4376='ssh root@192.168.0.114'
     alias am335x='relay 1'
+    alias e3950='relay 4'
     alias batch='pushd /d/batch/ &>/dev/null'
     alias bcomp='BCompare $* &> /dev/null'
-    alias beaglebone='_login_machine beaglebone'
+    alias beaglebone='ssh root@192.168.1.110'
     alias cbpos='_login_machine cbpos'
     alias cgdb='cgdb -q'
     alias ctags='ctags -f .tags'
     alias config='gvim --remote-silent D:\\cygwin64\\home\\mianb\\.bash_profile &'
+    alias cprasp4='_cplinux rasp4'
     alias debian10='_login_machine debian'
     alias diff='colordiff --exclude=*.git*'
     alias dmidecode='systeminfo'
@@ -759,9 +727,9 @@ function _set_alias()
     alias gett430='_getlinux t430'
     alias getvb='_getlinux vb'
     alias getvm='_getlinux vm'
-    alias gigabyte='_login_machine gigabyte'
+    alias getrasp4='_getlinux rasp4'
+    alias gigabyte='ssh mianb@192.168.1.102'
     alias gitlab='_login_machine gitlab'
-    alias googol='_login_machine googol'
     alias gp='gnuplot'
     alias grep='grep --color=auto --exclude-dir=.git --exclude=*.o --exclude=*.d --exclude=*.map --exclude=*.bin'
     alias ifconfig='_ifconfig'
@@ -770,7 +738,7 @@ function _set_alias()
     alias ls='ls --color=auto'
     alias lshw='systeminfo'
     alias lscpu='wmic cpu list brief'
-    alias mac='_login_machine mac'
+    alias mac='ssh huangmianbo@192.168.1.103'
     alias md2pdf='_md2pdf'
     alias mydate='_mydate'
     alias myffmpeg='/d/documents/18-bash-utils/20_ffmpeg_utils.sh'
@@ -778,9 +746,8 @@ function _set_alias()
     alias mysql='mysql -u huangmianbo -h 192.168.212.30 -p'
     alias mysync='_sync'
     alias mv='mv -iv'
+    alias nuc11='ssh mianb@nuc11'
     alias netstat='_netstat'
-    alias pdf='SumatraPDF'
-    alias poweroff='_poweroff'
     alias ps='_ps'
     alias powershell='powershell -F'
     alias putty='_putty'
@@ -789,37 +756,39 @@ function _set_alias()
     alias randword='_randword'
     alias rand='_rand'
     alias relay='_relay'
-    alias rasp4='ssh pi@192.168.1.106'
+    alias rasp4='ssh pi@rasp4-6e4ace'
+    alias rasp3='ssh pi@rasp3b-2b03b5'
     alias reload='source ~/.bash_profile'
     alias rename='/d/documents/18-bash-utils/01_rename_utils.sh'
     # alias rm='rm -iv'
     alias rm='_saverm'
     alias rtai='cd ~/documents/RTAI'
-    alias start='_start'
     alias stop='_stop'
     alias sudo='_sudo'
-    alias softlink='_login_machine softlink'
+    alias softlink='ssh huangmianbo@192.168.212.31'
     alias svn='svn --username huang.mb --password huang.mb'
-    alias server='_login_machine server'
-    alias t430='_login_machine t430'
-    alias t430-32='_login_machine t430-32'
-    alias t580='_login_machine t580'
+    alias server='ssh huangmianbo@192.168.212.30'
+    alias t430='ssh -Y huangmianbo@192.168.1.105'
+    alias t430-32='ssh -Y huangmianbo@192.168.1.106'
+    alias t580='ssh mianb@Huangs-T580'
     alias traceroute='tracert'
     alias t='_tmux_new'
     alias timeout='timeout --preserve-status'
     alias tl='_task_list'
     alias tia='runas /user:administrator /savecred "d:\Siemens\Automation\Portal V14/Bin\Siemens.Automation.Portal.exe"'
     alias tmp='cd ~/tmp'
-    alias ubuntu1204='_login_machine ubuntu1204'
-    alias ubuntu1404='_login_machine ubuntu1404'
-    alias ubuntu1604='_login_machine ubuntu1604'
-    alias ubuntu1804='_login_machine ubuntu1804'
-    alias debian9='_login_machine debian9'
+    alias ubuntu1204='ssh -Y googol@192.168.56.133'
+    alias ubuntu1404='ssh -Y huangmianbo@10.0.0.120'
+    alias ubuntu1404-local='ssh -Y huangmianbo@192.168.56.120'
+    alias ubuntu1604='ssh -Y googol@192.168.56.130'
+    alias ubuntu1804='ssh -Y huangmianbo@192.168.56.122'
+    alias debian9='ssh googol@192.168.56.121'
     alias uuid='uuidgen -r | cut -c 1-8'
     alias vim='_gvim'
     alias vivado='vivado -mode tcl'
     alias vlc='vlc $* &> /dev/null'
     alias vscode='_code'
+    alias wakenuc='wolcmd 1C697AACA530 10.0.0.23 255.255.255.0 7'
     alias ~='cd ~'
 }
 

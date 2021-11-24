@@ -8,36 +8,76 @@ HOST *
 # 01 Ideabox Machine
 # ------------------------------------------------------------------- #
 HOST 192.168.0.*
+    hostname cbpos
     user root
-    identityfile ~/.ssh/01_id_rsa_root_at_cbpos
+    identityfile ~/.ssh/id_rsa_root_at_cbpos
 
 HOST 192.168.0.* 
+    hostname cbpos
     user googol
-    identityfile ~/.ssh/01_id_rsa_googol_at_cbpos
+    identityfile ~/.ssh/id_rsa_googol_at_cbpos
 
+# HOST 10.0.0.*
+#     user root
+#     identityfile ~/.ssh/id_rsa_root_at_cbpos
+
+# HOST 10.0.0.*
+#     user googol
+#     identityfile ~/.ssh/id_rsa_googol_at_cbpos
+
+# HOST 192.168.56.*
+#     user root
+#     identityfile ~/.ssh/id_rsa_root_at_cbpos
+
+# HOST 192.168.56.*
+#     user googol
+#     identityfile ~/.ssh/id_rsa_googol_at_cbpos
+
+# HOST 192.168.56.*
+#     user huangmianbo
+#     identityfile ~/.ssh/id_rsa_googol_at_cbpos
+
+# HOST 192.168.204.*
+#     user root
+#     identityfile ~/.ssh/id_rsa_root_at_cbpos
+
+# HOST 192.168.204.*
+#     user googol
+#     identityfile ~/.ssh/id_rsa_googol_at_cbpos
+
+# HOST 192.168.*.*
+#     user root
+#     identityfile ~/.ssh/id_rsa_root_at_cbpos
+
+# HOST 192.168.*.* 
+#     user googol
+#     identityfile ~/.ssh/id_rsa_googol_at_cbpos
 # ------------------------------------------------------------------- #
 # 02 Virtual Box Machine
 # ------------------------------------------------------------------- #
-HOST 192.168.56.*
-    identityfile ~/.ssh/02_id_rsa_vmware
+HOST 10.0.0.120
+    user huangmianbo
+    identityfile ~/.ssh/id_rsa_vmware
+    PubkeyAcceptedKeyTypes +ssh-rsa
+HOST 10.0.0.120
+    user huangmianbo
+    identityfile ~/.ssh/id_rsa_googol_at_cbpos
+    PubkeyAcceptedKeyTypes +ssh-rsa
 
 # ------------------------------------------------------------------- #
 # 03 CPAC Server
 # ------------------------------------------------------------------- #
-Host 192.168.212.30 
+Host 192.168.212.30  192.168.212.31
     user huangmianb
-    hostname 192.168.212.30
-    identityfile ~/.ssh/03_id_rsa_hmb_at_cpac
+    identityfile ~/.ssh/id_rsa_hmb_at_cpac
 
 Host 192.168.212.30 
     user git
-    hostname 192.168.212.30
-    identityfile ~/.ssh/03_id_rsa_hmb_at_cpac
+    identityfile ~/.ssh/id_rsa_hmb_at_cpac
 
 Host 192.168.212.30 
     user root
-    hostname 192.168.212.30
-    identityfile ~/.ssh/03_id_rsa_root_at_cpac
+    identityfile ~/.ssh/id_rsa_root_at_cpac
 
 # ------------------------------------------------------------------- #
 # 04 Github 
@@ -45,7 +85,7 @@ Host 192.168.212.30
 Host github.com
     user git
     hostname github.com
-    identityfile ~/.ssh/04_id_rsa_github_dot_com
+    identityfile ~/.ssh/id_rsa_github_dot_com
 
 # ------------------------------------------------------------------- #
 # 05 Gitlab
@@ -53,7 +93,7 @@ Host github.com
 Host gitlab.com
     user git
     hostname gitlab.com
-    identityfile ~/.ssh/05_id_rsa_gitlab_dot_com
+    identityfile ~/.ssh/id_rsa_gitlab_dot_com
 
 # ------------------------------------------------------------------- #
 # Gigabyte-Brix Machine
@@ -61,7 +101,7 @@ Host gitlab.com
 Host gigabyte-brix 192.168.1.102
     user mianb
     hostname gigabyte-brix
-    identityfile ~/.ssh/06_id_rsa_gigabyte
+    identityfile ~/.ssh/id_rsa_gigabyte
 
 # ------------------------------------------------------------------- #
 # Huangs-T580 Win10 Machine
@@ -76,6 +116,10 @@ Host 192.168.0.22
     hostname 192.168.0.22
     identityfile ~/.ssh/id_rsa_t580
 
+Host 10.0.0.3
+    user mianb
+    hostname 10.0.0.3
+    identityfile ~/.ssh/id_rsa_t580
 
 # ------------------------------------------------------------------- #
 # T430 Linux Machine
@@ -104,13 +148,57 @@ Host 192.168.50.204
 # ------------------------------------------------------------------- #
 # rasp4
 # ------------------------------------------------------------------- #
-Host 192.168.1.106
+Host rasp4-6e4ace
     user pi 
-    hostname 192.168.1.106
-    identityfile ~/.ssh/id_rsa_pi_at_rasp4
+    hostname rasp4-6e4ace
+    identityfile ~/.ssh/id_rsa_googol_at_cbpos
 
-Host 192.168.1.106
+Host rasp4-6e4ace
     user root 
-    hostname 192.168.1.106
-    identityfile ~/.ssh/id_rsa_root_at_rasp4-6e4ace
+    hostname rasp4-6e4ace
+    identityfile ~/.ssh/id_rsa_root_at_cbpos
 
+Host 10.0.0.11
+    user pi 
+    hostname 10.0.0.11 
+    identityfile ~/.ssh/id_rsa_googol_at_cbpos
+
+Host 10.0.0.11
+    user root 
+    hostname 10.0.0.11
+    identityfile ~/.ssh/id_rsa_root_at_cbpos
+
+# ------------------------------------------------------------------- #
+# rasp3
+# ------------------------------------------------------------------- #
+Host rasp3b-2b03b5
+    user pi 
+    hostname rasp3b-2b03b5
+    identityfile ~/.ssh/id_rsa_googol_at_cbpos
+
+Host rasp3b-2b03b5
+    user root 
+    hostname rasp3b-2b03b5
+    identityfile ~/.ssh/id_rsa_root_at_cbpos
+# ------------------------------------------------------------------- #
+# nuc11
+# ------------------------------------------------------------------- #
+HOST nuc11
+    hostname nuc11
+    user mianb
+    identityfile ~/.ssh/id_rsa_nuc11
+
+HOST 10.0.0.6
+    hostname 10.0.0.6
+    user mianb
+    identityfile ~/.ssh/id_rsa_nuc11
+
+# ------------------------------------------------------------------- #
+# misc
+# ------------------------------------------------------------------- #
+HOST 192.168.204.74
+    user root
+    identityfile ~/.ssh/id_rsa_root_at_cbpos
+HOST 192.168.204.74
+    user googol
+    identityfile ~/.ssh/id_rsa_googol_at_cbpos

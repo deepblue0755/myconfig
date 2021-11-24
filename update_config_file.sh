@@ -2,24 +2,20 @@
 
 function print_error()
 {
-
-
-    test "$(uname)" == "Darwin" && { echo -e "\033[31m|$(date +%Y%m%d%H%M%S)|$(basename $BASH_SOURCE):$BASH_LINENO|error|$1|\033[0m" && return 0; }
-    test "$(uname)" == "Darwin" || { echo -e "\e[31merror: $1\e[0m" && return 0; }
+    test "$(uname)" == "Darwin" && { echo -e "\033[31m|$(date +%Y%m%d%H%M%S)|$(basename $BASH_SOURCE):$BASH_LINENO|ERROR|$1|\033[0m" && return 0; }
+    test "$(uname)" == "Darwin" || { echo -e "\e[31mERROR: $1\e[0m" && return 0; }
 }
 
 function print_warning()
 {
-
-    test "$(uname)" == "Darwin" && { echo -e "\033[33m|$(date +%Y%m%d%H%M%S)|$(basename $BASH_SOURCE):$BASH_LINENO|warning|$1|\033[0m" && return 0; }
-    test "$(uname)" == "Darwin" || { echo -e "\e[33mwarning: $1\e[0m" && return 0; }
+    test "$(uname)" == "Darwin" && { echo -e "\033[33m|$(date +%Y%m%d%H%M%S)|$(basename $BASH_SOURCE):$BASH_LINENO|WARNING|$1|\033[0m" && return 0; }
+    test "$(uname)" == "Darwin" || { echo -e "\e[33mWARNING: $1\e[0m" && return 0; }
 }
 
 function print_infor()
 {
-
-    test "$(uname)" == "Darwin" && { echo -e "\033[32m|$(date +%Y%m%d%H%M%S)|$(basename $BASH_SOURCE):$BASH_LINENO|infor|$1|\033[0m" && return 0; }
-    test "$(uname)" == "Darwin" || { echo -e "\e[32minfor: $1\e[0m" && return 0; }
+    test "$(uname)" == "Darwin" && { echo -e "\033[32m|$(date +%Y%m%d%H%M%S)|$(basename $BASH_SOURCE):$BASH_LINENO|INFO|$1|\033[0m" && return 0; }
+    test "$(uname)" == "Darwin" || { echo -e "\e[32mINFO: $1\e[0m" && return 0; }
 }
 
 function print_result()
