@@ -568,6 +568,11 @@ set iskeyword+=-
 set nowrapscan
 set termwinsize=5x0
 set signcolumn=auto
+augroup project
+    autocmd!
+    autocmd BufRead,BufNewFile *.h,*.c set filetype=c
+    autocmd FileType cpp setlocal commentstring=//\ %s
+augroup END
 
 " -----------------------------------------------------------------------------
 "  < cscope setting >
