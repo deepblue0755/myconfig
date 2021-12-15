@@ -421,7 +421,7 @@ let g:airline#extensions#tagbar#flags = 'f'
 "--------------------------------------------------------------------------
 " < NeoComplCache setting >
 "--------------------------------------------------------------------------
-if(has('lua'))
+if(has('lua') && v:version<802)
     let g:neocomplete#enable_at_startup=1 "enable list" 
     " disable list
     autocmd FileType c,cpp let g:neocomplete#enable_at_startup=0 
@@ -434,6 +434,22 @@ if(has('lua'))
     \ 'tex'   : '~/.vim/dictionary/en_dictionary_tiny_tex.dic',
     \ 'cmake' : '~/.vim/dictionary/cmake_keywords.dic',
     \}
+endif
+
+if (v:version>801)
+    let g:deoplete#enable_at_startup = 1
+    let g:python3_host_prog = "python3"
+    call deoplete#custom#option('sources', {
+                \ 'c': ['buffer','.tags'],
+                \ 'cpp': ['buffer', '.tag'],
+                \ 'cmake': ['buffer', 'dictionary','file'],
+                \ 'text': ['buffer', 'dictionary','file'],
+                \})
+    call deoplete#custom#option('num_processes', 4)
+    call deoplete#custom#source(
+    \ 'dictionary', 'min_pattern_length', 4)
+    autocmd FileType text setlocal dictionary+=$VIM/vimfiles/dictionary/en_dictionary_mediate.dic
+    autocmd FileType cmake setlocal dictionary=$VIM/vimfiles/dictionary/cmake_keywords.dic
 endif
 
 "--------------------------------------------------------------------------
