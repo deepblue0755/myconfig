@@ -8,22 +8,14 @@ HOST *
 # 01 Ideabox Machine
 # ------------------------------------------------------------------- #
 HOST 192.168.0.*
-    hostname cbpos
     user root
     identityfile ~/.ssh/id_rsa_root_at_cbpos
+    PubkeyAcceptedKeyTypes +ssh-rsa
 
 HOST 192.168.0.* 
-    hostname cbpos
     user googol
     identityfile ~/.ssh/id_rsa_googol_at_cbpos
-
-# HOST 10.0.0.*
-#     user root
-#     identityfile ~/.ssh/id_rsa_root_at_cbpos
-
-# HOST 10.0.0.*
-#     user googol
-#     identityfile ~/.ssh/id_rsa_googol_at_cbpos
+    PubkeyAcceptedKeyTypes +ssh-rsa
 
 # HOST 192.168.56.*
 #     user root
@@ -59,11 +51,35 @@ HOST 10.0.0.120
     user huangmianbo
     identityfile ~/.ssh/id_rsa_vmware
     PubkeyAcceptedKeyTypes +ssh-rsa
-HOST 10.0.0.120
+HOST 10.0.0.120 192.168.56.120
     user huangmianbo
     identityfile ~/.ssh/id_rsa_googol_at_cbpos
     PubkeyAcceptedKeyTypes +ssh-rsa
 
+HOST 10.0.0.130 192.168.56.130
+    user googol
+    identityfile ~/.ssh/id_rsa_googol_at_cbpos
+    PubkeyAcceptedKeyTypes +ssh-rsa
+
+HOST 10.0.0.133 192.168.56.133
+    user googol
+    identityfile ~/.ssh/id_rsa_vmware
+    PubkeyAcceptedKeyTypes +ssh-rsa
+
+HOST 10.0.0.130
+    user huangmianbo
+    identityfile ~/.ssh/id_rsa_googol_at_cbpos
+    PubkeyAcceptedKeyTypes +ssh-rsa
+
+HOST 10.0.0.130
+    user googol
+    identityfile ~/.ssh/id_rsa_googol_at_cbpos
+    PubkeyAcceptedKeyTypes +ssh-rsa
+
+HOST 10.0.0.130
+    user root
+    identityfile ~/.ssh/id_rsa_root_at_cbpos
+    PubkeyAcceptedKeyTypes +ssh-rsa
 # ------------------------------------------------------------------- #
 # 03 CPAC Server
 # ------------------------------------------------------------------- #
@@ -158,14 +174,14 @@ Host rasp4-6e4ace
     hostname rasp4-6e4ace
     identityfile ~/.ssh/id_rsa_root_at_cbpos
 
-Host 10.0.0.11
+Host 10.0.0.4
     user pi 
-    hostname 10.0.0.11 
+    hostname 10.0.0.4
     identityfile ~/.ssh/id_rsa_googol_at_cbpos
 
-Host 10.0.0.11
+Host 10.0.0.4
     user root 
-    hostname 10.0.0.11
+    hostname 10.0.0.4
     identityfile ~/.ssh/id_rsa_root_at_cbpos
 
 # ------------------------------------------------------------------- #
@@ -192,7 +208,25 @@ HOST 10.0.0.6
     hostname 10.0.0.6
     user mianb
     identityfile ~/.ssh/id_rsa_nuc11
+    
+# ------------------------------------------------------------------- #
+# zedboard
+# ------------------------------------------------------------------- #
+Host 10.0.0.15
+    hostname 10.0.0.15
+    user root
+    identityfile ~/.ssh/id_rsa_root_at_cbpos
+    PubkeyAcceptedKeyTypes +ssh-rsa
 
+Host 10.0.0.136
+    user huangmianbo 
+    identityfile ~/.ssh/id_rsa_googol_at_cbpos
+    PubkeyAcceptedKeyTypes +ssh-rsa
+
+Host 10.0.0.136
+    user googol 
+    identityfile ~/.ssh/id_rsa_googol_at_cbpos
+    PubkeyAcceptedKeyTypes +ssh-rsa
 # ------------------------------------------------------------------- #
 # misc
 # ------------------------------------------------------------------- #

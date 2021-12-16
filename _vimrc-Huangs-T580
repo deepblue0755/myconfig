@@ -85,12 +85,6 @@ set t_Co=256
 "set history = 300
 set scrolloff=3
 set tags+=./.tags;,.tags
-set tags+=../.tags
-set tags+=../../.tags
-set tags+=../../../.tags
-set tags+=../../../../.tags
-set tags+=../../../../../.tags
-set tags+=../../../../../../.tags
 
 " -----------------------------------------------------------------------------
 "  < Set the Menu Language >
@@ -306,7 +300,7 @@ let Tlist_Sort_Type = "name"
 let Tlist_Compart_Format = 1                
 let Tlist_File_Fold_Auto_Close = 0          
 let Tlist_Enable_Fold_Column = 1           
-let Tlist_Ctags_Cmd="D:\\Vim\\vim81\\ctags.exe"
+let Tlist_Ctags_Cmd="$VIMRUNTIME/ctags.exe"
 let Tlist_Use_SingleClick=1
 let Tlist_GainFocus_On_ToggleOpen = 1     "when open taglist set focus to it
 let Tlist_Close_On_Select = 0             "close taglist after selecting tag or file
