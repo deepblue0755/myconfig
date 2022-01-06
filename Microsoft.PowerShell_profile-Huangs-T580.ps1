@@ -10,4 +10,6 @@ function config { vim $profile }
 function nuc11 { Enter-PSSession -ComputerName NUC11 }
 function cygwin { D:\cygwin64\bin\mintty -i /Cygwin-Terminal.ico -  }
 function windowsterminal { D:\batch\start_win_store_app.ps1 -AppName WindowsTerminal }
-
+function Get-ComObject { gci HKLM:\Software\Classes -ea 0| ? {$_.PSChildName -match '^\w+\.\w+$' -and
+(gp "$($_.PSPath)\CLSID" -ea 0)} | ft PSChildName }
+$HOSTNAME=[System.Net.Dns]::GetHostName()
