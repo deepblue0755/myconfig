@@ -118,12 +118,13 @@ function _cplinux()
 
 function dir_cyg2win
 {
+    # FOR WIN-GVIM USAGE
     local dirs=""
     dirs=$(echo $1 | sed -e 's#^/cygdrive##' |  sed -e 's#^/##' | sed -e 's#/#:\\#' | sed 's#/#\\#g')
     echo "$dirs" | egrep ".{2,}:[\]" &> /dev/null && dirs=$(echo $dirs | sed 's#:##g')
     echo "$dirs" | egrep "^\.:[\]" &> /dev/null && dirs=$(echo $dirs | sed 's#:##g')
-    echo $dirs
-    
+    echo "$dirs" | egrep "home\\\mianb" &>/dev/null && dirs=$(echo $dirs | sed 's#home\\mianb#D:\\cygwin64\\home\\mianb#g')
+    echo "$dirs"
     return 0;
 }
 
@@ -163,7 +164,7 @@ function _duty()
 
             test "$2" != "forced" && \
             test $(date +%H) -eq 9 &&  \
-            test $(date +%M) -lt 30 &&  \
+           test $(date +%M) -lt 30 &&  \
             rsync -vzrt --progress -e ssh huangmianbo@192.168.212.30:$gitlab_backup_file $dir/d/backup/gitlab-ce/$(basename $gitlab_backup_file) &
             flag=1
             return 0;
@@ -216,8 +217,9 @@ function _export_var()
     export CMAKE_ROOT=$dir/d/cmake/
     export RSYNC_PASSWORD=123456
     export DISPLAY=:0.0
-    export PEANUT=231pj45847.imwork.net
+    export PEANUT1=231pj45847.imwork.net
     export VIMRUNTIME=/usr/share/vim/vim82
+    export PEANUT2=48i820u091.wicp.vip
 }
 
 function _expl()
@@ -465,7 +467,7 @@ function _putty()
 function rmkh()
 {
     pushd ~/.ssh &>/dev/null
-    eval sed -i '$(grep -n '$1' known_hosts | cut -d':' -f1)d' known_hosts
+    eval sed -i "$(grep -n '$1' known_hosts | cut -d':' -f1)d" known_hosts
     popd &>/dev/null
 }
 
@@ -587,7 +589,7 @@ function start()
         ;;
         *)
             ping -c 1 -W 1 nuc11 &> /dev/null || { print_error "could not ping remote nuc11" && return 1 ;}
-            ssh mianb@nuc11 "call D:\batch\start_vbox_machine.bat $1"
+            ssh mianb@nuc11 "call D:\batch\Start-VboxMachine.bat $1"
             return 1
         ;;
     esac
@@ -613,7 +615,7 @@ function stop()
         ;;
         *)
             ping -c 1 -W 1 nuc11 &> /dev/null || { print_error "could not ping remote nuc11" && return 1 ;}
-            ssh mianb@nuc11 "call D:\batch\stop_vbox_machine.bat $1"
+            ssh mianb@nuc11 "call D:\batch\Stop-VboxMachine.bat $1"
         ;;
     esac
 }
@@ -691,8 +693,9 @@ function _set_alias()
     alias beaglebone='ssh root@192.168.1.110'
     alias cbpos='_login_machine cbpos'
     alias cgdb='cgdb -q'
+    alias cixing='ssh -i ~/.ssh/id_rsa_root_at_cbpos root@192.168.1.101'
     alias ctags='ctags -f .tags'
-    alias config='vim ~/.bash_profile'
+    alias config='_gvim ~/.bash_profile'
     alias cprasp4='_cplinux rasp4'
     alias debian10='_login_machine debian'
     alias diff='colordiff --exclude=*.git*'
@@ -739,6 +742,8 @@ function _set_alias()
     alias relay='_relay'
     alias rasp4='ssh pi@rasp4-6e4ace'
     alias rasp3='ssh pi@rasp3b-2b03b5'
+    alias peanut1='ssh pi@$PEANUT1 -p 35369'
+    alias rasphome='ssh -i ~/.ssh/id_rsa_googol_at_cbpos pi@$PEANUT2 -p 44650'
     alias reload='source ~/.bash_profile'
     alias rename='/d/documents/18-bash-utils/01_rename_utils.sh'
     # alias rm='rm -iv'
@@ -764,13 +769,15 @@ function _set_alias()
     alias ubuntu1404-local='ssh -Y huangmianbo@192.168.56.120'
     alias ubuntu1604='ssh -Y googol@10.0.0.130'
     alias ubuntu1804='ssh -Y huangmianbo@10.0.0.122'
-    alias debian9='ssh googol@10.0.0.121'
+    alias debian9='ssh -i ~/.ssh/id_rsa_googol_at_cbpos googol@10.0.0.121'
     alias uuid='uuidgen -r | cut -c 1-8'
     alias vivado='vivado -mode tcl'
-    alias vim='vim -u ~/.vimrc.cygwin'
+    alias cvim='vim -u ~/.vimrc.cygwin'
+    alias vim='_gvim'
     alias vlc='vlc $* &> /dev/null'
     alias vscode='_code'
-    alias wakenuc='wolcmd 1C697AACA530 10.0.0.23 255.255.255.0 7'
+    alias wakenuc='wolcmd 1C697AACA530 10.0.0.1 255.255.255.0 7'
+    alias wakex='wolcmd 2CF05DC52323 10.0.0.1  255.255.255.0 7'
     alias zynq-host='ssh huangmianbo@10.0.0.136'
     alias am335x-host='ssh root@10.0.0.130'
     alias zed='ssh root@10.0.0.15'
@@ -805,6 +812,7 @@ function _set_path()
     # export PATH=$dir/d/Qt/Qt5.13.2/5.13.2/mingw73_64/bin:$PATH
     export PATH=$dir/d/Qt/Qt5.13.2/5.13.2/msvc2017_64/bin:$PATH
     export PATH=$dir/d/Microsoft\ Visual\ Studio\ 14.0/VC/bin/amd64:$PATH
+    export PATH=$dir/d/102-delivery/16-Profinet-For-Googol/V47/Installed_tools/Mingw/msys/1.0/local/bin:$PATH
 
     if [ "$SHELL" == "/bin/bash" ];then
         export PATH=$dir/d/cygwin64/bin:$PATH
@@ -873,10 +881,10 @@ function _tmux_new()
         ;;
         *)
         tmux new-session -d -s session-$tmux_cnt  -n cygwin
-        tmux new-window -d -n vmware-1
-        tmux new-window -d -n vmware-2
-        tmux new-window -d -n cbpos-1
-        tmux new-window -d -n cbpos-2
+        tmux new-window -d -n vbox-1
+        tmux new-window -d -n vbox-2
+        tmux new-window -d -n linux-1
+        tmux new-window -d -n linux-2
         timeout --preserve-status 1s ping -c 1 -W 1 192.168.212.30 &> /dev/null  && tmux new-window -d -n server 
         timeout --preserve-status 1s ping -c 1 -W 1 192.168.1.105  &> /dev/null  && tmux new-window -d -n t430 
         timeout --preserve-status 1s ping -c 1 -W 1 192.168.1.103  &> /dev/null  && tmux new-window -d  -n MacOS 
