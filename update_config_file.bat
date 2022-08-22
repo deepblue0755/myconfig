@@ -46,6 +46,8 @@ popd
 
 :DO_THE_JOB
 call :update_config_files D:\cygwin64\home\%USERNAME%\.bash_profile  _bash_profile
+call :update_config_files D:\cygwin64\home\%USERNAME%\.tmux.conf  _tmux.conf
+call :update_config_files D:\cygwin64\home\%USERNAME%\.gitconfig  _gitconfig
 call :update_config_files C:\Users\%USERNAME%\.ideavimrc  _ideavimrc
 call :update_config_files D:\Vim\_vimrc  _vimrc
 goto end
