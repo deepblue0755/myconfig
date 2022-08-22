@@ -56,76 +56,32 @@ function print_error()
     echo -e "\e[31merror: $1\e[0m"
 }
 
-# ------------------------------------------------------------------- #
-# Customer Internal Function
-# ------------------------------------------------------------------- #
-function _backup_all()
-{
-    case $1 in 
-        1)
-            echo -----------------------------------------------------------------------------
-            echo "1, enter $dir/d/documents pull update from github first"
-            echo -----------------------------------------------------------------------------
-            git_utils=$dir/d/documents/18-bash-utils/25_git_utils.sh
-            test -f "$git_utils" || { print_error "could not find utils $git_utils" && return 1; }
-            $git_utils pullall $dir/d/documents
-            return 0;
-        ;;
-        2)
-            echo -----------------------------------------------------------------------------
-            echo "2, push updated config files from $HOME to cygwin64_config_gigabyte.git repo"
-            echo -----------------------------------------------------------------------------
-            local comment=""
-            print_infor "entering $HOME ..."
-            pushd $HOME &> /dev/null
-            files=`git status | grep "modified:" | awk -F":" '{ print $2 }'`
-            if [ -z "$files" ];then
-                print_infor "no update config files from $HOME"
-            else
-                for file in $files
-                do
-                    echo 
-                    if [ -f "$file" ];then
-                        print_infor "git add $file ..."
-                        git add "$file"
-                        comment="$comment $file"
-                    fi
-                done
-                print_infor "git commit -m \"update $comment from $USER@$HOSTNAME\""
-                git commit -m "update $comment from $USER@$HOSTNAME"
-                print_infor "git push -u $(git remote | sed -n '1p') master"
-                git push -u $(git remote | sed -n '1p') master
-                echo
-            fi
-            popd  &> /dev/null
-            return 0;
-        ;;
-        3)
-            echo -----------------------------------------------------------------------------
-            echo "3, push updated config files to all machines config github repos"
-            echo -----------------------------------------------------------------------------
-            print_infor "entering $dir/d/documents/11-configs-from-github ..."
-            pushd /d/documents/11-configs-from-github &> /dev/null
-            test -f $dir/d/documents/11-configs-from-github/update_config_file.sh && \
-            {  \
-                print_infor "executing update_config_file.sh ..." &&  \
-                $dir/d/documents/11-configs-from-github/update_config_file.sh \
-            ;}
-            popd &> /dev/null
-            return 0;
-        ;;
-        *)
-            # _backup_all 1
-            _backup_all 2
-            _backup_all 3
-        ;;
-    esac
-}
-
 function _code()
 {
     $dir/d/Microsoft\ VS\ Code/Code.exe $* &
 }
+
+function cplinux()
+{
+    case $1 in 
+        106|105|103)
+            scp -r "$2" huangmianbo@192.168.1.$1:/tmp/
+        ;;
+        *)
+            :
+        ;;
+    esac
+}
+
+function cpt430()
+{
+    ping -c 1 -W 1 192.168.50.28 &>/dev/null && \
+    scp -r "$@" huangmianbo@192.168.50.28:/tmp/
+
+    ping -c 1 -W 1 192.168.1.105 &>/dev/null && \
+    scp -r "$@" huangmianbo@192.168.1.105:/tmp/
+}
+
 
 function _dirdos2unix
 {
@@ -187,44 +143,39 @@ function _gvim()
         test -d $opt  && args=$args\ $(_dirdos2unix "$opt") && continue;
         args=$args\ $opt
     done
-    $dir/d/Vim/vim81/gvim --remote-silent $args &> /dev/null &
+    $dir/d/Vim/vim82/gvim --remote-silent $args &> /dev/null &
 }
 
 function _login_machine()
 {
     case $1 in
-        1 | mac)
-            ssh huangmianbo@192.168.1.103
-        ;;
-        2 | t430)
-            ssh -Y huangmianbo@192.168.1.105
-        ;;
-        3 | t580)
-            ssh mianb@Huangs-T580
-        ;;
-        4 | pi3)
-            ssh huangmianbo@raspberry3
-        ;;
-        5 | pi4)
-            ssh pi@raspberrypi4
-        ;;
-        6 | rasp3)
-            ssh huangmianbo@raspberry3
-        ;;
-        7 | rasp4)
-            ssh huangmianbo@raspberrypi4
-        ;;
-        8 | gitlab)
-            ssh huangmianbo@192.168.56.103
-        ;;
-        9 | vm)
-            ssh huangmianbo@vmware
+        1| 2 | cbpos)
+            ssh root@192.168.0.2
         ;;
         10 | zynq)
             ssh root@192.168.1.10
         ;;
-        11 | cbpos)
-            ssh root@192.168.0.2
+        22 | t580)
+            ssh mianb@Huangs-T580
+        ;;
+        103 | mac)
+            ssh huangmianbo@192.168.1.103
+        ;;
+        105 | t430)
+            ping -c 1 -W 1 192.168.1.105 &>/dev/null && \
+            ssh -Y huangmianbo@192.168.1.105
+
+            ping -c 1 -W 1 192.168.50.28 &>/dev/null && \
+            ssh -Y huangmianbo@192.168.50.28
+        ;;
+        106 | t430_32)
+            ssh -Y huangmianbo@192.168.1.106
+        ;;
+        vm | ubuntu1404)
+            ssh -Y huangmianbo@192.168.56.120
+        ;;
+        vb | ubuntu1804)
+            ssh -Y huangmianbo@192.168.56.122
         ;;
         *)
             :
@@ -262,16 +213,45 @@ function _randword()
     cat $word_list | grep "^[A-Z]" | sed -n "$line p"
 }
 
+function _saverm()
+{
+    local force=0
+    local verbose="-v"
+    local interact="-i"
+    local files=""
+    for para in "$@"
+    do
+        test "$para" == "-f" &&  force=1
+        test "$para" == "-fr" && force=1
+        echo "$para" | grep "v" &> /dev/null && verbose=""
+        echo "$para" | grep "i" &> /dev/null && interact=""
+        test -f "$para" &&  files="$para\n$files"
+        test -d "$para" &&  files="$para\n$files"
+        test -L "$para" &&  files="$para\n$files"
+    done
+
+    test $force -eq 0 && \
+        \rm $verbose $interact "$@" && return 0
+
+    echo -e "$files" | cat -n | head -n 10
+    echo -e "        ... ... ... ...          \n"
+    read -p "do you want to delete aboves files (type \"yes i want\"): " input
+
+    test "$input" == "yes i want" && { \rm $verbose $interact "$@" && return 0; }
+    test "$input" == "yes i want" || { print_warning "user abort operation"  && return 1; }
+}
+
 function _set_alias()
 {
     alias ....='cd ../../../'
     alias ...='cd ../../'
     alias ..='cd ..'
     alias aspell-tex='aspell --mode=tex --list'
-    alias ball='_backup_all'
+    alias batch='cd /d/batch'
     alias config='vim D:\\cygwin64\\home\\mianb\\.bash_profile' 
     alias cbpos='_login_machine cbpos'
-    alias cmd='_sudo conemu'
+    alias cmd='cmd'
+    alias conemu='_sudo conemu'
     alias code='_code'
     alias diff='colordiff'
     alias dmidecode='systeminfo'
@@ -293,19 +273,22 @@ function _set_alias()
     alias mygit='$dir/d/documents/18-bash-utils/25_git_utils.sh'
     alias mydate='date +%Y%m%d%H%M%S'
     alias mysync='_sync'
+    alias nuc11='ssh mianb@nuc11'
     alias pdf='_SumatraPDF'
     alias pi3='_login_machine pi3'
     alias pi4='_login_machine pi4'
+    alias peanut='ssh pi@$PEANUT -p 35369'
     alias rand='_rand'
     alias randword='_randword'
     alias rasp3='_login_machine rasp3'
     alias rasp4='_login_machine rasp4'
     alias reload='source $HOME/.bash_profile' 
     alias rename='$dir/d/documents/18-bash-utils/01_rename_utils.sh'
-    alias rm='rm -iv -d'
+    alias rm='_saverm'
     alias start='_start'
     alias stop='_stop'
     alias service='_service'
+    alias server='ssh huangmianbo@192.168.212.30'
     alias sudo='_sudo'
     alias syncbash='cp -iv $HOME/.bash_profile /cygdrive/f/05-To-From-Gigabyte-MiniComputer/'
     alias synctask='pushd . && cd $HOME && git pull origin master && popd'
@@ -314,15 +297,19 @@ function _set_alias()
     alias t='_tmux_new'
     alias tl='_task_list'
     alias typora='_typora'
-    alias vb='gitlab'
-    alias vi='\vim --no-plugin'
+    alias ubuntu1404='_login_machine ubuntu1404'
+    alias ubuntu1804='_login_machine ubuntu1804'
+    alias cvi='\vim --no-plugin'
+    alias cvim='vim -u ~/.vimrc.cygwin'
+    alias vim='gvim'
     alias videos='cd ~/videos'
     alias vivado='vivado -mode tcl'
-    alias vim='_gvim'
     alias vlc='_vlc'
-    alias vm='_login_machine vm'
-    alias vmware='vm'
+    alias vm='_login_machine ubuntu1404'
+    alias vb='_login_machine ubuntu1804'
+    alias waket430='wolcmd 0021ccd3dfec 192.168.1.105 255.255.255.0 7'
     alias xgrep='grep -nHR'
+    alias clip='$dir/C/Windows/System32/clip'
     alias zynq='_login_machine zynq'
     alias ~='cd ~'
 }
@@ -341,7 +328,7 @@ function _set_path()
     PATH=$dir/d/ffmpeg-4.1.1/bin:$PATH
     PATH=$dir/d/gnuplot-5.2.6/bin:$PATH
     PATH=$dir/d/texlive/2018/bin/win32:$PATH
-    PATH=$dir/d/vim/vim81/:$PATH
+    PATH=$dir/d/vim/vim82/:$PATH
     PATH=$dir/d/SumatraPDF/:$PATH
     PATH=$dir/d/VMware/VMware\ Workstation:$PATH
     PATH=$dir/d/Oracle/VirtualBox:$PATH
@@ -349,6 +336,7 @@ function _set_path()
     PATH=$dir/d/MKVToolNix:$PATH
     PATH=$dir/d/ImageMagick:$PATH
     PATH=$dir/d/ConEmu/:$PATH
+    PATH=$dir/d/wolcmd/:$PATH
 
 
     # do not add cygwin/bin to $PATH
@@ -367,10 +355,11 @@ function _set_path()
 function _set_env_var()
 {
     export RSYNC_PASSWORD=123456
-    export EDITOR=$dir/d/Vim/vim81/gvim
+    export EDITOR=$dir/d/Vim/vim82/gvim
     export DISPLAY=":0.0"
     export TASKDATA="$dir/d/documents/12-cygwin64-config-t580/.task"
     export PS1="\u@\h \[\033[0;36m\]\W\[\033[0m\]\[\033[0;32m\]\$(_git-branch-prompt)\[\033[0m\] \$ "
+    export PEANUT=231pj45847.imwork.net
 }
 
 function _start()
