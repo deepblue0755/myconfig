@@ -27,6 +27,10 @@ if "%NAME_SUFFIX%" == "Unknown" (
     goto end
 )
 
+echo ************************************************************
+echo Update config files at %DATE% %TIME% at %COMPUTERNAME%
+echo ************************************************************
+
 echo INFO: git pull to latest git version ...
 pushd %CONFIG_BACKUP_DIR%
 %GIT% pull origin master
@@ -37,12 +41,20 @@ call :update_config_files C:\Users\%USERNAME%\.ideavimrc  _ideavimrc
 call :update_config_files D:\Vim\_vimrc  _vimrc
 goto end
 
-
 rem -----------------------------------------------------------
 rem Function update_config_files
 rem -----------------------------------------------------------
 :update_config_files
 echo -----------------------------------------------------------
+set CONFIG_BACKUP_DIR=D:\documents\11-configs-from-github
+REM SET THE FILENAME POSTFIX ACCORDING TO THE MACHINE NAME
+if "%COMPUTERNAME%" == "HUANGS-T580" (
+    set NAME_SUFFIX=Huangs-T580
+)
+
+if "%COMPUTERNAME%" == "NUC11" (
+    set NAME_SUFFIX=NUC11
+)
 echo INFO: check if there's file %1 exist
 if not exist "%1" (
     echo INFO: there's not such file %1
