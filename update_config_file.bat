@@ -22,6 +22,10 @@ if "%COMPUTERNAME%" == "NUC11" (
     set NAME_SUFFIX=NUC11
 )
 
+if "%COMPUTERNAME%" == "GIGABYTE-BRIX" (
+    set NAME_SUFFIX=Gigabyte-Brix
+)
+
 if "%NAME_SUFFIX%" == "Unknown" (
     echo ERROR: unknown machine
     goto end
@@ -33,9 +37,14 @@ echo ************************************************************
 
 echo INFO: git pull to latest git version ...
 pushd %CONFIG_BACKUP_DIR%
-%GIT% pull origin master
+for /f %%i in ('%GIT remote') do (
+    echo INFO: %GIT% pull %%i master
+    %GIT% pull %%i master
+    goto :DO_THE_JOB
+)
 popd
 
+:DO_THE_JOB
 call :update_config_files D:\cygwin64\home\%USERNAME%\.bash_profile  _bash_profile
 call :update_config_files C:\Users\%USERNAME%\.ideavimrc  _ideavimrc
 call :update_config_files D:\Vim\_vimrc  _vimrc
@@ -51,10 +60,13 @@ REM SET THE FILENAME POSTFIX ACCORDING TO THE MACHINE NAME
 if "%COMPUTERNAME%" == "HUANGS-T580" (
     set NAME_SUFFIX=Huangs-T580
 )
-
 if "%COMPUTERNAME%" == "NUC11" (
     set NAME_SUFFIX=NUC11
 )
+if "%COMPUTERNAME%" == "GIGABYTE-BRIX" (
+    set NAME_SUFFIX=Gigabyte-Brix
+)
+
 echo INFO: check if there's file %1 exist
 if not exist "%1" (
     echo INFO: there's not such file %1
