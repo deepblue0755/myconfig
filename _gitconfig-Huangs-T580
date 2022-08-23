@@ -34,3 +34,9 @@
 	clean = git-lfs clean -- %f
 [log]
 	date = default
+[diff]
+	tool = bc3
+[difftool]
+    prompt = false
+[difftool "bc3"]
+	path = D:/Beyond Compare 3/BCompare.exe
