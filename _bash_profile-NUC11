@@ -76,6 +76,7 @@ function set_alias()
     alias batch='cd /cygdrive/d/batch'
     alias cp='cp -iv'
     alias ctags='ctags -f .tags --output-format=e-ctags'
+    alias debian9='ssh -XY googol@192.168.56.121'
     alias mv='mv -iv'
     alias rm='rm -iv'
     alias doc='cd /d/documents'
