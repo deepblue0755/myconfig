@@ -14,8 +14,8 @@
         email = mianbo.huang@hotmail.com
 [core]
     autocrlf = false
-    filemode = false
-    safecrlf = true
+	filemode = false
+	safecrlf = false
     sparsecheckout = true
     editor = vim
 [winUpdater]
