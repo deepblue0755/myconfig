@@ -701,7 +701,7 @@ function _set_alias()
     alias diff='colordiff --exclude=*.git*'
     alias dmidecode='systeminfo'
     alias conemu='_sudo conemu64'
-    alias doc='pushd ~/documents/RTAI &>/dev/null'
+    alias doc='pushd ~/documents/work_journal &>/dev/null'
     alias eclipse='/d/Profinet/DevKit46/eclipse/eclipse &'
     alias expl='_expl'
     alias fv='fpga_version'
