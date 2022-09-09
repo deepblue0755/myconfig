@@ -506,6 +506,7 @@ if(has('lua')) && (v:version<802)
     \ 'tex'   : '$VIM/vimfiles/dictionary/latex_command_dictionary.dic',
     \ 'cmake' : '$VIM/vimfiles/dictionary/cmake_keywords.dic',
     \ 'vhdl'  : '$VIM/vimfiles/dictionary/vhdl_keywords.dic',
+    \ 'ps1'   : '$VIM/vimfiles/dictionary/powershell_keywords.dic',
     \}
     let g:loaded_completor_plugin = 1
     let g:loaded_completor_dictionary_plugin = 1
@@ -531,6 +532,7 @@ autocmd FileType text setlocal dictionary+=$VIM/vimfiles/dictionary/en_dictionar
 autocmd FileType vimwiki setlocal dictionary+=$VIM/vimfiles/dictionary/en_dictionary_mediate.dic
 autocmd FileType cmake setlocal dictionary=$VIM/vimfiles/dictionary/cmake_keywords.dic
 autocmd FileType vhdl setlocal dictionary=$VIM/vimfiles/dictionary/vhdl_keywords.dic
+autocmd FileType ps1 setlocal dictionary=$VIM/vimfiles/dictionary/powershell_keywords.dic
 endif
 
 "--------------------------------------------------------------------------
