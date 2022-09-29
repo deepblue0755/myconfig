@@ -691,6 +691,7 @@ function _set_alias()
     alias batch='pushd /d/batch/ &>/dev/null'
     alias bcomp='BCompare $* &> /dev/null'
     alias beaglebone='ssh root@192.168.1.110'
+    alias call='cmd /c'
     alias cbpos='_login_machine cbpos'
     alias cgdb='cgdb -q'
     alias cixing='ssh -i ~/.ssh/id_rsa_root_at_cbpos root@192.168.1.101'
