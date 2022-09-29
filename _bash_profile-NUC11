@@ -74,6 +74,7 @@ function set_alias()
     alias ...='cd ../../'
     alias ....='cd ../../../'
     alias batch='cd /cygdrive/d/batch'
+    alias call='cmd /c '
     alias cp='cp -iv'
     alias ctags='ctags -f .tags --output-format=e-ctags'
     alias conemu='/cygdrive/d/ConEmu/ConEmu64.exe'
