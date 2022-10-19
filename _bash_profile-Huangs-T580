@@ -699,6 +699,7 @@ function _set_alias()
     alias config='_gvim ~/.bash_profile'
     alias cprasp4='_cplinux rasp4'
     alias debian10='_login_machine debian'
+    alias debian11='ssh googol@debian11'
     alias diff='colordiff --exclude=*.git*'
     alias dmidecode='systeminfo'
     alias conemu='_sudo conemu64'
