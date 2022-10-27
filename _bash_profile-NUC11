@@ -52,7 +52,7 @@ else
     export dir=
 fi
 
-function set_env()
+function _set_env()
 {
     export VIM=/usr/share/vim
     export VIMRUNTIME=/usr/share/vim/vim82
@@ -61,14 +61,18 @@ function set_env()
     export PATH=$dir/d/Profinet/V47/Installed_tools/Mingw/bin:$PATH
 }
 
-function set_pn_env()
+function _git-branch-prompt
 {
-    export TARGET=eb200p_ecos
-    export CONFIG=sdram1x32_nor32 
-
+    local branch=$(git symbolic-ref --short -q HEAD 2>/dev/null)
+    test -n "$branch" &&  printf " [%s]" $branch
 }
 
-function set_alias()
+function _set_PS1()
+{
+    PS1="\u@\h \[\033[0;36m\]\W\[\033[0m\]\[\033[0;32m\]\$(_git-branch-prompt)\[\033[0m\] \$ "
+}
+
+function _set_alias()
 {
     alias ..='cd ../'
     alias ...='cd ../../'
@@ -117,9 +121,9 @@ function _tmux()
 
 main()
 {
-    set_alias 
-    set_env
-    set_pn_env
+    _set_alias 
+    _set_env
+    _set_PS1
     set -o vi
 }
 
