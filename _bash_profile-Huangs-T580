@@ -467,7 +467,7 @@ function _putty()
 function rmkh()
 {
     pushd ~/.ssh &>/dev/null
-    eval sed -i "$(grep -n '$1' known_hosts | cut -d':' -f1)d" known_hosts
+    sed -i "/$1/d" known_hosts
     popd &>/dev/null
 }
 
