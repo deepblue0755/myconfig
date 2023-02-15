@@ -59,6 +59,7 @@ function _set_env()
     export DISPLAY=:0.0
     export PATH=$dir/d/Git/bin:$PATH
     export PATH=$dir/d/Profinet/V47/Installed_tools/Mingw/bin:$PATH
+    export PATH=$dir/d/Pandoc/:$PATH
 }
 
 function _git-branch-prompt
