@@ -60,6 +60,7 @@ function _set_env()
     export PATH=$dir/d/Git/bin:$PATH
     export PATH=$dir/d/Profinet/V47/Installed_tools/Mingw/bin:$PATH
     export PATH=$dir/d/Pandoc/:$PATH
+    export PATH=$dir/D/CTEX/MiKTeX/miktex/bin:$PATH
 }
 
 function _git-branch-prompt
