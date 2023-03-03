@@ -10,7 +10,14 @@ unbind '"'
 unbind %
 
 # reman key tab to next-window
-bind-key C-Tab next-window
+# bind-key C-Tab next-window
+unbind C-Tab
+unbind C-S-Tab
+unbind M-p
+
+bind-key -n C-Tab send-keys C-Tab 
+bind-key -n C-S-Tab send-keys C-S-Tab 
+bind-key -n M-p send-keys M-p
 
 # reman key tab to cycle panes
 bind Tab select-pane -t :.+ 
