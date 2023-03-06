@@ -212,14 +212,12 @@ noremap <Right> <Nop>
 nmap <Space> :<Cr>
 noremap <C-C> :qa!<Cr>
 noremap <C-A> <Nop> 
-noremap <C-Tab> <ESC>:bn<RETURN>
-noremap <C-S-Tab> <ESC>:bp<RETURN>
-noremap <Left> <ESC>:bp <CR>
-noremap <Right> <ESC>:bn <CR>
+noremap <C-Tab> <ESC>:bnext<RETURN>
+noremap <C-S-Tab> <ESC>:bprevious<RETURN>
+noremap <C-Right> <ESC>:bnext<RETURN>
+noremap <C-Left> <ESC>:bprevious<RETURN>
 noremap <C-%> <ESC>ysiW"<RETURN>
-
-
-
+noremap <ESC>p <ESC>:call AutoPairsToggle()<RETURN>
 
 
 "=============================================================================
@@ -436,9 +434,14 @@ if(has('lua') && v:version<802)
     \}
 endif
 
+"--------------------------------------------------------------------------
+" < Deoplete setting >
+"--------------------------------------------------------------------------
 if (v:version>801)
-    let g:deoplete#enable_at_startup = 1
-    let g:python3_host_prog = "python3"
+    "enable list" 
+    let g:neocomplete#enable_at_startup=0 
+    let g:deoplete#enable_at_startup=1
+    let g:python3_host_prog="/usr/bin/python3"
     call deoplete#custom#option('sources', {
                 \ 'c': ['buffer','.tags'],
                 \ 'cpp': ['buffer', '.tag'],
@@ -448,8 +451,8 @@ if (v:version>801)
     call deoplete#custom#option('num_processes', 4)
     call deoplete#custom#source(
     \ 'dictionary', 'min_pattern_length', 4)
-    autocmd FileType text setlocal dictionary+=$VIM/vimfiles/dictionary/en_dictionary_mediate.dic
-    autocmd FileType cmake setlocal dictionary=$VIM/vimfiles/dictionary/cmake_keywords.dic
+    autocmd FileType text setlocal dictionary+=~/.vim/dictionary/en_dictionary_mediate.dic
+    autocmd FileType cmake setlocal dictionary=~/.vim/dictionary/cmake_keywords.dic
 endif
 
 "--------------------------------------------------------------------------
@@ -508,10 +511,11 @@ let g:ale_cpp_gcc_options = '-Wall -O2 -std=c++14'
 let g:ale_c_cppcheck_options = ''
 let g:ale_cpp_cppcheck_options = ''
 let g:ale_linters = {
-            \ 'c++': ['clang'],
+            \ 'cpp': ['g++'],
             \ 'c': ['gcc'],
             \ 'python': ['pylint'],
-            \ 'sh': ['shellcheck']
+            \ 'sh': ['shellcheck'],
+            \ 'tex': ['chktex']
             \}
 
 " let g:ale_sign_error = "\ue009\ue009"
@@ -526,16 +530,18 @@ let g:ale_linters = {
 "--------------------------------------------------------------------------
 " < YCM setting >
 "--------------------------------------------------------------------------
-let g:ycm_global_ycm_extra_conf='~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
+let g:ycm_global_ycm_extra_conf='~/.vim/bundle/YouCompleteMe/third_party/ycmd/examples/.ycm_extra_conf.py'
 let g:ycm_python_binary_path='/usr/bin/python3'
 let g:ycm_server_python_interpreter='/usr/bin/python3'
 
+let g:ycm_confirm_extra_conf= 0
 let g:ycm_error_symbol='>>'
 let g:ycm_warning_symbol='>'
 let g:ycm_min_num_of_chars_for_completion=3
 let g:ycm_autoclose_preview_window_after_insertion=1
 let g:ycm_auto_start_csharp_server=0
 let g:ycm_collect_identifiers_from_tags_files=1
+let g:ycm_max_num_identifier_candidates = 50
 let g:ycm_filetype_whitelist={ 
     \ 'c' : 1,
     \ 'cpp' : 1,
@@ -580,7 +586,9 @@ set complete+=k
 set showcmd
 set backspace=start
 set iskeyword+=_
-set iskeyword+=-
+autocmd FileType sh set iskeyword+=$
+autocmd FileType sh set iskeyword+={
+autocmd FileType sh set iskeyword+=}
 set nowrapscan
 set termwinsize=5x0
 set signcolumn=auto
@@ -618,3 +626,4 @@ nmap <C-@>i :cs find i <C-R>=expand("<cfile>")<CR><CR>
 " -----------------------------------------------------------------------------
 "  < end of vim config file >
 " -----------------------------------------------------------------------------
+"

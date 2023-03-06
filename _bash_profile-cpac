@@ -86,7 +86,7 @@ function _bash_default()
         #alias dir='dir --color=auto'
         #alias vdir='vdir --color=auto'
 
-        alias grep='grep --color=auto --exclude=*git*'
+        alias grep='grep --color=auto --exclude=*git* --exclude=.tags'
         alias fgrep='fgrep --color=auto'
         alias egrep='egrep --color=auto'
     fi
@@ -221,6 +221,10 @@ function _export_environ_var()
     export CSCOPE_DB=~/documents/26-c-programming/.cscope.out
     export TASKDATA=~/documents/12-cygwin64-config-t580/.task
     export REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/git/git-repo/' 
+    export CROSS_COMPILE=i686-linux-gnu-
+    export KERNELDIR=/home/huangmianbo/src/08-GNS-Atom-E3815/4.9.303/linux-4.9.303-rt192/
+    export QT_SELECT=5
+    export DISPLAY=localhost:10.0
 }
 
 function _log()
@@ -262,11 +266,12 @@ function _set_alias()
     alias cscope='cscope -bqkR -f .cscope'
     alias cs='cscope -f .cscope -bqkR'
     alias ctags='ctags -f .tags --output-format=e-ctags'
+    alias ctags++='\ctags -f .tags --c++-kinds=+px --fields=+iaS --extras=+q --languages=c++ --sort=foldcase --output-format=e-ctags'
     alias checkpatch='~/src/09-IDB3/linux-4.9.208/scripts/checkpatch.pl --codespell'
     alias make='make -j40'
     alias make32='make CC=/usr/bin/i686-linux-gnu-gcc -j40'
     alias vbm='vboxmanage'
-    alias diff='colordiff --exclude=*\.git*'
+    alias diff='colordiff --exclude=*\.git* -X ~/.diff_exclude_pat'
     alias mv='_savemv'
     alias mygit='/home/huangmianbo/documents/18-bash-utils/25_git_utils.sh'
     alias mydate='_mydate'
@@ -277,12 +282,14 @@ function _set_alias()
     alias rand='_rand'
     alias mysql='mysql -u debian-sys-maint -p'
     alias makearm='make -j40 ARCH=arm CROSS_COMPILE=/usr/local/arm/gcc-linaro-5.3-2016.02-x86_64_arm-linux-gnueabihf/bin/arm-linux-gnueabihf-'
+    alias make='_make'
     alias timeout='timeout --preserve-status'
     alias test2='_test2'
     alias svn='svn --username=huang.mb --password=huang.mb'
     alias watchrun='_watch_run'
     alias umount='sudo umount'
     alias vm='ssh huangmianbo@192.168.122.61'
+    alias vim='DISPLAY=:0 \vim --servername $(uuidgen -r | cut -c1-6)'
     alias cpvm='_cpvm'
     alias reboot='sudo ~/scripts/crontask4root.sh reboot'
     alias poweroff='echo -e "poweroff server is not allowed"'
@@ -290,6 +297,10 @@ function _set_alias()
     alias softlink='ssh huangmianbo@192.168.212.31'
     alias server='ssh huangmianbo@192.168.212.30'
     alias shellcheck='shellcheck -s bash'
+    alias t='_tmux'
+    alias t1='_tmux 1'
+    alias t2='_tmux 2'
+    alias t3='_tmux 3'
 
 }
 
@@ -306,22 +317,26 @@ function _savemv()
 function _set_path()
 {
     PATH=$(echo $PATH | sed 's#:/sbin:#:#g')
-	PATH=/usr/local/vim/bin:$PATH
+	PATH=/usr/local/vim/9.0.0891/bin:$PATH
+	# PATH=/usr/local/vim/8.2.4794/bin:$PATH
 	PATH=/usr/local/llvm/10.0.0/bin:$PATH
 	PATH=/usr/local/clang/10.0.0/bin:$PATH
 	PATH=/usr/local/lua/bin:$PATH
     PATH=/usr/local/readline/bin:$PATH
     PATH=/usr/local/m4/bin:$PATH
     PATH=/usr/local/gcc/9.3.0/bin:$PATH
-    PATH=/usr/local/cmake/bin:$PATH
+    PATH=/usr/local/cmake/3.16.2/bin:$PATH
     PATH=/usr/local/universal-ctags/bin/:$PATH
     PATH=/usr/local/ctags58/bin/:$PATH
+    PATH=/opt/googol/bin/:$PATH
     # PATH=/usr/local/git/bin:$PATH
     # PATH=/usr/local/git/libexec/git-core:$PATH
     PATH=/usr/local/curl/bin:$PATH
     PATH=/usr/local/arm/gcc-linaro-6.5.0-2018.12-x86_64_arm-linux-gnueabihf/bin/:$PATH
     # PATH=/usr/local/dpkg/bin:$PATH
     PATH=$HOME/scripts:$PATH
+    PATH=/usr/local/md2roff/bin/:$PATH
+    PATH=/usr/local/qemu/7.2.0/bin:$PATH
 	export PATH
 }
 
@@ -427,6 +442,26 @@ function _test2()
     fi
 }
 
+function _tmux()
+{
+    case $1 in 
+        [0-9])
+            tmux select-window -t "$1"
+        ;;
+        c)
+            tmux new-window -d -n "$2"
+        ;;
+        *)
+            let tmux_cnt=$((tmux_cnt+1))
+            # tmux new -s server-$tmux_cnt -n server-1
+            tmux new-session -d -s server-$tmux_cnt  -n server-1
+            tmux new-window -d -n server-2
+            tmux new-window -d -n server-3
+            tmux new-window -d -n server-4
+        ;;
+    esac
+}
+
 function _watch_run()
 {
     test -f "$1" || { print_error "could not find file $1" && return 1; }
@@ -436,6 +471,41 @@ function _watch_run()
         clear
         sh $2 
     done
+}
+
+function rsync_vim_configs()
+{
+    rsync -var ~/.vimrc /tmp/
+    rsync -var --delete --exclude=".git" ~/.vim /tmp/
+}
+
+function gdbtool()
+{
+    emacs -- eval "(gdb \"gdb --annotate=3 -i=mi $*\")"; 
+}
+
+function _make()
+{
+    local tempfile=/tmp/make_log_$(uuidgen -r | cut -c1-8)
+    touch $tempfile
+
+    test "$1" == "clean" && \make $1 ; return 0
+    test "$1" == "install" && \make $1 ; return 0
+
+    echo -e "\n"
+
+    \make -j$(getconf _NPROCESSORS_ONLN) "$@" 2>&1 | \
+     sed "s#$(realpath $PWD)\/##g" | \
+    grep "error:\|Error:\|warning:\|undefined reference\|^\[\s*[0-9]\{1,2\}%\s*\]" | \
+    tee -a "$tempfile"
+
+    if [ ${PIPESTATUS[0]} -eq 0  ];then
+        echo -e "\n"
+        echo "BUILD OK"
+    else
+        echo -e "\n"
+        echo "BUILD FAILED"
+    fi
 }
 
 function main()
@@ -453,4 +523,4 @@ function main()
     set -o vi
 }
 
-main $*
+main "$@"
