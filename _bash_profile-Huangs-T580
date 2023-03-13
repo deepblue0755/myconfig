@@ -771,7 +771,7 @@ function _set_alias()
     alias ubuntu1404-local='ssh -Y huangmianbo@192.168.56.120'
     alias ubuntu1604='ssh -Y googol@10.0.0.130'
     alias ubuntu1804='ssh -Y huangmianbo@10.0.0.122'
-    alias debian9='ssh -i ~/.ssh/id_rsa_googol_at_cbpos googol@10.0.0.121'
+    alias debian9='ssh -i ~/.ssh/id_rsa_googol_at_cbpos -XY googol@10.0.0.121'
     alias uuid='uuidgen -r | cut -c 1-8'
     alias vivado='vivado -mode tcl'
     alias cvim='vim -u ~/.vimrc.cygwin'
