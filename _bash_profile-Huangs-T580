@@ -783,6 +783,7 @@ function _set_alias()
     alias zynq-host='ssh huangmianbo@10.0.0.136'
     alias am335x-host='ssh root@10.0.0.130'
     alias zed='ssh root@10.0.0.15'
+    alias jenkins='ssh -XY googoltech@192.168.201.73'
     alias ~='cd ~'
 }
 
