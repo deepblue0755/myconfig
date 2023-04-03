@@ -679,6 +679,17 @@ set iskeyword+=_
 set iskeyword+=-
 set iskeyword+=\
 set nowrapscan
+
+" -----------------------------------------------------------------------------
+"  < My Personal Vim Function>
+" -----------------------------------------------------------------------------
+function! MyEnumerateLines() range
+    let first_line = a:firstline
+    let last_line = a:lastline
+    for i in range(first_line, last_line)
+        execute i . 'normal! I' . (i - first_line + 1) . '. '
+    endfor
+endfunction
 " -----------------------------------------------------------------------------
 "  < end of vim config file >
 " -----------------------------------------------------------------------------
