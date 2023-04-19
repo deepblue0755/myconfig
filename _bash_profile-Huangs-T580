@@ -107,7 +107,7 @@ function _cplinux()
         ;;
         rasp4)
             files=$(echo "$@" | sed 's#rasp4 ##')
-            scp -r "$files" pi@10.0.0.11:/tmp/
+            scp -r "$files" pi@10.0.0.4:/tmp/
         ;;
         *)
             test -n "$ipaddr" && scp $option $filelist root@${ipaddr}:/tmp/
@@ -742,7 +742,7 @@ function _set_alias()
     alias randword='_randword'
     alias rand='_rand'
     alias relay='_relay'
-    alias rasp4='ssh pi@rasp4-6e4ace'
+    alias rasp4='ssh pi@rasp4-arm64'
     alias rasp3='ssh pi@rasp3b-2b03b5'
     alias peanut1='ssh pi@$PEANUT1 -p 35369'
     alias rasphome='ssh -i ~/.ssh/id_rsa_googol_at_cbpos pi@$PEANUT2 -p 44650'
