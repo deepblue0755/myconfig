@@ -199,6 +199,9 @@ imap <F6> <ESC>:NeoComplCacheToggle<RETURN><ESC><i>
 nmap <F7> <ESC>:NERDTreeToggle<RETURN>
 nmap <F8> <ESC>:TlistToggle<RETURN>
 nmap <F9> <ESC>:WMToggle<RETURN>
+noremap <C-Tab> <ESC>:bn<RETURN> 
+noremap <C-S-Tab> <ESC>:bp<RETURN> 
+" noremap <C-I> <ESC>:bn<RETURN> 
 noremap <Up> <Nop>
 noremap <Down> <Nop>
 noremap <Left> <Nop>
@@ -206,6 +209,7 @@ noremap <Right> <Nop>
 nmap <Space> :<Cr>
 nmap <C-C> :qa!<CR>
 imap <C-C> <ESC>:qa!<CR>
+noremap <F2> <ESC>:call AutoPairsToggle()<CR>
 
 
 
@@ -425,19 +429,22 @@ endif
 "--------------------------------------------------------------------------
 " < deoplete setting >
 "--------------------------------------------------------------------------
-let g:deoplete#enable_at_startup = 1
-let g:python3_host_prog = "/usr/local/bin/python3"
-call deoplete#custom#option('sources', {
-\ 'c': ['buffer','.tags'],
-\ 'cpp': ['buffer', '.tag'], 
-\ 'cmake': ['buffer', 'dictionary','file'], 
-\ 'text': ['buffer', 'dictionary','file'],
-\})
-call deoplete#custom#option('num_processes', 4)
-call deoplete#custom#source(
-\ 'dictionary', 'min_pattern_length', 4)
-autocmd FileType text setlocal dictionary+=~/.vim/dictionary/en_dictionary_mediate.dic
-autocmd FileType cmake setlocal dictionary=~/.vim/dictionary/cmake_keywords.dic
+if (v:version>801)
+    let g:neocomplete#enable_at_startup=0 "enable list" 
+    let g:deoplete#enable_at_startup=1
+    let g:python3_host_prog = "/usr/local/bin/python3"
+    call deoplete#custom#option('sources', {
+    \ 'c': ['buffer','.tags'],
+    \ 'cpp': ['buffer', '.tag'], 
+    \ 'cmake': ['buffer', 'dictionary','file'], 
+    \ 'text': ['buffer', 'dictionary','file'],
+    \})
+    call deoplete#custom#option('num_processes', 4)
+    call deoplete#custom#source(
+    \ 'dictionary', 'min_pattern_length', 4)
+    autocmd FileType text setlocal dictionary+=~/.vim/dictionary/en_dictionary_mediate.dic
+    autocmd FileType cmake setlocal dictionary=~/.vim/dictionary/cmake_keywords.dic
+endif
 
 "--------------------------------------------------------------------------
 " < completor setting >

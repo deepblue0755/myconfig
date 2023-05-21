@@ -76,6 +76,10 @@ Host cbpos
     HostName cbpos
     IdentityFile ~/.ssh/id_rsa_root_at_cbpos
 
+Host 231pj45847.imwork.net
+    user pi 
+    IdentityFile ~/.ssh/id_rsa_googol_at_cbpos
+
 # ------------------------------------------------------------------- #
 #  for raspberrypi3b+ 2b03b5
 # ------------------------------------------------------------------- #
@@ -169,3 +173,4 @@ Host 192.168.212.30
 #     ForwardX11Trusted yes
 #     ForwardX11 yes
 #     ForwardAgent yes
+

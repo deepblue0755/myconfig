@@ -29,4 +29,8 @@
 [credential]
 	helper = store
 [http]
-	proxy = http://127.0.0.1:1087
+	proxy = http://127.0.0.1:7890
+	sslBackend = openssl
+[https]
+	proxy = 127.0.0.1:7890
+	sslBackend = openssl
