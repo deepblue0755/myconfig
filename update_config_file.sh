@@ -207,7 +207,10 @@ function copy_config_from_server()
     copy_files ~/.vimrc ./_vimrc-$HOSTNAME
     flag=$flag+$?
 
-    sudo copy_files /etc/gitlab/gitlab.rb ./gitlab.rb-$HOSTNAME
+    sudo copy_files /etc/gitlab/gitlab.rb ./_etc_gitlab_gitlab.rb-$HOSTNAME
+    flag=$flag+$?
+
+    sudo copy_files /etc/gitlab/gitlab-secrets.json ./_etc_gitlab_gitlab-secrets.json-$HOSTNAME
     flag=$flag+$?
 
     print_result $flag
