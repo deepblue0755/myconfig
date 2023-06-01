@@ -208,11 +208,11 @@ function copy_config_from_server()
     flag=$flag+$?
 
     sudo cp -frv /etc/gitlab/ ./etc-gitlab-$HOSTNAME
-    sudo chown 1001:1001 ./etc-gitlab-$HOSTNAME
+    sudo chown -R 1001:1001 ./etc-gitlab-$HOSTNAME
     flag=$flag+$?
 
     sudo cp -frv /etc/gitlab-runner ./etc-gitlab-runner-$HOSTNAME
-    sudo chown 1001:1001 ./etc-gitlab-runner-$HOSTNAME
+    sudo chown -R 1001:1001 ./etc-gitlab-runner-$HOSTNAME
     flag=$flag+$?
 
     print_result $flag
