@@ -1,0 +1,447 @@
+# ----------------------------------
+# rsyslogd configuration objects
+# ----------------------------------
+action
+parser
+ruleset
+timezone
+template
+module
+# ----------------------------------
+# template type
+# ----------------------------------
+list
+subtree
+string
+plugin
+constant
+# ----------------------------------
+# In-Defined Template 
+# ----------------------------------
+RSYSLOG_TraditionalFileFormat
+RSYSLOG_FileFormat
+RSYSLOG_TraditionalForwardFormat
+RSYSLOG_SysklogdFileFormat
+RSYSLOG_ForwardFormat
+RSYSLOG_SyslogProtocol23Format
+RSYSLOG_DebugFormat
+RSYSLOG_WallFmt
+RSYSLOG_StdUsrMsgFmt
+RSYSLOG_StdDBFmt
+RSYSLOG_StdPgSQLFmt
+RSYSLOG_spoofadr
+RSYSLOG_StdJSONFmt
+# ----------------------------------
+# Rsyslog property
+# ----------------------------------
+msg
+rawmsg
+rawmsg-after-pri
+hostname
+source
+fromhost
+fromhost-ip
+syslogtag
+programname
+pri
+pri-text
+iut
+syslogfacility
+syslogfacility-text
+syslogseverity
+syslogseverity-text
+syslogpriority
+syslogpriority-text
+timegenerated
+timereported
+timestamp
+protocol-version
+structured-data
+app-name
+procid
+msgid
+inputname
+jsonmesg
+# ----------------------------------
+# Rsyslog property
+# ----------------------------------
+$now
+$year
+$month
+$day
+$wday
+$hour
+$hhour
+$qhour
+$minute
+$now-unixtimestamp
+# ----------------------------------
+# Rsyslog property
+# ----------------------------------
+$bom
+$myhostname
+dateformat
+# ----------------------------------
+# Property Replacer
+# ----------------------------------
+uppercase
+lowercase
+fixed-width
+json
+jsonf[:outname]
+csv
+drop-last-lf
+date-utc
+date-mysql
+date-rfc3164
+date-rfc3164-buggyday
+date-rfc3339
+date-unixtimestamp
+date-year
+date-month
+date-day
+date-hour
+date-minute
+date-second
+date-subseconds
+date-tzoffshour
+date-tzoffsmin
+date-tzoffsdirection
+date-ordinal
+date-iso-week and date-iso-week-year
+date-week
+date-wday
+date-wdayname
+escape-cc
+space-cc
+drop-cc
+compressspace
+sp-if-no-1st-sp
+secpath-drop
+secpath-replace
+# ----------------------------------
+# Compare-Operations 
+# ----------------------------------
+contains
+isequal
+startswith
+regex
+ereregex
+# ----------------------------------
+# Rsyslog facility
+# ----------------------------------
+auth
+authpriv
+cron
+daemon
+kern
+lpr
+mail
+mark
+news
+security
+syslog
+user
+uucp
+local0
+local1
+local2
+local3
+local4
+local5
+local6
+local7
+# ----------------------------------
+# Rsyslog Facility
+# ----------------------------------
+debug
+info
+notice
+warning
+warn
+err
+error
+crit
+alert
+emerg
+panic
+# ----------------------------------
+# General Action Parameters
+# ----------------------------------
+name
+type 
+action.writeAllMarkMessages
+action.execOnlyEveryNthTime
+action.execOnlyEveryNthTimeout
+action.errorfile
+action.errorfile.maxsize
+action.execOnlyOnceEveryInterval
+action.execOnlyWhenPreviousIsSuspended
+action.repeatedmsgcontainsoriginalmsg
+action.resumeRetryCount
+action.resumeInterval
+action.resumeIntervalMax
+action.reportSuspension
+action.reportSuspensionContinuation
+action.copyMsg
+# ----------------------------------
+# Global Directives
+# ----------------------------------
+$ActionFileDefaultTemplate
+$DefaultNetstreamDriverCAFile
+$DefaultNetstreamDriverCertFile
+$DefaultNetstreamDriverKeyFile
+$ModLoad
+$AllowedSender
+$IncludeConfig
+$WorkDirectory
+$MaxMessageSize
+$PreserveFQDN
+$OmitLocalLogging
+$IMJournalStateFile
+$MainMsgQueueSize
+$MaxOpenFiles
+$Umask
+$DirOwner
+$DirGroup
+$FileOwner
+$FileGroup
+$FileCreateMode
+$DirCreateMode
+$ActionFileEnableSync
+# ----------------------------------
+# Input Modules
+# ----------------------------------
+im3195
+imbatchreport
+imdocker
+imfile
+imgssapi
+Imhiredis
+imhttp
+imjournal
+imkafka
+imklog
+imkmsg
+immark
+Impcap
+improg
+impstats
+imptcp
+imrelp
+imsolaris
+imtcp
+imtuxedoulog
+imudp
+imuxsock
+# ----------------------------------
+# Output Modules
+# ----------------------------------
+omamqp1
+omclickhouse
+omelasticsearch
+omfile
+omfwd
+omhdfs
+omhiredis
+omhttp
+omhttpfs
+omjournal
+omkafka
+omlibdbi
+ommail
+ommongodb
+ommysql
+omoracle
+ompgsql
+ompipe
+omprog
+omrabbitmq
+omrelp
+omruleset
+omsnmp
+omstdout
+omudpspoof
+omusrmsg
+omuxsock
+gt
+ksi
+rsyslog-ksi-ls12
+# ----------------------------------
+# Parser Modules
+# ----------------------------------
+pmciscoios
+pmdb2diag
+pmlastmsg
+pmnormalize
+pmnull
+pmrfc3164
+pmrfc3164sd
+pmrfc5424
+# ----------------------------------
+# Message Modification Modules
+# ----------------------------------
+mmanon
+mmcount
+mmdarwin
+mmdblookup
+mmexternal
+mmfields
+mmjsonparse
+mmkubernetes
+mmnormalize
+mmpstrucdata
+mmrfc5424addhmac
+mmrm1stspace
+mmsequence
+mmsnmptrapd
+mmtaghostname
+mmutf8fix
+# ----------------------------------
+# String Generator Modules
+# ----------------------------------
+smfile
+smfwd
+smtradfile
+smfwd
+# -------------------------------------------------
+# True Global Directives
+# -------------------------------------------------
+$AbortOnUncleanConfig
+$DebugPrintCFSyslineHandlerList
+$DebugPrintModuleList
+$DebugPrintTemplateList
+$FailOnChownFailure
+$GenerateConfigGraph
+$IncludeConfig
+$MainMsgQueueSize
+$MaxOpenFiles
+$ModDir
+$ModLoad
+$UMASK
+$ResetConfigVariables
+$MaxMessageSize
+$LocalHostName
+$LogRSyslogStatusMessages
+$DefaultRuleset
+$DefaultNetstreamDriver
+$DefaultNetstreamDriverCAFile
+$DefaultNetstreamDriverCertFile
+$DefaultNetstreamDriverKeyFile
+$NetstreamDriverCaExtraFiles
+$RepeatedMsgContainsOriginalMsg
+$OptimizeForUniprocessor
+$PreserveFQDN
+$WorkDirectory
+$PrivDropToGroup
+$PrivDropToGroupID
+$PrivDropToUser
+$PrivDropToUserID
+$Sleep
+$LocalHostIPIF
+$ErrorMessagesToStderr
+$SpaceLFOnReceive
+# -------------------------------------------------
+# Main Queue Specific Diretives
+# -------------------------------------------------
+$MainMsgQueueCheckpointInterval
+$MainMsgQueueDequeueBatchSize
+$MainMsgQueueDequeueSlowdown
+$MainMsgQueueDiscardMark
+$MainMsgQueueDiscardSeverity
+$MainMsgQueueFileName
+$MainMsgQueueHighWaterMark
+$MainMsgQueueImmediateShutdown
+$MainMsgQueueLowWaterMark
+$MainMsgQueueMaxFileSize
+$MainMsgQueueTimeoutActionCompletion
+$MainMsgQueueTimeoutEnqueue
+$MainMsgQueueTimeoutShutdown
+$MainMsgQueueWorkerTimeoutThreadShutdown
+$MainMsgQueueType
+$MainMsgQueueSaveOnShutdown
+$MainMsgQueueWorkerThreads
+$MainMsgQueueWorkerThreadMinumumMessages
+# -------------------------------------------------
+# Multiple Input Modules Directives
+# -------------------------------------------------
+$AllowedSender
+$DropMsgsWithMaliciousDnsPTRRecords
+$ControlCharacterEscapePrefix
+$DropTrailingLFOnReception
+$Escape8BitCharactersOnReceive
+$EscapeControlCharactersOnReceive
+# -------------------------------------------------
+# Generic Action Configuration Statements
+# -------------------------------------------------
+$ActionExecOnlyWhenPreviousIsSuspended
+$ActionResumeInterval
+$RepeatedMsgReduction
+$ActionName
+$ActionExecOnlyOnceEveryInterval
+$ActionExecOnlyEveryNthTime
+$ActionExecOnlyEveryNthTimeTimeout
+$ActionResumeRetryCount
+$ActionWriteAllMarkMessages
+# -------------------------------------------------
+# omfile configuration statement
+# -------------------------------------------------
+$omfileForceChown
+$DirGroup
+$DirOwner
+$DynaFileCacheSize
+$FileCreateMode
+$FileGroup
+$FileOwner
+$CreateDirs
+$ActionFileDefaultTemplate
+$ActionFileEnableSync
+$OMFileAsyncWriting
+$OMFileZipLevel
+$OMFileIOBufferSize
+$OMFileFlushOnTXEnd
+# -------------------------------------------------
+# omfwd configuration statements
+# -------------------------------------------------
+$ActionForwardDefaultTemplate
+$ActionSendResendLastMsgOnReconnect
+$ActionSendStreamDriver
+$ActionSendStreamDriverMode
+$ActionSendStreamDriverAuthMode
+$ActionSendStreamDriverPermittedPeer
+$ActionSendTCPRebindInterval
+$ActionSendUDPRebindInterval
+# -------------------------------------------------
+# omgssapi configuration statements
+# -------------------------------------------------
+$GssForwardServiceName
+$GssMode
+# -------------------------------------------------
+# action-queue specific configuration statements
+# -------------------------------------------------
+$ActionQueueCheckpointInterval
+$ActionQueueDequeueBatchSize
+$ActionQueueDequeueSlowdown
+$ActionQueueDiscardMark
+$ActionQueueDiscardSeverity
+$ActionQueueFileName
+$ActionQueueHighWaterMark
+$ActionQueueImmediateShutdown
+$ActionQueueSize
+$ActionQueueLowWaterMark
+$ActionQueueMaxFileSize
+$ActionQueueTimeoutActionCompletion
+$ActionQueueTimeoutEnqueue
+$ActionQueueTimeoutShutdown
+$ActionQueueWorkerTimeoutThreadShutdown
+$ActionQueueType
+$ActionQueueSaveOnShutdown
+$ActionQueueWorkerThreads
+$ActionQueueWorkerThreadMinumumMessages
+$ActionGSSForwardDefaultTemplate
+# -------------------------------------------------
+# Ruleset-Specific Legacy Configuration Statements
+# -------------------------------------------------
+$RulesetCreateMainQueue
+$RulesetParser
+
