@@ -121,6 +121,13 @@ function _tmux()
     esac
 }
 
+rmkh ()
+{
+    pushd ~/.ssh &> /dev/null;
+    sed -i "/$1/d" known_hosts;
+    popd &> /dev/null
+}
+
 main()
 {
     _set_alias 
