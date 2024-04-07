@@ -13,3 +13,20 @@ function windowsterminal { D:\batch\start_win_store_app.ps1 -AppName WindowsTerm
 function Get-ComObject { gci HKLM:\Software\Classes -ea 0| ? {$_.PSChildName -match '^\w+\.\w+$' -and
 (gp "$($_.PSPath)\CLSID" -ea 0)} | ft PSChildName }
 $HOSTNAME=[System.Net.Dns]::GetHostName()
+function Get-Operation {
+    param (
+        [Parameter(Mandatory=$true)]
+        [string]$Noun
+    )
+
+    Get-Command | Where-Object { $_.Name -like "*-$Noun" } | ForEach-Object {
+        $_.Verb
+    } | Sort-Object -Unique
+}
+
+function Get-Nouns {
+    Get-Command | ForEach-Object {
+        $noun = $_.Name.Split('-')[-1]
+        $noun
+    } | Sort-Object -Unique
+}

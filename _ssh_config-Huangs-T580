@@ -1,5 +1,5 @@
 HOST *
-    ServerAliveInterval 30
+    ServerAliveInterval 600
     ServerAliveCountMax 3
     ConnectTimeout 10
     ConnectionAttempts 3
@@ -7,50 +7,69 @@ HOST *
 # ------------------------------------------------------------------- #
 # 01 Ideabox Machine
 # ------------------------------------------------------------------- #
-HOST 192.168.0.*
+HOST 192.168.0.2
     user root
     identityfile ~/.ssh/id_rsa_root_at_cbpos
     PubkeyAcceptedKeyTypes +ssh-rsa
 
-HOST 192.168.0.* 
+HOST 192.168.0.3
+    user root
+    identityfile ~/.ssh/id_rsa_root_at_cbpos
+    PubkeyAcceptedKeyTypes +ssh-rsa
+
+HOST 192.168.0.4
+    user root
+    identityfile ~/.ssh/id_rsa_root_at_cbpos
+    PubkeyAcceptedKeyTypes +ssh-rsa
+
+
+HOST 192.168.0.1 192.168.0.9
     user googol
     identityfile ~/.ssh/id_rsa_googol_at_cbpos
     PubkeyAcceptedKeyTypes +ssh-rsa
 
-# HOST 192.168.56.*
-#     user root
-#     identityfile ~/.ssh/id_rsa_root_at_cbpos
+HOST 10.0.0.8
+    user root
+    identityfile ~/.ssh/id_rsa_root_at_cbpos
+    PubkeyAcceptedKeyTypes +ssh-rsa
 
-# HOST 192.168.56.*
-#     user googol
-#     identityfile ~/.ssh/id_rsa_googol_at_cbpos
-
-# HOST 192.168.56.*
-#     user huangmianbo
-#     identityfile ~/.ssh/id_rsa_googol_at_cbpos
-
-# HOST 192.168.204.*
-#     user root
-#     identityfile ~/.ssh/id_rsa_root_at_cbpos
-
-# HOST 192.168.204.*
-#     user googol
-#     identityfile ~/.ssh/id_rsa_googol_at_cbpos
-
-# HOST 192.168.*.*
-#     user root
-#     identityfile ~/.ssh/id_rsa_root_at_cbpos
-
-# HOST 192.168.*.* 
-#     user googol
-#     identityfile ~/.ssh/id_rsa_googol_at_cbpos
 # ------------------------------------------------------------------- #
 # 02 Virtual Box Machine
 # ------------------------------------------------------------------- #
+
+HOST 192.168.56.120
+    user root
+    identityfile ~/.ssh/id_rsa_root_at_cbpos
+
+HOST 192.168.56.120
+    user googol
+    identityfile ~/.ssh/id_rsa_googol_at_cbpos
+
+HOST 192.168.56.101
+    user googol
+    identityfile ~/.ssh/id_rsa_googol_at_cbpos
+
+HOST 192.168.56.101
+    user root
+    identityfile ~/.ssh/id_rsa_root_at_cbpos
+
+HOST 192.168.204.1
+    user root
+    identityfile ~/.ssh/id_rsa_root_at_cbpos
+
+HOST 192.168.204.107
+    user root
+    identityfile ~/.ssh/id_rsa_root_at_cbpos
+
+HOST 192.168.204.1
+    user googol
+    identityfile ~/.ssh/id_rsa_googol_at_cbpos
+
 HOST 10.0.0.120
     user huangmianbo
     identityfile ~/.ssh/id_rsa_vmware
     PubkeyAcceptedKeyTypes +ssh-rsa
+
 HOST 10.0.0.120 192.168.56.120
     user huangmianbo
     identityfile ~/.ssh/id_rsa_googol_at_cbpos
@@ -79,6 +98,16 @@ HOST 10.0.0.130
 HOST 10.0.0.130
     user root
     identityfile ~/.ssh/id_rsa_root_at_cbpos
+    PubkeyAcceptedKeyTypes +ssh-rsa
+
+HOST 192.168.0.222
+    user root
+    identityfile ~/.ssh/id_rsa_root_at_cbpos
+    PubkeyAcceptedKeyTypes +ssh-rsa
+
+HOST 192.168.0.222
+    user googol
+    identityfile ~/.ssh/id_rsa_googol_at_cbpos
     PubkeyAcceptedKeyTypes +ssh-rsa
 # ------------------------------------------------------------------- #
 # 03 CPAC Server
@@ -143,7 +172,11 @@ Host 10.0.0.3
 # 192.168.1.106 192.168.50.28 t430 t430-32
 Host 192.168.1.105 
     user huangmianbo
-    identityfile ~/.ssh/id_rsa_t430
+    identityfile ~/.ssh/id_rsa_hmb_at_t430
+
+Host 192.168.1.106
+    user huangmianbo
+    identityfile ~/.ssh/id_rsa_hmb_at_t430
 
 # ------------------------------------------------------------------- #
 # Beaglebone
@@ -230,9 +263,49 @@ Host 10.0.0.136
 # ------------------------------------------------------------------- #
 # misc
 # ------------------------------------------------------------------- #
-HOST 192.168.204.74
-    user root
+Host 10.0.0.102 10.0.0.9 10.0.0.21 10.0.0.11 192.168.0.7 10.0.0.12 192.168.204.112 10.0.0.7 
+    user root 
     identityfile ~/.ssh/id_rsa_root_at_cbpos
-HOST 192.168.204.74
+
+Host 10.0.0.102 10.0.0.9 10.0.0.21 10.0.0.12 192.168.204.112 10.0.0.7 10.0.0.20
+    user googol 
+    identityfile ~/.ssh/id_rsa_googol_at_cbpos 
+
+Host googoltech 10.0.0.16 
+    user root 
+    identityfile ~/.ssh/id_rsa_root_at_cbpos
+
+Host 10.0.0.22 10.0.0.20
+    user root 
+    identityfile ~/.ssh/id_rsa_root_at_cbpos
+# ------------------------------------------------------------------- #
+# debian11 x86_64 platform
+# ------------------------------------------------------------------- #
+HOST debian11 ubuntu1604
     user googol
     identityfile ~/.ssh/id_rsa_googol_at_cbpos
+
+HOST debian11 ubuntu1604
+    user root
+    identityfile ~/.ssh/id_rsa_root_at_cbpos
+
+# ------------------------------------------------------------------- #
+# Jenkins Remote Linux Server
+# ------------------------------------------------------------------- #
+Host 192.168.201.73 
+    user googoltech
+    identityfile ~/.ssh/id_rsa_googol_at_cbpos
+
+Host 192.168.201.73 
+    user root
+    identityfile ~/.ssh/id_rsa_root_at_cbpos
+
+HOST 192.168.0.1 192.168.0.9
+    user googol
+    identityfile ~/.ssh/id_rsa_googol_at_cbpos
+    PubkeyAcceptedKeyTypes +ssh-rsa
+
+HOST 192.168.1.2  
+    user root
+    identityfile ~/.ssh/id_rsa_root_at_cbpos
+    PubkeyAcceptedKeyTypes +ssh-rsa
