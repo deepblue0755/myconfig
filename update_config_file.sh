@@ -72,8 +72,7 @@ function copy_files()
     test -f "$from" || { print_error "could not find file $from" && return 0; }
     test -f "$to" || { print_warning "could not find file $to"; }
 
-    diff $from $to &> /dev/null
-    if [ "$?" != "0" ];then
+    if ! diff $from $to &> /dev/null;then
         print_infor "copy $from here ..." 
         cp -f "$from" "$to"
         return 1
