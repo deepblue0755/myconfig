@@ -232,6 +232,7 @@ function copy_config_from_cpac_server()
     local files=(
         ~/.bashrc:${backup_folder}/_bash_profile-cpac
         ~/.vimrc:${backup_folder}/_vimrc-cpac
+        # the following is a list of gitlab-ce configuration file
         /etc/gitlab/gitlab.rb:${backup_folder}/etc-gitlab-cpac/gitlab.rb
         /etc/gitlab/trusted-certs/192.168.212.30.crt:${backup_folder}/etc-gitlab-cpac/trusted-certs/192.168.212.30.crt
     )
@@ -247,7 +248,7 @@ function copy_config_from_cpac_server()
     do
         IFS=':' read -r source backup <<< "${file_pair}"
         print_infor "try to backup file ${source} to ${backup}"
-        copy_files "${source}" "${backup}"
+        sudo copy_files "${source}" "${backup}"
         flag=$flag+$?
     done
 
