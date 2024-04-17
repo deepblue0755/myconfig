@@ -43,6 +43,24 @@ cpac_backup_files=(
     /etc/gitlab-runner/config.toml:${cpac_backup_folder}/etc-gitlab-runner-cpac/config.toml
 )
 
+# make it compatiable between git-bash and cygwin-bash
+if [ "$shell" == "/usr/bin/bash" ];then
+    dir=/cygdrive
+else
+    dir=
+fi
+
+t580_backup_folder=./02-Huangs-T580/
+t580_backup_files=(
+    $dir/d/Vim/_vimrc:./_vimrc-Huangs-T580
+    $dir/d/cygwin64/home/$USER/.tmux.conf:${t580_backup_folder}/_tmux.conf-Huangs-T580
+    $dir/d/cygwin64/home/mianb/.bash_profile:${t580_backup_folder}/_bash_profile-Huangs-T580
+    $dir/d/cygwin64/home/mianb/.gitconfig:${t580_backup_folder}/_gitconfig-Huangs-T580
+    $dir/d/cwRsyncServer/rsyncd.conf:${t580_backup_folder}/rsyncd.conf-Huangs-T580
+    $dir/d/cygwin64/home/mianb/.ssh/config:${t580_backup_folder}/_ssh_config-Huangs-T580
+    $dir/C/Users/mianb/Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1:${t580_backup_folder}/Microsoft.PowerShell_profile-Huangs-T580.ps1
+)
+
 
 function print_infor()
 {
@@ -206,22 +224,24 @@ function copy_config_from_macosx()
 
 }
 
+function copy_config_from_t580()
+{
+    backup_files t580_backup_files
+
+    print_result $flag
+
+    upload_to_github
+}
+
 
 function copy_config_from_cygwin()
 {
     echo 
     print_infor "pull update from github ..."
-    git pull  $(git remote -v | grep "github" | sed -n 1p | awk '{print $1}') master
+    git pull  $(git remote -v | grep -m1 "github" | awk '{print $1}') master
     echo 
 
     local flag=0
-
-    # make it compatiable between git-bash and cygwin-bash
-    if [ "$shell" == "/usr/bin/bash" ];then
-        dir=/cygdrive
-    else
-        dir=
-    fi
 
     # generate vim plugin
     $git_utils clone $dir/d/vim/vimfiles/bundle &> /dev/null && \
@@ -301,7 +321,7 @@ function main()
             copy_config_from_cygwin
         ;;
         Huangs-T580)
-            copy_config_from_cygwin
+            copy_config_from_t580
         ;;
         Huangs-MBP)
             copy_config_from_macosx
