@@ -107,7 +107,7 @@ function copy_files()
 
     if ! diff "$from" "$to" &> /dev/null;then
         print_infor "copy $from here ..." 
-        cp -fv "$from" "$to"
+        sudo cp -fv "$from" "$to"
     else
         print_infor "no difference had been found between ${source} and ${backup}, skip it"
         return 0
@@ -248,7 +248,7 @@ function copy_config_from_cpac_server()
     do
         IFS=':' read -r source backup <<< "${file_pair}"
         print_infor "try to backup file ${source} to ${backup}"
-        sudo copy_files "${source}" "${backup}"
+        copy_files "${source}" "${backup}"
         flag=$flag+$?
     done
 
