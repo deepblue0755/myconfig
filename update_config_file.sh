@@ -142,6 +142,34 @@ function copy_files()
     return 0
 }
 
+function backup_files()
+{
+    local flag=0
+    files=$1
+
+    if [[ ${#files[@]} -eq 0 ]];then
+        print_error "array $files is empty"
+        return 1
+    fi
+
+    echo 
+    print_infor "pull update from $(git remote -v | grep -m 1 "github"  | awk '{print $2}') ..."
+    git pull  "$(git remote -v | grep -m 1 "github"  | awk '{print $2}')" master
+    echo 
+
+    for file_pair in "${files[@]}";
+    do
+        IFS=':' read -r source backup <<< "${file_pair}"
+        print_infor "try to backup file ${source} to ${backup}"
+        copy_files "${source}" "${backup}"
+        flag=$flag+$?
+    done
+
+    print_result $flag
+    upload_to_github
+}
+
+
 function copy_config_from_macosx()
 {
     echo 
@@ -249,33 +277,6 @@ function copy_config_from_t430()
 
     print_result $flag
 
-    upload_to_github
-}
-
-function backup_files()
-{
-    local flag=0
-    files=$1
-
-    if [[ ${#files[@]} -eq 0 ]];then
-        print_error "array $files is empty"
-        return 1
-    fi
-
-    echo 
-    print_infor "pull update from $(git remote -v | grep -m 1 "github"  | awk '{print $2}') ..."
-    git pull  "$(git remote -v | grep -m 1 "github"  | awk '{print $2}')" master
-    echo 
-
-    for file_pair in "${files[@]}";
-    do
-        IFS=':' read -r source backup <<< "${file_pair}"
-        print_infor "try to backup file ${source} to ${backup}"
-        copy_files "${source}" "${backup}"
-        flag=$flag+$?
-    done
-
-    print_result $flag
     upload_to_github
 }
 
