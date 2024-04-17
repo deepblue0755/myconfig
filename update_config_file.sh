@@ -105,7 +105,7 @@ function copy_files()
     test -f "$from" || { print_error "could not find file $from" && return 0; }
     test -f "$to" || { print_warning "could not find file $to"; }
 
-    if ! diff "$from" "$to" &> /dev/null;then
+    if ! sudo diff "$from" "$to" &> /dev/null;then
         print_infor "copy $from here ..." 
         sudo cp -fv "$from" "$to"
     else
