@@ -38,18 +38,9 @@ cpac_backup_files=(
     /etc/gitlab/ssl/192.168.212.30.key:${cpac_backup_folder}/etc-gitlab-cpac/ssl/192.168.212.30.key
     /etc/gitlab/ssl/192.168.212.30.key-staging:${cpac_backup_folder}/etc-gitlab-cpac/ssl/192.168.212.30.key-staging
     /etc/gitlab/trusted-certs/192.168.212.30.crt:${cpac_backup_folder}/etc-gitlab-cpac/trusted-certs/192.168.212.30.crt
-    /etc/gitlab/gitlab/gitlab-secrets.json:${cpac_backup_folder}/etc-gitlab-cpac/gitlab/gitlab-secrets.json
-    /etc/gitlab/gitlab/gitlab.rb.02.bak:${cpac_backup_folder}/etc-gitlab-cpac/gitlab/gitlab.rb.02.bak
-    /etc/gitlab/gitlab/ssl/192.168.212.30.crt:${cpac_backup_folder}/etc-gitlab-cpac/gitlab/ssl/192.168.212.30.crt
-    /etc/gitlab/gitlab/ssl/192.168.212.30.key:${cpac_backup_folder}/etc-gitlab-cpac/gitlab/ssl/192.168.212.30.key
-    /etc/gitlab/gitlab/ssl/192.168.212.30.key-staging:${cpac_backup_folder}/etc-gitlab-cpac/gitlab/ssl/192.168.212.30.key-staging
-    /etc/gitlab/gitlab/trusted-certs/192.168.212.30.crt:${cpac_backup_folder}/etc-gitlab-cpac/gitlab/trusted-certs/192.168.212.30.crt
-    /etc/gitlab/gitlab/gitlab.rb:${cpac_backup_folder}/etc-gitlab-cpac/gitlab/gitlab.rb
-    /etc/gitlab/gitlab/gitlab.rb.bak:${cpac_backup_folder}/etc-gitlab-cpac/gitlab/gitlab.rb.bak
     /etc/gitlab/gitlab.rb:${cpac_backup_folder}/etc-gitlab-cpac/gitlab.rb
     /etc/gitlab/gitlab.rb.bak:${cpac_backup_folder}/etc-gitlab-cpac/gitlab.rb.bak
     /etc/gitlab-runner/config.toml:${cpac_backup_folder}/etc-gitlab-runner-cpac/config.toml
-    /etc/gitlab-runner/gitlab-runner/config.toml:${cpac_backup_folder}/etc-gitlab-runner-cpac/gitlab-runner/config.toml
 )
 
 
