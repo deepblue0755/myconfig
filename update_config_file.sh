@@ -295,8 +295,8 @@ function main()
     print_infor "Running Scripts $0 At $HOSTNAME !!"
     echo --------------------------------------------------------
 
-    # git_utils=../18-bash-utils/25_git_utils.sh
-    # test -f $git_utils  || { print_error "could not find $git_utils" && return 1; }
+    git_utils=../18-bash-utils/25_git_utils.sh
+    test -f $git_utils  || { print_error "could not find $git_utils" && return 1; }
 
     # set working directory
     pushd $dir/d/documents/11-configs-from-github &> /dev/null
