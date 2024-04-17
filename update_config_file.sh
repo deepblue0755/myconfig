@@ -233,8 +233,24 @@ function copy_config_from_cpac_server()
         ~/.bashrc:${backup_folder}/_bash_profile-cpac
         ~/.vimrc:${backup_folder}/_vimrc-cpac
         # the following is a list of gitlab-ce configuration file
-        /etc/gitlab/gitlab.rb:${backup_folder}/etc-gitlab-cpac/gitlab.rb
-        /etc/gitlab/trusted-certs/192.168.212.30.crt:${backup_folder}/etc-gitlab-cpac/trusted-certs/192.168.212.30.crt
+        /etc/gitlab/gitlab-secrets.json                             :${backup_folder}/etc-gitlab-cpac/gitlab-secrets.json                                  
+        /etc/gitlab/gitlab.rb.02.bak                                :${backup_folder}/etc-gitlab-cpac/gitlab.rb.02.bak
+        /etc/gitlab/ssl/192.168.212.30.crt                          :${backup_folder}/etc-gitlab-cpac/ssl/192.168.212.30.crt
+        /etc/gitlab/ssl/192.168.212.30.key                          :${backup_folder}/etc-gitlab-cpac/ssl/192.168.212.30.key
+        /etc/gitlab/ssl/192.168.212.30.key-staging                  :${backup_folder}/etc-gitlab-cpac/ssl/192.168.212.30.key-staging
+        /etc/gitlab/trusted-certs/192.168.212.30.crt                :${backup_folder}/etc-gitlab-cpac/trusted-certs/192.168.212.30.crt
+        /etc/gitlab/gitlab/gitlab-secrets.json                      :${backup_folder}/etc-gitlab-cpac/gitlab/gitlab-secrets.json
+        /etc/gitlab/gitlab/gitlab.rb.02.bak                         :${backup_folder}/etc-gitlab-cpac/gitlab/gitlab.rb.02.bak
+        /etc/gitlab/gitlab/ssl/192.168.212.30.crt                   :${backup_folder}/etc-gitlab-cpac/gitlab/ssl/192.168.212.30.crt
+        /etc/gitlab/gitlab/ssl/192.168.212.30.key                   :${backup_folder}/etc-gitlab-cpac/gitlab/ssl/192.168.212.30.key
+        /etc/gitlab/gitlab/ssl/192.168.212.30.key-staging           :${backup_folder}/etc-gitlab-cpac/gitlab/ssl/192.168.212.30.key-staging
+        /etc/gitlab/gitlab/trusted-certs/192.168.212.30.crt         :${backup_folder}/etc-gitlab-cpac/gitlab/trusted-certs/192.168.212.30.crt
+        /etc/gitlab/gitlab/gitlab.rb                                :${backup_folder}/etc-gitlab-cpac/gitlab/gitlab.rb
+        /etc/gitlab/gitlab/gitlab.rb.bak                            :${backup_folder}/etc-gitlab-cpac/gitlab/gitlab.rb.bak
+        /etc/gitlab/gitlab.rb                                       :${backup_folder}/etc-gitlab-cpac/gitlab.rb
+        /etc/gitlab/gitlab.rb.bak                                   :${backup_folder}/etc-gitlab-cpac/gitlab.rb.bak
+        /etc/gitlab-runner/config.toml                              :${backup_folder}/etc-gitlab-runner-cpac/config.toml
+        /etc/gitlab-runner/gitlab-runner/config.toml                :${backup_folder}/etc-gitlab-runner-cpac/gitlab-runner/config.toml
     )
 
     echo 
@@ -309,3 +325,28 @@ function main()
 
 
 main $*
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
