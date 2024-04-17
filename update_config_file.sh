@@ -145,7 +145,7 @@ function copy_files()
 function backup_files()
 {
     local flag=0
-    files=$1
+    local -n files=$1
 
     if [[ ${#files[@]} -eq 0 ]];then
         print_error "array $files is empty"
@@ -283,20 +283,6 @@ function copy_config_from_t430()
 function copy_config_from_cpac_server()
 {
     backup_files cpac_backup_files
-
-    # copy_files ~/.bashrc ./_bash_profile-$HOSTNAME
-    # flag=$flag+$?
-
-    # copy_files ~/.vimrc ./_vimrc-$HOSTNAME
-    # flag=$flag+$?
-
-    # sudo cp -frv /etc/gitlab/ ./etc-gitlab-$HOSTNAME
-    # sudo chown -R 1001:1001 ./etc-gitlab-$HOSTNAME
-    # flag=$flag+$?
-
-    # sudo cp -frv /etc/gitlab-runner ./etc-gitlab-runner-$HOSTNAME
-    # sudo chown -R 1001:1001 ./etc-gitlab-runner-$HOSTNAME
-    # flag=$flag+$?
 
     print_result $flag
 
