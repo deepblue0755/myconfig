@@ -28,7 +28,7 @@ else
 fi
 
 cpac_backup_folder=./01-cpac-server-at-googoltech
-declare -A cpac_backup_files=(
+cpac_backup_files=(
     ~/.bashrc:${cpac_backup_folder}/_bash_profile-cpac
     ~/.vimrc:${cpac_backup_folder}/_vimrc-cpac
     # the following is a list of gitlab-ce configuration file
