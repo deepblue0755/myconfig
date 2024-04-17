@@ -28,28 +28,28 @@ else
 fi
 
 cpac_backup_folder=./01-cpac-server-at-googoltech
-cpac_backup_files=(
+declare -A cpac_backup_files=(
     ~/.bashrc:${cpac_backup_folder}/_bash_profile-cpac
     ~/.vimrc:${cpac_backup_folder}/_vimrc-cpac
     # the following is a list of gitlab-ce configuration file
-    /etc/gitlab/gitlab-secrets.json                             :${cpac_backup_folder}/etc-gitlab-cpac/gitlab-secrets.json                                  
-    /etc/gitlab/gitlab.rb.02.bak                                :${cpac_backup_folder}/etc-gitlab-cpac/gitlab.rb.02.bak
-    /etc/gitlab/ssl/192.168.212.30.crt                          :${cpac_backup_folder}/etc-gitlab-cpac/ssl/192.168.212.30.crt
-    /etc/gitlab/ssl/192.168.212.30.key                          :${cpac_backup_folder}/etc-gitlab-cpac/ssl/192.168.212.30.key
-    /etc/gitlab/ssl/192.168.212.30.key-staging                  :${cpac_backup_folder}/etc-gitlab-cpac/ssl/192.168.212.30.key-staging
-    /etc/gitlab/trusted-certs/192.168.212.30.crt                :${cpac_backup_folder}/etc-gitlab-cpac/trusted-certs/192.168.212.30.crt
-    /etc/gitlab/gitlab/gitlab-secrets.json                      :${cpac_backup_folder}/etc-gitlab-cpac/gitlab/gitlab-secrets.json
-    /etc/gitlab/gitlab/gitlab.rb.02.bak                         :${cpac_backup_folder}/etc-gitlab-cpac/gitlab/gitlab.rb.02.bak
-    /etc/gitlab/gitlab/ssl/192.168.212.30.crt                   :${cpac_backup_folder}/etc-gitlab-cpac/gitlab/ssl/192.168.212.30.crt
-    /etc/gitlab/gitlab/ssl/192.168.212.30.key                   :${cpac_backup_folder}/etc-gitlab-cpac/gitlab/ssl/192.168.212.30.key
-    /etc/gitlab/gitlab/ssl/192.168.212.30.key-staging           :${cpac_backup_folder}/etc-gitlab-cpac/gitlab/ssl/192.168.212.30.key-staging
-    /etc/gitlab/gitlab/trusted-certs/192.168.212.30.crt         :${cpac_backup_folder}/etc-gitlab-cpac/gitlab/trusted-certs/192.168.212.30.crt
-    /etc/gitlab/gitlab/gitlab.rb                                :${cpac_backup_folder}/etc-gitlab-cpac/gitlab/gitlab.rb
-    /etc/gitlab/gitlab/gitlab.rb.bak                            :${cpac_backup_folder}/etc-gitlab-cpac/gitlab/gitlab.rb.bak
-    /etc/gitlab/gitlab.rb                                       :${cpac_backup_folder}/etc-gitlab-cpac/gitlab.rb
-    /etc/gitlab/gitlab.rb.bak                                   :${cpac_backup_folder}/etc-gitlab-cpac/gitlab.rb.bak
-    /etc/gitlab-runner/config.toml                              :${cpac_backup_folder}/etc-gitlab-runner-cpac/config.toml
-    /etc/gitlab-runner/gitlab-runner/config.toml                :${cpac_backup_folder}/etc-gitlab-runner-cpac/gitlab-runner/config.toml
+    /etc/gitlab/gitlab-secrets.json:${cpac_backup_folder}/etc-gitlab-cpac/gitlab-secrets.json                                  
+    /etc/gitlab/gitlab.rb.02.bak:${cpac_backup_folder}/etc-gitlab-cpac/gitlab.rb.02.bak
+    /etc/gitlab/ssl/192.168.212.30.crt:${cpac_backup_folder}/etc-gitlab-cpac/ssl/192.168.212.30.crt
+    /etc/gitlab/ssl/192.168.212.30.key:${cpac_backup_folder}/etc-gitlab-cpac/ssl/192.168.212.30.key
+    /etc/gitlab/ssl/192.168.212.30.key-staging:${cpac_backup_folder}/etc-gitlab-cpac/ssl/192.168.212.30.key-staging
+    /etc/gitlab/trusted-certs/192.168.212.30.crt:${cpac_backup_folder}/etc-gitlab-cpac/trusted-certs/192.168.212.30.crt
+    /etc/gitlab/gitlab/gitlab-secrets.json:${cpac_backup_folder}/etc-gitlab-cpac/gitlab/gitlab-secrets.json
+    /etc/gitlab/gitlab/gitlab.rb.02.bak:${cpac_backup_folder}/etc-gitlab-cpac/gitlab/gitlab.rb.02.bak
+    /etc/gitlab/gitlab/ssl/192.168.212.30.crt:${cpac_backup_folder}/etc-gitlab-cpac/gitlab/ssl/192.168.212.30.crt
+    /etc/gitlab/gitlab/ssl/192.168.212.30.key:${cpac_backup_folder}/etc-gitlab-cpac/gitlab/ssl/192.168.212.30.key
+    /etc/gitlab/gitlab/ssl/192.168.212.30.key-staging:${cpac_backup_folder}/etc-gitlab-cpac/gitlab/ssl/192.168.212.30.key-staging
+    /etc/gitlab/gitlab/trusted-certs/192.168.212.30.crt:${cpac_backup_folder}/etc-gitlab-cpac/gitlab/trusted-certs/192.168.212.30.crt
+    /etc/gitlab/gitlab/gitlab.rb:${cpac_backup_folder}/etc-gitlab-cpac/gitlab/gitlab.rb
+    /etc/gitlab/gitlab/gitlab.rb.bak:${cpac_backup_folder}/etc-gitlab-cpac/gitlab/gitlab.rb.bak
+    /etc/gitlab/gitlab.rb:${cpac_backup_folder}/etc-gitlab-cpac/gitlab.rb
+    /etc/gitlab/gitlab.rb.bak:${cpac_backup_folder}/etc-gitlab-cpac/gitlab.rb.bak
+    /etc/gitlab-runner/config.toml:${cpac_backup_folder}/etc-gitlab-runner-cpac/config.toml
+    /etc/gitlab-runner/gitlab-runner/config.toml:${cpac_backup_folder}/etc-gitlab-runner-cpac/gitlab-runner/config.toml
 )
 
 
@@ -161,7 +161,7 @@ function backup_files()
     do
         IFS=':' read -r source backup <<< "${file_pair}"
         print_infor "try to backup file ${source} to ${backup}"
-        echo copy_files "${source}" "${backup}"
+        copy_files "${source}" "${backup}"
         flag=$flag+$?
     done
 
