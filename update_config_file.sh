@@ -27,6 +27,32 @@ else
     NORMAL=""
 fi
 
+cpac_backup_folder=./01-cpac-server-at-googoltech
+cpac_backup_files=(
+    ~/.bashrc:${cpac_backup_folder}/_bash_profile-cpac
+    ~/.vimrc:${cpac_backup_folder}/_vimrc-cpac
+    # the following is a list of gitlab-ce configuration file
+    /etc/gitlab/gitlab-secrets.json                             :${cpac_backup_folder}/etc-gitlab-cpac/gitlab-secrets.json                                  
+    /etc/gitlab/gitlab.rb.02.bak                                :${cpac_backup_folder}/etc-gitlab-cpac/gitlab.rb.02.bak
+    /etc/gitlab/ssl/192.168.212.30.crt                          :${cpac_backup_folder}/etc-gitlab-cpac/ssl/192.168.212.30.crt
+    /etc/gitlab/ssl/192.168.212.30.key                          :${cpac_backup_folder}/etc-gitlab-cpac/ssl/192.168.212.30.key
+    /etc/gitlab/ssl/192.168.212.30.key-staging                  :${cpac_backup_folder}/etc-gitlab-cpac/ssl/192.168.212.30.key-staging
+    /etc/gitlab/trusted-certs/192.168.212.30.crt                :${cpac_backup_folder}/etc-gitlab-cpac/trusted-certs/192.168.212.30.crt
+    /etc/gitlab/gitlab/gitlab-secrets.json                      :${cpac_backup_folder}/etc-gitlab-cpac/gitlab/gitlab-secrets.json
+    /etc/gitlab/gitlab/gitlab.rb.02.bak                         :${cpac_backup_folder}/etc-gitlab-cpac/gitlab/gitlab.rb.02.bak
+    /etc/gitlab/gitlab/ssl/192.168.212.30.crt                   :${cpac_backup_folder}/etc-gitlab-cpac/gitlab/ssl/192.168.212.30.crt
+    /etc/gitlab/gitlab/ssl/192.168.212.30.key                   :${cpac_backup_folder}/etc-gitlab-cpac/gitlab/ssl/192.168.212.30.key
+    /etc/gitlab/gitlab/ssl/192.168.212.30.key-staging           :${cpac_backup_folder}/etc-gitlab-cpac/gitlab/ssl/192.168.212.30.key-staging
+    /etc/gitlab/gitlab/trusted-certs/192.168.212.30.crt         :${cpac_backup_folder}/etc-gitlab-cpac/gitlab/trusted-certs/192.168.212.30.crt
+    /etc/gitlab/gitlab/gitlab.rb                                :${cpac_backup_folder}/etc-gitlab-cpac/gitlab/gitlab.rb
+    /etc/gitlab/gitlab/gitlab.rb.bak                            :${cpac_backup_folder}/etc-gitlab-cpac/gitlab/gitlab.rb.bak
+    /etc/gitlab/gitlab.rb                                       :${cpac_backup_folder}/etc-gitlab-cpac/gitlab.rb
+    /etc/gitlab/gitlab.rb.bak                                   :${cpac_backup_folder}/etc-gitlab-cpac/gitlab.rb.bak
+    /etc/gitlab-runner/config.toml                              :${cpac_backup_folder}/etc-gitlab-runner-cpac/config.toml
+    /etc/gitlab-runner/gitlab-runner/config.toml                :${cpac_backup_folder}/etc-gitlab-runner-cpac/gitlab-runner/config.toml
+)
+
+
 function print_infor()
 {
 	echo -e "${GREEN}INFO: $*${NORMAL}"
@@ -226,39 +252,20 @@ function copy_config_from_t430()
     upload_to_github
 }
 
-function copy_config_from_cpac_server()
+function backup_files()
 {
-    local backup_folder=./01-cpac-server-at-googoltech
-    local files=(
-        ~/.bashrc:${backup_folder}/_bash_profile-cpac
-        ~/.vimrc:${backup_folder}/_vimrc-cpac
-        # the following is a list of gitlab-ce configuration file
-        /etc/gitlab/gitlab-secrets.json                             :${backup_folder}/etc-gitlab-cpac/gitlab-secrets.json                                  
-        /etc/gitlab/gitlab.rb.02.bak                                :${backup_folder}/etc-gitlab-cpac/gitlab.rb.02.bak
-        /etc/gitlab/ssl/192.168.212.30.crt                          :${backup_folder}/etc-gitlab-cpac/ssl/192.168.212.30.crt
-        /etc/gitlab/ssl/192.168.212.30.key                          :${backup_folder}/etc-gitlab-cpac/ssl/192.168.212.30.key
-        /etc/gitlab/ssl/192.168.212.30.key-staging                  :${backup_folder}/etc-gitlab-cpac/ssl/192.168.212.30.key-staging
-        /etc/gitlab/trusted-certs/192.168.212.30.crt                :${backup_folder}/etc-gitlab-cpac/trusted-certs/192.168.212.30.crt
-        /etc/gitlab/gitlab/gitlab-secrets.json                      :${backup_folder}/etc-gitlab-cpac/gitlab/gitlab-secrets.json
-        /etc/gitlab/gitlab/gitlab.rb.02.bak                         :${backup_folder}/etc-gitlab-cpac/gitlab/gitlab.rb.02.bak
-        /etc/gitlab/gitlab/ssl/192.168.212.30.crt                   :${backup_folder}/etc-gitlab-cpac/gitlab/ssl/192.168.212.30.crt
-        /etc/gitlab/gitlab/ssl/192.168.212.30.key                   :${backup_folder}/etc-gitlab-cpac/gitlab/ssl/192.168.212.30.key
-        /etc/gitlab/gitlab/ssl/192.168.212.30.key-staging           :${backup_folder}/etc-gitlab-cpac/gitlab/ssl/192.168.212.30.key-staging
-        /etc/gitlab/gitlab/trusted-certs/192.168.212.30.crt         :${backup_folder}/etc-gitlab-cpac/gitlab/trusted-certs/192.168.212.30.crt
-        /etc/gitlab/gitlab/gitlab.rb                                :${backup_folder}/etc-gitlab-cpac/gitlab/gitlab.rb
-        /etc/gitlab/gitlab/gitlab.rb.bak                            :${backup_folder}/etc-gitlab-cpac/gitlab/gitlab.rb.bak
-        /etc/gitlab/gitlab.rb                                       :${backup_folder}/etc-gitlab-cpac/gitlab.rb
-        /etc/gitlab/gitlab.rb.bak                                   :${backup_folder}/etc-gitlab-cpac/gitlab.rb.bak
-        /etc/gitlab-runner/config.toml                              :${backup_folder}/etc-gitlab-runner-cpac/config.toml
-        /etc/gitlab-runner/gitlab-runner/config.toml                :${backup_folder}/etc-gitlab-runner-cpac/gitlab-runner/config.toml
-    )
+    local flag=0
+    files=$1
+
+    if [[ ${#files[@]} -eq 0 ]];then
+        print_error "array $files is empty"
+        return 1
+    fi
 
     echo 
-    print_infor "pull update from github ..."
+    print_infor "pull update from $(git remote -v | grep -m 1 "github"  | awk '{print $2}') ..."
     git pull  "$(git remote -v | grep -m 1 "github"  | awk '{print $2}')" master
     echo 
-    
-    flag=0
 
     for file_pair in "${files[@]}";
     do
@@ -267,6 +274,14 @@ function copy_config_from_cpac_server()
         copy_files "${source}" "${backup}"
         flag=$flag+$?
     done
+
+    print_result $flag
+    upload_to_github
+}
+
+function copy_config_from_cpac_server()
+{
+    backup_files cpac_backup_files
 
     # copy_files ~/.bashrc ./_bash_profile-$HOSTNAME
     # flag=$flag+$?
@@ -324,29 +339,4 @@ function main()
 }
 
 
-main $*
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+main "$@"
