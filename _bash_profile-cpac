@@ -17,7 +17,7 @@ function _bash_default()
 
     # don't put duplicate lines or lines starting with space in the history.
     # See bash(1) for more options
-    HISTCONTROL=ignoreboth
+    HISTCONTROL=ignoreboth:erasedups
 
     # append to the history file, don't overwrite it
     shopt -s histappend
@@ -213,18 +213,24 @@ function _export_environ_var()
     export LC_TIME="en_US.utf8"
     export EDITOR=vim
     export VM=ubuntu-kylin-14.04.6
-    export HISTIGNORE="history:pwd:ls:clear"
+    export HISTIGNORE="&:history:pwd:ls:clear:[bf]g:exit"
     export HISTTIMEFORMAT="%F %T  "
+    export PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
     export LLVM_PATH=/usr/local/llvm/10.0.0
     export LLVM_CONFIG=/usr/local/llvm/10.0.0/bin/llvm-config
     export NODE_PATH=/opt/npm/node_modules
     export CSCOPE_DB=~/documents/26-c-programming/.cscope.out
     export TASKDATA=~/documents/12-cygwin64-config-t580/.task
     export REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/git/git-repo/' 
-    export CROSS_COMPILE=i686-linux-gnu-
-    export KERNELDIR=/home/huangmianbo/src/08-GNS-Atom-E3815/4.9.303/linux-4.9.303-rt192/
+    # export CROSS_COMPILE=i686-linux-gnu-
+    # export KERNELDIR=~/nfs_share/kernel_headers/4.9.146-rt125-20210126-05+/usr/src/linux-headers-4.9.146-rt125-20210126-05+/
+    # export KERNELDIR=~/nfs_share/kernel_headers/linux-headers-6.1.38-rt11-20230831-01+_6.1.38-1_amd64/usr/src/linux-headers-6.1.38-rt11-20230831-01+
+    export KERNELDIR=~/nfs_share/kernel_headers/linux-headers-6.1.38-rt11-20231122-01+/usr/src/linux-headers-6.1.38-rt11-20231122-01+/
     export QT_SELECT=5
     export DISPLAY=localhost:10.0
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 }
 
 function _log()
@@ -268,7 +274,7 @@ function _set_alias()
     alias ctags='ctags -f .tags --output-format=e-ctags'
     alias ctags++='\ctags -f .tags --c++-kinds=+px --fields=+iaS --extras=+q --languages=c++ --sort=foldcase --output-format=e-ctags'
     alias checkpatch='~/src/09-IDB3/linux-4.9.208/scripts/checkpatch.pl --codespell'
-    alias make='make -j40'
+    alias make='make -j40 CC=gcc-11'
     alias make32='make CC=/usr/bin/i686-linux-gnu-gcc -j40'
     alias vbm='vboxmanage'
     alias diff='colordiff --exclude=*\.git* -X ~/.diff_exclude_pat'
@@ -501,8 +507,11 @@ function _make()
     
     \make -j$(getconf _NPROCESSORS_ONLN) "$@" 2>&1 | \
         sed "s#$(realpath $PWD)\/##g" | \
-        grep --color=auto --exclude=*git* --exclude=.tags "error:\|Error:\|warning:\|undefined reference\|^\[\s*[0-9]\{1,2\}%\s*\]" | \
-        tee -a "$tempfile"
+        grep --exclude=*git* --exclude=.tags "error:\|Error:\|warning:\|undefined reference\|^\[\s*[0-9]\{1,2\}%\s*\]" | \
+        tee -a "$tempfile" &>/dev/null
+
+    GREP_COLOR='ms=01;33' grep --color=auto -i "warning" "${tempfile}"
+    GREP_COLOR='ms=01;31' grep --color=auto -i "error" "${tempfile}"
 
     if [ ${PIPESTATUS[0]} -eq 0  ];then
         echo -e "\n"
@@ -515,7 +524,42 @@ function _make()
     echo "WARNING NUMBER: $(grep -ic "warning" "$tempfile")"
     echo "ERROR NUMBER: $(grep -ic "error:" "$tempfile")"
 
-    \rm -fv "${tempfile}"
+    # \rm -fv "${tempfile}"
+}
+
+function _xz()
+{
+    local filename=""
+    local flag="0" # 0 compress 1 decompress
+
+    for opt in "$@"
+    do
+        grep "\-d" "${opt}" &>/dev/null && flag=1
+        test -f "${opt}" && filename="$opt"
+    done
+
+    test -f "${filename}" || { echo "ERROR: file ${filename} could not be found" && return 1 ;}
+    local size=$(du -b "${filename}" | awk '{print $1}')
+
+    if [ ${flag} -eq 0 ];then
+        pv -s ${size} -prt "$1" | \xz > "$1.xz"
+    else
+        \xz -dc ${filename} | pv -s ${size} -prt | tar x
+
+    fi
+
+}
+
+function ask_gpt_git_commit() {
+
+    git status &>/dev/null  || { print_error "not a git repo" && return 1  ;}
+    local tempfile=~/share/$(uuidgen -r | cut -c1-8).txt
+    if [[ $(git diff | wc -l) -eq 0 ]];then
+        print_infor "no git diff found"
+        return 1;
+    fi
+    git diff -w >> "${tempfile}"
+    sed -i  "1s/^/in this git commit ... \nplease help me to write the git commit message base on the context i had provided above and the  git diff output below: \n/" ${tempfile}
 }
 
 function main()
@@ -534,9 +578,11 @@ function main()
 }
 
 main "$@"
-
-
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+###!###>>>>>>>>>>>oebuild_complete>>>>>>>>>>>>>>> 
+if pip list | grep oebuild &> /dev/null ; then
+    export oebuild_sh=$(pip show oebuild | grep Location | awk -F" " '{print $2}')/oebuild/app/conf/oebuild.sh
+    if [ -f $oebuild_sh ] ; then
+            . $oebuild_sh
+    fi
+fi
+###!###<<<<<<<<<<<oebuild_complete<<<<<<<<<<<<<<<
