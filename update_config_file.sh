@@ -52,7 +52,7 @@ fi
 
 t580_backup_folder=./02-Huangs-T580/
 t580_backup_files=(
-    $dir/d/Vim/_vimrc:./_vimrc-Huangs-T580
+    $dir/d/Vim/_vimrc:${t580_backup_folder}/_vimrc-Huangs-T580
     $dir/d/cygwin64/home/$USER/.tmux.conf:${t580_backup_folder}/_tmux.conf-Huangs-T580
     $dir/d/cygwin64/home/mianb/.bash_profile:${t580_backup_folder}/_bash_profile-Huangs-T580
     $dir/d/cygwin64/home/mianb/.gitconfig:${t580_backup_folder}/_gitconfig-Huangs-T580
