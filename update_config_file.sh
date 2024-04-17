@@ -161,7 +161,7 @@ function backup_files()
     do
         IFS=':' read -r source backup <<< "${file_pair}"
         print_infor "try to backup file ${source} to ${backup}"
-        copy_files "${source}" "${backup}"
+        echo copy_files "${source}" "${backup}"
         flag=$flag+$?
     done
 
@@ -295,8 +295,8 @@ function main()
     print_infor "Running Scripts $0 At $HOSTNAME !!"
     echo --------------------------------------------------------
 
-    git_utils=../18-bash-utils/25_git_utils.sh
-    test -f $git_utils  || { print_error "could not find $git_utils" && return 1; }
+    # git_utils=../18-bash-utils/25_git_utils.sh
+    # test -f $git_utils  || { print_error "could not find $git_utils" && return 1; }
 
     # set working directory
     pushd $dir/d/documents/11-configs-from-github &> /dev/null
@@ -306,11 +306,9 @@ function main()
         Gigabyte-Brix)
             copy_config_from_cygwin
         ;;
-
         Huangs-T580)
             copy_config_from_cygwin
         ;;
-
         Huangs-MBP)
             copy_config_from_macosx
         ;;
