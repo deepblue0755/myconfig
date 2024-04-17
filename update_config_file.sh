@@ -153,7 +153,7 @@ function backup_files()
     for file_pair in "${files[@]}";
     do
         IFS=':' read -r source backup <<< "${file_pair}"
-        print_infor "\n${cnt}/${total} try to backup file ${source} to ${backup}"
+        print_infor "${cnt}/${total} try to backup file ${source} to ${backup}"
         copy_files "${source}" "${backup}"
         flag=$flag+$?
         cnt=$((cnt+1))
