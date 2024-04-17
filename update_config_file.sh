@@ -239,7 +239,7 @@ function copy_config_from_cpac_server()
 
     echo 
     print_infor "pull update from github ..."
-    git pull  "$(git remote -v | grep -m 1 "github"  | awk '{print $2}') master"
+    git pull  "$(git remote -v | grep -m 1 "github"  | awk '{print $2}')" master
     echo 
     
     flag=0
