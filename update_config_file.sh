@@ -99,16 +99,18 @@ function upload_to_github()
 
 function copy_files()
 {
-    from=$1
-    to=$2
+    from="$1"
+    to="$2"
 
     test -f "$from" || { print_error "could not find file $from" && return 0; }
     test -f "$to" || { print_warning "could not find file $to"; }
 
-    if ! diff $from $to &> /dev/null;then
+    if ! diff "$from" "$to" &> /dev/null;then
         print_infor "copy $from here ..." 
-        cp -f "$from" "$to"
-        return 1
+        cp -fv "$from" "$to"
+    else
+        print_infor "no difference had been found between ${source} and ${backup}, skip it"
+        return 0
     fi
 
     return 0
@@ -244,11 +246,7 @@ function copy_config_from_cpac_server()
     for file_pair in "${files[@]}";
     do
         IFS=':' read -r source backup <<< "${file_pair}"
-        echo "try to backup file ${source} to ${backup}"
-        if diff "${source}" "${backup}";then
-            print_infor "no difference had been found between ${source} and ${backup}, skip it"
-            continue
-        fi
+        print_infor "try to backup file ${source} to ${backup}"
         copy_files "${source}" "${backup}"
         flag=$flag+$?
     done
