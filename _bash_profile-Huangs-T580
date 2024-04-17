@@ -212,6 +212,7 @@ function _export_var()
     export HISTFILESIZE=100000
     export HISTTIMEFORMAT="%F %T "
     export HISTIGNORE="ls:history:clear:pwd"
+    export PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
     export pnio=/d/Profinet/DevKit46/pnio_src
     export proj=/d/Profinet/DevKit46/pnio_proj/ertec/EB200P_Size_EcosNative/
     export CMAKE_ROOT=$dir/d/cmake/
@@ -224,13 +225,36 @@ function _export_var()
 
 function _expl()
 {
-    echo $(uname)
-    if [ -z "$1" ];then
-        explorer $(dir_cyg2win "$(echo $PWD | sed 's#/home/mianb#/d/cygwin64/home/mianb#')")
+    local path=""
+
+    if [[ -z "$1" ]];then
+        path="$PWD"
     else
-        test -d "$1" || { print_error "$1 is not a dir" && return 1; }
-        explorer $(dir_cyg2win "$1")
+        path="$1"
     fi
+
+    if [[ -L "$path" ]];then
+        path="$(realpath "$path")"
+    fi
+
+    if [[ ! -e "$path" ]];then
+        print_error "path $path does not exist"
+        return 1
+    fi
+
+    if [[ -f "$path" ]];then
+        path=$(dirname "$path")
+    fi
+
+    echo "explorer $path"
+
+    path="$(dir_cyg2win "$path")"
+
+    echo "explorer $path"
+
+    explorer "$path"
+
+    return 0
 }
 
 function _getlinux()
