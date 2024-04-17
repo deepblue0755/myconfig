@@ -1,21 +1,54 @@
 #!/bin/bash
+#----------------------------------------------------------------------
+# Script: restore_rootfs.sh
+# Version: 1.0
+# Author: mianb.huang@hotmail.com
+# Date: 2024-04-17
+# Description:  auto backup my configuration files from various machine
+# Usage: ./update_config_file.sh
+#----------------------------------------------------------------------
+
+if [ -t 1 ];then
+    if [[ "$(uname)" == "Darwin" ]];then
+        # TO BE UPDATED IN MACOS
+        GREEN="\033[0;32m"
+        RED="\033[0;31m"
+        YELLOW="\033[0;33m"
+        NORMAL="\033[0m"
+    else
+        GREEN="\033[0;32m"
+        RED="\033[0;31m"
+        YELLOW="\033[0;33m"
+        NORMAL="\033[0m"
+    fi
+else
+    GREEN=""
+    RED=""
+    NORMAL=""
+fi
+
+function print_infor()
+{
+	echo -e "${GREEN}INFO: $*${NORMAL}"
+	return 0
+}
 
 function print_error()
 {
-    test "$(uname)" == "Darwin" && { echo -e "\033[31m|$(date +%Y%m%d%H%M%S)|$(basename $BASH_SOURCE):$BASH_LINENO|ERROR|$1|\033[0m" && return 0; }
-    test "$(uname)" == "Darwin" || { echo -e "\e[31mERROR: $1\e[0m" && return 0; }
+	echo -e "${RED}ERROR: $*${NORMAL}"
+	return 0
 }
 
 function print_warning()
 {
-    test "$(uname)" == "Darwin" && { echo -e "\033[33m|$(date +%Y%m%d%H%M%S)|$(basename $BASH_SOURCE):$BASH_LINENO|WARNING|$1|\033[0m" && return 0; }
-    test "$(uname)" == "Darwin" || { echo -e "\e[33mWARNING: $1\e[0m" && return 0; }
+	echo -e "${YELLOW}WARNING: $*${NORMAL}"
+	return 0
 }
 
-function print_infor()
+function err_exit()
 {
-    test "$(uname)" == "Darwin" && { echo -e "\033[32m|$(date +%Y%m%d%H%M%S)|$(basename $BASH_SOURCE):$BASH_LINENO|INFO|$1|\033[0m" && return 0; }
-    test "$(uname)" == "Darwin" || { echo -e "\e[32mINFO: $1\e[0m" && return 0; }
+    print_error "$*"
+    exit 1
 }
 
 function print_result()
@@ -191,28 +224,43 @@ function copy_config_from_t430()
     upload_to_github
 }
 
-function copy_config_from_server()
+function copy_config_from_cpac_server()
 {
+    local backup_folder=./01-cpac-server-at-googoltech
+    local files=(
+        ~/.bashrc:${backup_folder}/_bash_profile-cpac
+        ~/.vimrc:${backup_folder}/_vimrc-cpac
+        ~/etc/gitlab/gitlab.rb:${backup_folder}/etc-gitlab-cpac/gitlab.rb
+    )
+
     echo 
     print_infor "pull update from github ..."
-    git pull  $(git remote -v | grep "github" | sed -n 1p | awk '{print $1}') master
+    git pull  "$(git remote -v | grep -m 1 "github"  | awk '{print $1}') master"
     echo 
     
     flag=0
 
-    copy_files ~/.bashrc ./_bash_profile-$HOSTNAME
-    flag=$flag+$?
+    for file_pair in ${files[@]};
+    do
+        IFS=':' read -r source backup <<< "${file_pair}"
+        echo "try to backup file ${source} to ${backup}"
+        copy_files "${source}" "${backup}"
+        flag=$flag+$?
+    done
 
-    copy_files ~/.vimrc ./_vimrc-$HOSTNAME
-    flag=$flag+$?
+    # copy_files ~/.bashrc ./_bash_profile-$HOSTNAME
+    # flag=$flag+$?
 
-    sudo cp -frv /etc/gitlab/ ./etc-gitlab-$HOSTNAME
-    sudo chown -R 1001:1001 ./etc-gitlab-$HOSTNAME
-    flag=$flag+$?
+    # copy_files ~/.vimrc ./_vimrc-$HOSTNAME
+    # flag=$flag+$?
 
-    sudo cp -frv /etc/gitlab-runner ./etc-gitlab-runner-$HOSTNAME
-    sudo chown -R 1001:1001 ./etc-gitlab-runner-$HOSTNAME
-    flag=$flag+$?
+    # sudo cp -frv /etc/gitlab/ ./etc-gitlab-$HOSTNAME
+    # sudo chown -R 1001:1001 ./etc-gitlab-$HOSTNAME
+    # flag=$flag+$?
+
+    # sudo cp -frv /etc/gitlab-runner ./etc-gitlab-runner-$HOSTNAME
+    # sudo chown -R 1001:1001 ./etc-gitlab-runner-$HOSTNAME
+    # flag=$flag+$?
 
     print_result $flag
 
@@ -248,7 +296,7 @@ function main()
             copy_config_from_t430
         ;;
         cpac)
-            copy_config_from_server
+            copy_config_from_cpac_server
         ;;
     esac
 
