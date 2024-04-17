@@ -230,7 +230,8 @@ function copy_config_from_cpac_server()
     local files=(
         ~/.bashrc:${backup_folder}/_bash_profile-cpac
         ~/.vimrc:${backup_folder}/_vimrc-cpac
-        ~/etc/gitlab/gitlab.rb:${backup_folder}/etc-gitlab-cpac/gitlab.rb
+        /etc/gitlab/gitlab.rb:${backup_folder}/etc-gitlab-cpac/gitlab.rb
+        /etc/gitlab/trusted-certs/192.168.212.30.crt:${backup_folder}/etc-gitlab-cpac/trusted-certs/192.168.212.30.crt
     )
 
     echo 
@@ -240,10 +241,14 @@ function copy_config_from_cpac_server()
     
     flag=0
 
-    for file_pair in ${files[@]};
+    for file_pair in "${files[@]}";
     do
         IFS=':' read -r source backup <<< "${file_pair}"
         echo "try to backup file ${source} to ${backup}"
+        if diff "${source}" "${backup}";then
+            print_infor "no difference had been found between ${source} and ${backup}, skip it"
+            continue
+        fi
         copy_files "${source}" "${backup}"
         flag=$flag+$?
     done
