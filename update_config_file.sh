@@ -137,12 +137,12 @@ function copy_files()
     from="$1"
     to="$2"
 
-    sudo test -f "$from" || { print_error "could not find file $from" && return 0; }
+    test -f "$from" || { print_error "could not find file $from" && return 0; }
     test -f "$to" || { print_warning "could not find file $to"; }
 
-    if ! sudo diff "$from" "$to" &> /dev/null;then
+    if ! diff "$from" "$to" &> /dev/null;then
         print_infor "copy $from here ..." 
-        sudo cp -fv "$from" "$to"
+        cp -fv "$from" "$to"
     else
         print_infor "no difference had been found between ${source} and ${backup}, skip it"
         return 0
