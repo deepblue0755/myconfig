@@ -137,6 +137,8 @@ function backup_files()
 {
     local flag=0
     local -n files=$1
+    local cnt=1
+    local total=${#files[@]} 
 
     if [[ ${#files[@]} -eq 0 ]];then
         print_error "array $files is empty"
@@ -151,9 +153,10 @@ function backup_files()
     for file_pair in "${files[@]}";
     do
         IFS=':' read -r source backup <<< "${file_pair}"
-        print_infor "try to backup file ${source} to ${backup}"
+        print_infor "\n${cnt}/${total} try to backup file ${source} to ${backup}"
         copy_files "${source}" "${backup}"
         flag=$flag+$?
+        cnt=$((cnt+1))
     done
 
     print_result $flag
