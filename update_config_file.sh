@@ -128,7 +128,7 @@ function copy_files()
     from="$1"
     to="$2"
 
-    test -f "$from" || { print_error "could not find file $from" && return 0; }
+    sudo test -f "$from" || { print_error "could not find file $from" && return 0; }
     test -f "$to" || { print_warning "could not find file $to"; }
 
     if ! sudo diff "$from" "$to" &> /dev/null;then
