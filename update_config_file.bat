@@ -61,6 +61,7 @@ set CONFIG_BACKUP_DIR=D:\documents\11-configs-from-github
 REM SET THE FILENAME POSTFIX ACCORDING TO THE MACHINE NAME
 if "%COMPUTERNAME%" == "HUANGS-T580" (
     set NAME_SUFFIX=Huangs-T580
+    set CONFIG_BACKUP_DIR=D:\documents\11-configs-from-github\02-Huangs-T580\
 )
 if "%COMPUTERNAME%" == "NUC11" (
     set NAME_SUFFIX=NUC11
