@@ -5,7 +5,7 @@
 # with this software. 
 # If not, see <http://creativecommons.org/publicdomain/zero/1.0/>. 
 
-# base-files version 4.3-3
+# base-files version 4.3-2
 
 # ~/.bash_profile: executed by bash(1) for login shells.
 
@@ -42,3 +42,904 @@ fi
 # if [ -d "${HOME}/info" ]; then
 #   INFOPATH="${HOME}/info:${INFOPATH}"
 # fi
+
+######################################################################
+# User Defined Setting # 
+######################################################################
+export TERM=xterm-256color
+export OUTPUT_CHARSET="cp936"
+if [ "$SHELL" == "/bin/bash" ];then
+    export dir=/cygdrive
+else
+    export dir=
+fi
+
+#----------------------------------#
+# Customer User Function # 
+#----------------------------------#
+function print_infor()
+{
+    echo -e "\e[32mINFO:$1\e[0m"
+}
+
+function print_warning()
+{
+    echo -e "\e[33mWARNING:$1\e[0m"
+}
+
+function print_error()
+{
+    echo -e "\e[31mERROR:$1\e[0m"
+}
+
+function _code()
+{
+    code $1 &> /dev/null &
+}
+
+function _cplinux()
+{
+    local files
+    test $# -lt 1 && { print_error "need at least one file or folder name" && return 1; }
+    case $1 in 
+        105 | t430)
+            scp $option $filelist huangmianbo@192.168.1.105:/tmp/
+        ;;
+        103 | mac)
+            scp $option $filelist huangmianbo@192.168.1.103:/tmp/
+        ;;
+        30 | server)
+            scp $option $filelist huangmianbo@192.168.212.30:/tmp/
+        ;;
+        1 | ideabox)
+            test -n "$destdir" || destdir=/tmp/
+            test -n "$ipaddr" && scp $option $filelist root@${ipaddr}:${destdir}
+            test -n "$ipaddr" || scp $option $filelist root@cbpos:${destdir}
+        ;;
+        vm)
+            scp $option $filelist huangmianbo@vmware:/tmp/
+        ;;
+        gitlab)
+            scp $option $filelist huangmianbo@gitlab:/tmp/
+        ;;
+        debian)
+            scp $option $filelist huangmianbo@192.168.56.120:/tmp/
+        ;;
+        rasp4)
+            files=$(echo "$@" | sed 's#rasp4 ##')
+            scp -r "$files" pi@10.0.0.4:/tmp/
+        ;;
+        *)
+            test -n "$ipaddr" && scp $option $filelist root@${ipaddr}:/tmp/
+            test -n "$ipaddr" || scp $option $filelist root@cbpos:/tmp/
+        ;;
+    esac
+}
+
+function dir_cyg2win
+{
+    # FOR WIN-GVIM USAGE
+    local dirs=""
+    dirs=$(echo $1 | sed -e 's#^/cygdrive##' |  sed -e 's#^/##' | sed -e 's#/#:\\#' | sed 's#/#\\#g')
+    echo "$dirs" | egrep ".{2,}:[\]" &> /dev/null && dirs=$(echo $dirs | sed 's#:##g')
+    echo "$dirs" | egrep "^\.:[\]" &> /dev/null && dirs=$(echo $dirs | sed 's#:##g')
+    echo "$dirs" | egrep "home\\\mianb" &>/dev/null && dirs=$(echo $dirs | sed 's#home\\mianb#D:\\cygwin64\\home\\mianb#g')
+    echo "$dirs"
+    return 0;
+}
+
+function _duty()
+{
+    local logfile1=$dir/d/temp/duty_file_1
+    local logfile2=$dir/d/temp/duty_file_2
+    local logfile3=$dir/d/temp/start_vm
+    local logfile4=$dir/d/temp/sync_cpac
+    local logfile5=$dir/d/temp/rsync_start
+    local flag=0;
+    case $1 in 
+        1 | rsync)
+            ping -c 1 -W 1 192.168.212.30 &> /dev/null || return 1
+            test -f $logfile1 && return 0
+            test -f $logfile1 || touch $logfile1
+            test $(date +%H) -eq 9 &&  \
+            test $(date +%M) -lt 30 &&  \
+            _sync git
+            flag=1
+            return 0;
+        ;;
+        2 | gitlab-backup)
+            ping -c 1 -W 1 192.168.212.30 &> /dev/null || return 1
+            test "$2" != "forced" && test -f $logfile2 && return 0
+            test -f $logfile2 || touch $logfile2
+            local gitlab_backup_file=`ssh huangmianbo@192.168.212.30 "ls -t /home/huangmianbo/share/*gitlab_backup*.tar | head -n 1"`
+            test -n "$gitlab_backup_file" || return 1
+            local cnt=1
+            for file in $(ls -t $dir/d/backup/gitlab-ce/*gitlab_backup*.tar)
+            do
+                test $cnt -gt 10 && rm -fv $file
+                let cnt=$((cnt+1))
+            done
+            test "$2" == "forced" && \
+            rsync -vzrt --progress -e ssh huangmianbo@192.168.212.30:$gitlab_backup_file $dir/d/backup/gitlab-ce/$(basename $gitlab_backup_file) &
+
+            test "$2" != "forced" && \
+            test $(date +%H) -eq 9 &&  \
+           test $(date +%M) -lt 30 &&  \
+            rsync -vzrt --progress -e ssh huangmianbo@192.168.212.30:$gitlab_backup_file $dir/d/backup/gitlab-ce/$(basename $gitlab_backup_file) &
+            flag=1
+            return 0;
+        ;;
+        3 | start_vm)
+            ping -c 1 -W 1 192.168.212.30 &> /dev/null || return 1
+            test -f $logfile3 && return 0
+            test -f $logfile3 || touch $logfile3
+            test $(date +%H) -eq 9 &&  \
+            test $(date +%M) -lt 30 &&  \
+            _start vm
+            flag=1
+            return 0;
+        ;;
+        4 | sync_cpac)
+            ping -c 1 -W 1 192.168.212.30 &> /dev/null || return 1
+            test -f $logfile4 && return 0
+            test -f $logfile4 || touch $logfile4
+            test $(date +%H) -eq 9 &&  \
+            test $(date +%M) -lt 30 &&  \
+            pushd $dir/d/documents/23-CPAC_Products &> /dev/null && \
+            git pull origin master && \
+            flag=1
+            popd &> /dev/null
+            return 0;
+        ;;
+        all)
+            _duty 1
+            _duty 2
+            _duty 3
+            _duty 4
+            test $flag -eq 1 && echo -e "\e[32mjob is done \e[0m"
+            return 0;
+        ;;
+    esac
+}
+
+function _export_var()
+{
+    export TIME_STYLE="+%Y/%m/%d %H:%M:%S"
+    export TZ="CEST-8"
+    export EDITOR=vim
+    export SVN_EDITOR=vim
+    export HISTSIZE=10000
+    export HISTFILESIZE=100000
+    export HISTTIMEFORMAT="%F %T "
+    export HISTIGNORE="ls:history:clear:pwd"
+    export PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
+    export pnio=/d/Profinet/DevKit46/pnio_src
+    export proj=/d/Profinet/DevKit46/pnio_proj/ertec/EB200P_Size_EcosNative/
+    export CMAKE_ROOT=$dir/d/cmake/
+    export RSYNC_PASSWORD=123456
+    export DISPLAY=:0.0
+    export PEANUT1=231pj45847.imwork.net
+    export VIMRUNTIME=/usr/share/vim/vim82
+    export PEANUT2=48i820u091.wicp.vip
+}
+
+function _expl()
+{
+    local path=""
+
+    if [[ -z "$1" ]];then
+        path="$PWD"
+    else
+        path="$1"
+    fi
+
+    if [[ -L "$path" ]];then
+        path="$(realpath "$path")"
+    fi
+
+    if [[ ! -e "$path" ]];then
+        print_error "path $path does not exist"
+        return 1
+    fi
+
+    if [[ -f "$path" ]];then
+        path=$(dirname "$path")
+    fi
+
+    echo "explorer $path"
+
+    path="$(dir_cyg2win "$path")"
+
+    echo "explorer $path"
+
+    explorer "$path"
+
+    return 0
+}
+
+function _getlinux()
+{
+    case $1 in
+        t430)
+            scp huangmianbo@t430:/tmp/$2 ./
+        ;;
+        vb | gitlab)
+            scp huangmianbo@virtualbox:$2 ./
+        ;;
+        vm | vmware)
+            scp huangmianbo@vmware:$2 ./
+        ;;
+        rasp4)
+            files=$(echo $@ | sed 's#rasp4 ##g')
+            scp -r pi@10.0.0.11:$files ./
+        ;;
+        *)
+            scp root@cbpos:/tmp/$2 ./
+        ;;
+    esac
+}
+
+function _git-branch-prompt 
+{
+    
+    local branch=$(git symbolic-ref --short -q HEAD 2>/dev/null)
+    test -n "$branch" &&  printf " [%s]" $branch
+}
+
+
+function _gvim()
+{
+    local args=""
+    for opt in $@
+    do
+        test -f $opt  && args=$args\ $(dir_cyg2win "$opt") && continue;
+        test -d $opt  && args=$args\ $(dir_cyg2win "$opt") && continue;
+        args=$args\ $opt
+    done
+
+    VIM=D:\\Vim\\ VIMRUNTIME=D:\\Vim\\Vim82 /d/Vim/vim82/gvim  \
+    -u D:\\Vim\\_vimrc \
+    --servername $(uuidgen -r | cut -c1-6) \
+    --remote-silent \
+    $args &>/dev/null &
+}
+
+function _ifconfig()
+{
+    adapter_array=("")
+    adapter_list=`ipconfig /all | grep "Description" | cut -d: -f 2 | sed 's/^ //g'`
+    adapter_id=`netsh interface show interface | sed -n '4,$p' | awk '{$1="";$2="";$3="";print $0}' | sed 's/^   //g'`
+
+    OLD_IFS="$IFS"
+    IFS=$'\r\n'
+    let i=1
+    for adapter in $adapter_id
+    do
+        test -z "$adapter" && continue
+        echo $i: $adapter
+        adapter_array[$i]=$adapter
+        let i=$i+1
+    done
+    IFS=$OLD_IFS
+
+    test -z "$1" && { echo "$adapter_list"  | cat -n; }
+
+    test "$1" == "-a" && { ipconfig /all && return 0; }
+    
+    test -n "$1" && { 
+        case $1 in 
+            [0-9]*)
+            case $2 in 
+                up)
+                  adapter=${adapter_array[$1]}
+                  print_infor "turn up adapter:$adapter"
+                  print_infor "netsh interface set interface $adapter enabled"
+                  netsh interface set interface "$adapter" enabled
+                ;;
+                down)
+                  adapter=${adapter_array[$1]}
+                  print_infor "turn down adapter:$adapter"
+                  print_warning "netsh interface set interface $adapter disabled"
+                  netsh interface set interface "$adapter" disabled
+                ;;
+            esac
+            ;;
+            ${adapter_array[1]})
+                ipconfig /all | grep "${adapter_array[1]}" -A 20
+            ;;
+            *)
+                print_error "please input adapter id #"
+            ;;
+        esac
+        return 0;
+    }
+}
+
+function _login_machine()
+{
+    case $1 in
+        cbpos)
+            # TRY TO PING 192.168.0.2
+            local server=192.168.0.2
+            for opt in $*
+            do
+                echo "$opt" | grep "\-\-ip=" &> /dev/null && \
+                server=$(echo $opt | cut -d"=" -f2)
+            done
+            test $(echo $server | wc -c) -lt 3 && server=192.168.0.$server
+            for ((i=1;i<100;i++))
+            do
+                print_infor "$i try to ping $server ..."
+                ping -c 1 -W 1 $server &> /dev/null && break
+                sleep 1
+            done
+            print_infor "login $server ..."
+            ssh root@$server
+            test $? != 0 &&  return 1
+        ;;
+    esac
+}
+
+function _md2pdf()
+{
+    file=$1
+    pdffile=${file/.md/.pdf}
+
+    if [ ! -f "$file" ];then
+        print_error "there is no such file $1"
+        return -1
+    fi
+
+    pandoc --pdf-engine=pdflatex $file -o $pdffile
+}
+
+function _mydate()
+{
+    test -f "$1" && date '+%Y%m%d%H%M%S' -d "$(stat -c '%z' "$1")" && return 0;
+    date +%Y%m%d%H%M%S
+}
+
+function _netstat()
+{
+    test $# -eq 0 && \netstat -ano
+    test $# -eq 0 || \netstat $*
+}
+
+function poweroff()
+{
+    win_poweroff_cmd="shutdown /p /f"
+    linux_poweroff_cmd="sudo poweroff"
+
+    case $1 in 
+        1 | gigabyte)
+            echo "--------------------------------------------------"
+            echo " Machine 1: gigabyte-brix win10"
+            echo "--------------------------------------------------"
+            print_infor "try to poweroff gigabyte ..."
+            { print_infor "ping 192.168.1.102 ..." && ping -c 1 -W 1 192.168.1.102 &> /dev/null && ssh mianb@192.168.1.102 $win_poweroff_cmd; } || \
+            { print_infor "ping gigabyte-brix ..." && ping -c 1 -W 1 gigabyte-brix &> /dev/null && ssh mianb@gigabyte-brix $win_poweroff_cmd; }
+        ;;
+        2 | t430)
+            echo "--------------------------------------------------"
+            echo " Machine 2: Ubuntu Linux T430"
+            echo "--------------------------------------------------"
+            print_infor "try to poweroff t430 ..."
+            { print_infor "ping 192.168.1.105" && ping -c 1 -W 1 192.168.1.105 &> /dev/null && ssh huangmianbo@192.168.1.105 $linux_poweroff_cmd; }
+        ;;
+        3 | mac)
+            echo "--------------------------------------------------"
+            echo " Machine 3: Mac OSx"
+            echo "--------------------------------------------------"
+            print_infor "try to poweroff mac ..."
+            { print_infor "ping 192.168.1.103" && ping -c 1 -W 1 192.168.1.103 &> /dev/null && ssh huangmianbo@192.168.1.103 "sudo shutdown -h now"; }
+        ;;
+        4 | cbpos)
+            echo "--------------------------------------------------"
+            echo " Machine 4: IdeaBox Pro Ubuntu 14.04 "
+            echo "--------------------------------------------------"
+            print_infor "try to poweroff ideabox ..."
+            { print_infor "ping 192.168.0.2" && ping -c 1 -W 1 192.168.0.2 &> /dev/null && ssh root@192.168.0.2 $linux_poweroff_cmd; } || \
+            { print_infor "ping cbpos ..." && ping -c 1 -W 1 cbpos &> /dev/null && ssh root@cbpos "sudo poweroff"; } 
+        ;;
+        5 | vm)
+            echo "--------------------------------------------------"
+            echo " Machine 5: Vmware Ubuntu 14.04"
+            echo "--------------------------------------------------"
+            stop vm
+        ;;
+        6 | vb)
+            echo "--------------------------------------------------"
+            echo " Machine 6: VirtualBox Gitlab Machine"
+            echo "--------------------------------------------------"
+            stop vb
+        ;;
+        7 | beaglebone)
+            echo "--------------------------------------------------"
+            echo " Machine 7: Beaglebone"
+            echo "--------------------------------------------------"
+            print_infor "try to poweroff beaglebone  ..."
+            { print_infor "ping beaglebone" && ping -c 1 -W 1 beaglebone &> /dev/null && ssh root@beaglebone $linux_poweroff_cmd; }
+        ;;
+        all)
+            for ((i=1;i<=$(type _poweroff | egrep ")$" | egrep "\s[0-9].*\|" | wc -l);i++))
+            do
+                _poweroff $i
+            done
+        ;;
+        *)
+            read -p "shutdown computer $HOSTNAME? (y/n): " input
+            test "$input" == "y" && shutdown /p /f
+            test "$input" == "y" || print_warning "user abort poweroff computer"
+        ;;
+    esac
+}
+
+function _ps()
+{
+    test $# -eq 0 && { \ps && tasklist; }
+}
+
+function _putty()
+{
+    case $1 in 
+        *)
+            \putty -load COM2 &
+        ;;
+    esac
+}
+
+function rmkh()
+{
+    pushd ~/.ssh &>/dev/null
+    sed -i "/$1/d" known_hosts
+    popd &>/dev/null
+}
+
+function _relay()
+{
+    \powershell -F "d:\batch\serial_control.ps1" -target $1 -action $2 
+}
+
+function _rand()
+{
+    test "$1" == "" && echo $RANDOM && return 0
+    test "$2" == "" && echo $RANDOM && return 0
+    let min=$1
+    let max=$(($2-$min+1))
+    num=$(cat /dev/urandom | head -n 10 | cksum | awk -F ' ' '{print $1}');
+    echo $(($num%$max+$min))
+}
+
+function _randword()
+{
+    test $(uname) == "Linux" && word_list=~/documents/18-bash-utils/00_en_dictionary_huge.dic
+    test -n "$(uname | grep -i "cygwin")" && word_list=$dir/d/documents/18-bash-utils/00_en_dictionary_huge.dic
+
+    test -f $word_list || { print_error "could not find file $word_list" && return 1; }
+    let word_size=$(cat $word_list | grep "^[A-Z]" | wc -l)
+    let line=$(uuidgen | cksum | cut -c 1-6)%$word_size
+    cat $word_list | grep "^[A-Z]" | sed -n "$line p"
+}
+
+function _reset_known_host()
+{
+    pushd . > /dev/null
+    cd ~/.ssh
+
+    check=`cat known_hosts | egrep -n "^192.168.0.2"`
+    if [ ! -z "$check" ];then
+        line=`echo $check | cut -f1 -d:`
+        print_infor "remove line at $line in file ~/.ssh/known_hosts"
+        sed -i "$line d" known_hosts
+    fi
+
+    check=`cat known_hosts | egrep -n "^192.168.0.3"`
+    if [ ! -z "$check" ];then
+        line=`echo $check | cut -f1 -d:`
+        print_infor "remove line at $line in file ~/.ssh/known_hosts"
+        sed -i "$line d" known_hosts
+    fi
+
+    popd > /dev/null
+}
+
+function _saverm()
+{
+    local force=0
+    local verbose="-v"
+    local interact="-i"
+    local files=""
+    for para in "$@"
+    do
+        test "$para" == "-f" &&  force=1
+        test "$para" == "-fr" && force=1
+        echo "$para" | grep "v" &> /dev/null && verbose=""
+        echo "$para" | grep "i" &> /dev/null && interact=""
+        test -f "$para" &&  files="$para\n$files"
+        test -d "$para" &&  files="$para\n$files"
+    done
+
+    test -n "$files" || { print_error "rm target files is not found" && return 1; }
+
+    test $force -eq 0 && \
+        \rm $verbose $interact "$@" && return 0
+
+    echo -e "$files" | cat -n | head -n 10
+    echo -e "        ... ... ... ...          \n"
+    read -p "do you want to delete aboves files (type \"yes i want\"): " input
+
+    test "$input" == "yes i want" && { \rm $verbose $interact "$@" && return 0; }
+    test "$input" == "yes i want" || { print_warning "user abort operation"  && return 1; }
+}
+
+function start()
+{
+    case $1 in
+        ubuntu1404-local)
+            START THE DEFAULT VB MACHINE
+            test -n "$(VBoxManage list runningvms | grep "Ubuntu1404")"  && \
+            { \
+            print_warning "virtualbox machine ubuntu1404 is already starting" && \
+            return 1 \
+            ;}
+            print_infor "start default virtual box machine \"Ubuntu1404\" ... "
+            VBoxManage startvm "Ubuntu1404-192.168.56.120" --type headless 2>&1 > /dev/null &
+        ;;
+        rsync | sync)
+            _sudo net start rsyncserver
+        ;;
+        workjournal)
+            pushd /d/documents/RTAI &>/dev/null && \
+            make 00 && \
+            popd &> /dev/null
+        ;;
+        nuc11)
+            wolcmd 1C697AACA530 10.0.0.23 255.255.255.0 7
+        ;;
+        list)
+            # echo list running virtual machines ...
+            # echo vmware:
+            # vmrun list | cat -n
+            # echo
+            # echo virtualbox:
+            VBoxManage list runningvms | cat -n
+            ping -c 1 -W 1 &> /dev/null  && \
+            ssh mianb@nuc11 "VBoxManage list runningvms | cat -n"
+        ;;
+        ? | -h | --help )
+            print_error "error,unknown machine or service"
+            print_error "please specify which virtual machine to start"
+            print_infor "start |ubuntu1204|ubuntu1404|ubuntu1804|rsync|debian-9|nuc11|"
+        ;;
+        *)
+            ping -c 1 -W 1 nuc11 &> /dev/null || { print_error "could not ping remote nuc11" && return 1 ;}
+            ssh mianb@nuc11 "call D:\batch\Start-VboxMachine.bat $1"
+            return 1
+        ;;
+    esac
+    return 0
+}
+
+function stop()
+{
+    test $# -lt 1  && \
+    print_error "please specify which virtual machine to stop" && \
+    return 1
+
+    case $1 in
+        workjournal)
+            /d/Vim/vim82/vim --servername workjournal --remote-send '<ESC>:wqa!<CR>'
+        ;;
+        rsync | sync)
+            _sudo net stop rsyncserver
+        ;;
+        ?|h|-h|--help|help)
+            print_error "unknown virtual machine" 
+            print_infor "$0 [ ubuntu1404 | ubuntu1204 | ubuntu1804 | debian-9 ]"
+        ;;
+        *)
+            ping -c 1 -W 1 nuc11 &> /dev/null || { print_error "could not ping remote nuc11" && return 1 ;}
+            ssh mianb@nuc11 "call D:\batch\Stop-VboxMachine.bat $1"
+        ;;
+    esac
+}
+
+function _sudo()
+{
+    # simulation of sudo in cygwin
+    for para in $*
+    do
+        test "$para" == "poweroff" &&  _poweroff && return 0
+    done
+
+    runas /user:administrator /savecred "$*"  
+}
+
+function _sync()
+{
+    case $1 in 
+        1 | book1)
+            ping -c 1 -W 1 192.168.1.102 &> /dev/null || return 1
+            rsync -vzrt --progress --include=*.pdf --include=*.epub --exclude=*.* \
+            gigabyte-brix::book-linux \
+            "/cygdrive/d/Book/Linux/"  \
+            --port=10556
+        ;;
+        2 | book2)
+            ping -c 1 -W 1 192.168.1.102 &> /dev/null || return 1
+            rsync -vzrt --progress --include=*.pdf --include=*.epub --exclude=*.* \
+            gigabyte-brix::book-cs \
+            "/cygdrive/d/Book/Computer-Science-CS/"  \
+            --port=10556
+        ;;
+        3 | book4)
+            ping -c 1 -W 1 192.168.1.102 &> /dev/null || return 1
+            rsync -vzrt --progress --include=*.pdf --include=*.epub --exclude=*.* \
+            gigabyte-brix::book-control \
+            "/cygdrive/d/Book/Control-Automation/"  \
+            --port=10556
+        ;;
+        4 | cheat-sheet)
+            ping -c 1 -W 1 192.168.1.102 &> /dev/null || return 1
+            rsync -vzrt --progress \
+            gigabyte-brix::cheat-sheet \
+            "/cygdrive/d/Book/Cheat-Sheet-Pictures/"  \
+            --port=10556
+        ;;
+        5 | git)
+            ping -c 1 -W 1 192.168.212.30 &> /dev/null || return 1
+            rsync -vzrt --progress --delete -e ssh \
+            "huangmianbo@192.168.212.30:/home/huangmianbo/git/" \
+            "/cygdrive/d/backup/git/"  \
+        ;;
+        all)
+            _sync 1
+            _sync 2
+            _sync 3
+            _sync 4
+        ;;
+        *)
+            print_infor "mysync 1:book1(linux)|2:book2(cs)|3:book3(control)|4:git"
+        ;;
+    esac
+}
+
+function _set_alias()
+{
+    alias ....='cd ../../../'
+    alias ...='cd ../../'
+    alias ..='cd ../'
+    alias am4376='ssh root@192.168.0.114'
+    alias am335x='relay 1'
+    alias e3950='relay 4'
+    alias batch='pushd /d/batch/ &>/dev/null'
+    alias bcomp='BCompare $* &> /dev/null'
+    alias beaglebone='ssh root@192.168.1.110'
+    alias call='cmd /c'
+    alias cbpos='_login_machine cbpos'
+    alias cgdb='cgdb -q'
+    alias cixing='ssh -i ~/.ssh/id_rsa_root_at_cbpos root@192.168.1.101'
+    alias ctags='ctags -f .tags'
+    alias config='_gvim ~/.bash_profile'
+    alias cprasp4='_cplinux rasp4'
+    alias debian10='_login_machine debian'
+    alias debian11='ssh googol@debian11'
+    alias diff='colordiff --exclude=*.git*'
+    alias dmidecode='systeminfo'
+    alias conemu='_sudo conemu64'
+    alias doc='pushd ~/documents/work_journal &>/dev/null'
+    alias eclipse='/d/Profinet/DevKit46/eclipse/eclipse &'
+    alias expl='_expl'
+    alias fv='fpga_version'
+    alias gdb='gdb -q'
+    alias getlinux='_getlinux cbpos'
+    alias gett430='_getlinux t430'
+    alias getvb='_getlinux vb'
+    alias getvm='_getlinux vm'
+    alias getrasp4='_getlinux rasp4'
+    alias gigabyte='ssh mianb@192.168.1.102'
+    alias gitlab='_login_machine gitlab'
+    alias gp='gnuplot'
+    alias grep='grep --color=auto --exclude-dir=.git --exclude=*.o --exclude=*.d --exclude=*.map --exclude=*.bin'
+    alias gvim='_gvim $*'
+    alias ifconfig='_ifconfig'
+    alias iperf2s='iperf -u -s -m -i 1'
+    alias iso='_login_machine iso'
+    alias ls='ls --color=auto'
+    alias lshw='systeminfo'
+    alias lscpu='wmic cpu list brief'
+    alias mac='ssh huangmianbo@192.168.1.103'
+    alias md2pdf='_md2pdf'
+    alias mydate='_mydate'
+    alias myffmpeg='/d/documents/18-bash-utils/20_ffmpeg_utils.sh'
+    alias mygit='/d/documents/18-bash-utils/25_git_utils.sh'
+    alias mysql='mysql -u huangmianbo -h 192.168.212.30 -p'
+    alias mysync='_sync'
+    alias mv='mv -iv'
+    alias nuc11='ssh mianb@nuc11'
+    alias netstat='_netstat'
+    alias ps='_ps'
+    alias powershell='powershell -F'
+    alias putty='_putty'
+    alias pycharm='pycharm64 &> /dev/null &'
+    alias qt='qtcreator &> /dev/null &'
+    alias randword='_randword'
+    alias rand='_rand'
+    alias relay='_relay'
+    alias rasp4='ssh pi@rasp4-arm64'
+    alias rasp3='ssh pi@rasp3b-2b03b5'
+    alias peanut1='ssh pi@$PEANUT1 -p 35369'
+    alias rasphome='ssh -i ~/.ssh/id_rsa_googol_at_cbpos pi@$PEANUT2 -p 44650'
+    alias reload='source ~/.bash_profile'
+    alias rename='/d/documents/18-bash-utils/01_rename_utils.sh'
+    # alias rm='rm -iv'
+    alias rm='_saverm'
+    alias rtai='cd ~/documents/RTAI'
+    alias sudo='_sudo'
+    alias softlink='ssh huangmianbo@192.168.212.31'
+    alias svn='svn --username huang.mb --password huang.mb'
+    alias server='ssh huangmianbo@192.168.212.30'
+    alias t430='ssh -Y huangmianbo@192.168.1.105'
+    alias t430-32='ssh -Y huangmianbo@192.168.1.106'
+    alias t580='ssh mianb@Huangs-T580'
+    alias traceroute='tracert'
+    alias t='_tmux_new'
+    alias timeout='timeout --preserve-status'
+    alias tl='_task_list'
+    alias tia='runas /user:administrator /savecred "d:\Siemens\Automation\Portal V14/Bin\Siemens.Automation.Portal.exe"'
+    alias tmp='cd ~/tmp'
+    alias am335x-host-old='ssh -Y googol@10.0.0.133'
+    alias ubuntu1204='ssh -Y googol@10.0.0.133'
+    alias ubuntu1204-local='ssh -Y googol@192.168.56.133'
+    alias ubuntu1404='ssh -Y huangmianbo@10.0.0.120'
+    alias ubuntu1404-local='ssh -Y huangmianbo@192.168.56.120'
+    alias ubuntu1604='ssh -Y googol@10.0.0.130'
+    alias ubuntu1804='ssh -Y huangmianbo@10.0.0.122'
+    alias debian9='ssh -i ~/.ssh/id_rsa_googol_at_cbpos -XY googol@10.0.0.121'
+    alias uuid='uuidgen -r | cut -c 1-8'
+    alias vivado='vivado -mode tcl'
+    alias cvim='vim -u ~/.vimrc.cygwin'
+    alias vim='_gvim'
+    alias vlc='vlc $* &> /dev/null'
+    alias vscode='_code'
+    alias wakenuc='wolcmd 1C697AACA530 10.0.0.1 255.255.255.0 7'
+    alias wakex='wolcmd 2CF05DC52323 10.0.0.1  255.255.255.0 7'
+    alias zynq-host='ssh huangmianbo@10.0.0.136'
+    alias am335x-host='ssh root@10.0.0.130'
+    alias zed='ssh root@10.0.0.15'
+    alias jenkins='ssh -XY googoltech@192.168.201.73'
+    alias ~='cd ~'
+}
+
+function _set_path()
+{
+    export PATH=$dir/d/Vim/vim82:$PATH
+    export PATH=$dir/d/Git/bin:$PATH
+    export PATH=$dir/d/texlive/2018/bin/win32:$PATH
+    export PATH=$dir/d/SumatraPDF:$PATH
+    export PATH=$dir/d/pandoc:$PATH
+    export PATH=$dir/d/VLC:$PATH
+    export PATH=$dir/d/PUTTY:$PATH
+    export PATH=$dir/d/Beyond\ Compare\ 3:$PATH
+    export PATH=$dir/c/Program\ Files\ \(x86\)/Google/Chrome/Application:$PATH
+    export PATH=$dir/d/VMware/VMware\ Workstation:$PATH
+    export PATH=$dir/d/Oracle/VirtualBox:$PATH
+    export PATH=$dir/d/TortoiseSVN/bin:$PATH
+    export PATH=$dir/d/Typora/bin:$PATH
+    export PATH=$dir/d/Qt/Qt5.13.2/Tools/QtCreator/bin:$PATH
+    export PATH=$dir/d/JetBrains/PyCharm\ Community\ Edition\ 2019.3/bin:$PATH
+    export PATH=$dir/d/Microsoft\ VS\ Code:$PATH
+    export PATH=$dir/d/gnuplot/bin:$PATH
+    export PATH=$dir/d/Xilinx/Vivado/2019.2/bin/unwrapped/win64.o:$PATH
+    export PATH=$dir/d/Xilinx/Vivado/2019.2/bin/:$PATH
+    export PATH=$dir/d/Wireshark:$PATH
+    export PATH=$dir/d/ffmpeg/bin:$PATH
+    export PATH=$dir/d/SEGGER/JLink:$PATH
+    export PATH=$dir/d/ConEmu:$PATH
+    # export PATH=$dir/d/Qt/Qt5.13.2/5.13.2/mingw73_64/bin:$PATH
+    export PATH=$dir/d/Qt/Qt5.13.2/5.13.2/msvc2017_64/bin:$PATH
+    export PATH=$dir/d/Microsoft\ Visual\ Studio\ 14.0/VC/bin/amd64:$PATH
+    export PATH=$dir/d/102-delivery/16-Profinet-For-Googol/V47/Installed_tools/Mingw/msys/1.0/local/bin:$PATH
+
+    if [ "$SHELL" == "/bin/bash" ];then
+        export PATH=$dir/d/cygwin64/bin:$PATH
+    fi
+}
+
+function _set_PS1()
+{
+    PS1="\u@\h \[\033[0;36m\]\W\[\033[0m\]\[\033[0;32m\]\$(_git-branch-prompt)\[\033[0m\] \$ "
+}
+
+function _set_lang()
+{
+     export LANG=en_US.UTF-8
+     export LANGUAGE=en_US.utf8
+     export LC_CTYPE="en_US.utf8"
+     export LC_NUMERIC="en_US.utf8"
+     export LC_TIME="en_US.utf8"
+     export LC_COLLATE="en_US.utf8"
+     export LC_MONETARY="en_US.utf8"
+     export LC_MESSAGES="en_US.utf8"
+     export LC_PAPER="en_US.utf8"
+     export LC_NAME="en_US.utf8"
+     export LC_ADDRESS="en_US.utf8"
+     export LC_TELEPHONE="en_US.utf8"
+     export LC_MEASUREMENT="en_US.utf8"
+     export LC_IDENTIFICATION="en_US.utf8"
+     export LC_ALL=en_US.utf8
+}
+
+function _task_list()
+{
+    case $1 in 
+        1)
+            task list proj:RTAI
+            return 0
+        ;;
+        2)
+            task list proj:infra
+            return 0
+        ;;
+        3)
+            task list proj:fpga
+            task list proj:FPGA
+            return 0
+        ;;
+        a)
+            task list
+            return 0
+        ;;
+        *)
+            task list
+            return 0
+        ;;
+    esac
+}
+
+function _tmux_new()
+{
+    let tmux_cnt=`tmux list-sessions 2>&1 | grep -v "no server running" | grep ":" | wc -l`
+    let tmux_cnt=$tmux_cnt+1
+
+    case $1 in 
+        1)
+        tmux new -s session-$tmux_cnt -n cygwin
+        ;;
+        *)
+        tmux new-session -d -s session-$tmux_cnt  -n cygwin
+        tmux new-window -d -n vbox-1
+        tmux new-window -d -n vbox-2
+        tmux new-window -d -n linux-1
+        tmux new-window -d -n linux-2
+        timeout --preserve-status 1s ping -c 1 -W 1 192.168.212.30 &> /dev/null  && tmux new-window -d -n server 
+        timeout --preserve-status 1s ping -c 1 -W 1 192.168.1.105  &> /dev/null  && tmux new-window -d -n t430 
+        timeout --preserve-status 1s ping -c 1 -W 1 192.168.1.103  &> /dev/null  && tmux new-window -d  -n MacOS 
+        # timeout --preserve-status 1s ping -c 1 -W 1 beaglebone     &> /dev/null  && tmux new-window -d  -n beaglebone 
+        tmux attach-session -d -t session-$tmux_cnt
+        ;;
+    esac
+}
+
+# ------------------------------------------------------------------- #
+# Customer Main Entry
+# ------------------------------------------------------------------- #
+function main ()
+{
+    _export_var
+    _set_path
+    _set_alias
+    _set_lang
+    _set_PS1
+
+    set -o vi
+
+    if [ "$SHELL" == "/bin/bash" ];then
+        task list
+    fi
+
+    _duty all & 
+
+}
+
+main $@
