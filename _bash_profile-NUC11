@@ -98,6 +98,7 @@ function _set_alias()
     alias server='ssh huangmianbo@192.168.212.30'
     alias gvim='VIM=D:\\Vim\\ VIMRUNTIME=D:\\Vim\\Vim82 /d/Vim/vim82/gvim -u D:\\Vim\\_vimrc'
     alias zynq-host='ssh huangmianbo@192.168.56.136'
+    alias nuc13='ssh huangmianbo@nuc13vyki7'
 }
 
 function _tmux()
