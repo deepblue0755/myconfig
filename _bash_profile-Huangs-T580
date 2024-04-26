@@ -757,6 +757,7 @@ function _set_alias()
     alias mysync='_sync'
     alias mv='mv -iv'
     alias nuc11='ssh mianb@nuc11'
+    alias nuc13='ssh huangmianbo@nuc13vyki7'
     alias netstat='_netstat'
     alias ps='_ps'
     alias powershell='powershell -F'
