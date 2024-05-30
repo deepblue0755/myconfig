@@ -923,6 +923,44 @@ function _tmux_new()
     esac
 }
 
+function auto_commit()
+{
+    if ! git rev-parse --is-inside-work-tree &>/dev/null;then
+        echo not a git repo
+        return 1
+    fi
+
+    if ! git status | grep -q modified;then
+        echo "no modification found in this repo"
+        return 1
+    fi
+
+    echo "git pull ..."
+    if git pull; then
+       echo "successfully git pull"
+    else
+       echo "failed to git pull"
+       return 1
+    fi
+
+
+    if [[ $(git status | grep -c modified) -gt 1 ]];then
+        files_list=$(git status | grep modified | awk -F: '{ print $2 }' | tr '\n' ',' | sed 's/^\s*//' | sed 's/  / /g')
+    else
+        files_list=$(git status | grep modified | awk -F: '{ print $2 }' | sed 's/^\s*//' | sed 's/  / /g')
+    fi
+
+    git commit -am  "UPDATE: Refactor $files_list from $HOSTNAME"
+    echo "git push ..."
+    if git remote | xargs -L1 git push ;then
+       echo "successfully git push"
+       return 0
+    else
+       echo "failed to git push"
+       return 1
+    fi
+}
+
 # ------------------------------------------------------------------- #
 # Customer Main Entry
 # ------------------------------------------------------------------- #
