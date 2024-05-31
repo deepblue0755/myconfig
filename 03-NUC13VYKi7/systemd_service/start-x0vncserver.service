@@ -1,0 +1,20 @@
+[Unit]
+Description=Remote desktop service (VNC)
+After=lightdm.service
+Requires=lightdm.service
+
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+User=huangmianbo
+Group=huangmianbo
+PAMName=login
+Environment='DISPLAY=:0'
+ExecStartPre=/bin/bash -c '/usr/bin/x0vncserver -kill :0 || true'
+ExecStartPre=/bin/bash -c '/usr/bin/pkill x0vncserver || true'
+ExecStartPre=/bin/sleep 3
+ExecStart=/usr/bin/x0vncserver -localhost 0 -display :0 -rfbport 5900 -PasswordFile=/home/huangmianbo/.vnc/passwd
+
+[Install]
+WantedBy=graphical.target

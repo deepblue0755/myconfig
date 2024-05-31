@@ -1,0 +1,12 @@
+[Unit]
+Description=Configure Static IP Address for Accessing 192.168.1.0/24 device
+After=networking.service
+
+[Service]
+Type=oneshot
+# ExecStartPre=/bin/sleep 30
+ExecStart=/sbin/ip address add 192.168.1.105/32 dev %i
+ExecStart=/sbin/ip route add 192.168.1.0/24 via 192.168.1.105 dev %i
+
+[Install]
+WantedBy=multi-user.target

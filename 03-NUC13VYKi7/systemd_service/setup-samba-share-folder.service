@@ -1,0 +1,13 @@
+[Unit]
+Description=Set up /tmp/samba/public samba shared directory
+Before=smbd.service nmbd.service
+
+[Service]
+Type=oneshot
+ExecStart=/home/huangmianbo/scripts/setup_samba_share_folder.sh
+
+
+[Install]
+WantedBy=multi-user.target
+
+
