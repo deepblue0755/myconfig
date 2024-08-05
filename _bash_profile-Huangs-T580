@@ -803,7 +803,7 @@ function _set_alias()
     alias vim='_gvim'
     alias vlc='vlc $* &> /dev/null'
     alias vscode='_code'
-    alias wakenuc='wolcmd 1C697AACA530 10.0.0.1 255.255.255.0 7'
+    alias wakenuc11='wolcmd 1C697AACA530 10.0.0.1 255.255.255.0 7'
     alias wakenuc13='wolcmd 48210B5FE59C 10.0.0.1 255.255.255.0 7'
     alias wakex='wolcmd 2CF05DC52323 10.0.0.1  255.255.255.0 7'
     alias zynq-host='ssh huangmianbo@10.0.0.136'
@@ -921,44 +921,6 @@ function _tmux_new()
         tmux attach-session -d -t session-$tmux_cnt
         ;;
     esac
-}
-
-function auto_commit()
-{
-    if ! git rev-parse --is-inside-work-tree &>/dev/null;then
-        echo not a git repo
-        return 1
-    fi
-
-    if ! git status | grep -q modified;then
-        echo "no modification found in this repo"
-        return 1
-    fi
-
-    echo "git pull ..."
-    if git pull; then
-       echo "successfully git pull"
-    else
-       echo "failed to git pull"
-       return 1
-    fi
-
-
-    if [[ $(git status | grep -c modified) -gt 1 ]];then
-        files_list=$(git status | grep modified | awk -F: '{ print $2 }' | tr '\n' ',' | sed 's/^\s*//' | sed 's/  / /g')
-    else
-        files_list=$(git status | grep modified | awk -F: '{ print $2 }' | sed 's/^\s*//' | sed 's/  / /g')
-    fi
-
-    git commit -am  "UPDATE: Refactor $files_list from $HOSTNAME"
-    echo "git push ..."
-    if git remote | xargs -L1 git push ;then
-       echo "successfully git push"
-       return 0
-    else
-       echo "failed to git push"
-       return 1
-    fi
 }
 
 # ------------------------------------------------------------------- #
