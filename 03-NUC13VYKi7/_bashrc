@@ -115,7 +115,7 @@ fi
 # ------------------------------------------------------------ #
 # Customer Settings
 # ------------------------------------------------------------ #
-function set_env()
+function _set_env()
 {
 	local lua_dir=$(find /usr/local/lua/ -mindepth 1 -maxdepth 1 -type d | sort -Vr | head -n1)/bin
 	local vim_dir=$(find /usr/local/vim/ -mindepth 1 -maxdepth 1 -type d | sort -Vr | head -n1)/bin
@@ -127,17 +127,37 @@ function set_env()
 	if [[ -d ${vim_dir} ]] && ! echo "$PATH" | grep -q "${vim_dir}";then
 		export PATH=${vim_dir}:$PATH
 	fi
+
+    export PATH=$PATH:~/scripts/
+
+    export EDITOR=vim
+
+    if [[ -z "$DISPLAY" ]];then
+        export DISPLAY=:0
+        xhost +local: &>/dev/null
+    fi
 }
 
-function set_alias()
+function _set_alias()
 {
 	alias rm='rm -iv --preserve-root'
 	alias cp='cp -iv'
 	alias mv='mv -iv'
 	alias reload='source ~/.bashrc'
+    alias doc='pushd ~/documents &>/dev/null || echo "pushd to ~/documents failed"'
+    alias ..='cd ..'
+    alias ...='cd ../../'
+    alias ....='cd ../../../'
+    alias vi='vim --noplugin'
+    alias ctags='ctags -f .tags --output-format=e-ctags'
+    alias ctags++='\ctags -f .tags --languages=C,C++ --c++-kinds=+px --fields=+iaS --extras=+q  --sort=foldcase --output-format=e-ctags --exclude=build'
+    alias config='vim ~/.bashrc'
+    alias insmod='sudo /sbin/insmod'
+    alias rmmod='sudo /sbin/rmmod'
+    alias modinfo='sudo /sbin/modinfo'
 }
 
-function set_history()
+function _set_history()
 {
 	shopt -s histappend
 	export PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
@@ -146,13 +166,109 @@ function set_history()
 	HISTIGNORE="&:ls:[bf]g:exit:clear"
 }
 
-function set_miscs()
+function _set_miscs()
 {
 	set -o vi
 }
 
+function _git-branch-prompt 
+{
+    local branch=$(git symbolic-ref --short -q HEAD 2>/dev/null)
+    test -n "$branch" &&  printf " [%s]" $branch
+}
 
-set_history
-set_env
-set_alias
-set_miscs
+function _set_PS1()
+{
+    # Define color variables
+    CYAN="\[\033[0;36m\]"
+    GREEN="\[\033[0;32m\]"
+    RESET="\[\033[0m\]"
+
+    # only valid for bash
+    if ps -p $$ -ocomm= | grep -q "bash" ;then
+        PS1="${GREEN}\u@\h${RESET} ${CYAN}\W${RESET}${GREEN}\$(_git-branch-prompt)${RESET} \$ "
+    fi
+}
+
+function autocommit()
+{
+    if ! git rev-parse --is-inside-work-tree &>/dev/null;then
+        echo not a git repo
+        return 1
+    fi
+
+    if ! git status | grep -q modified;then
+        if ! git status | grep -q "new file";then
+            echo "no modification or new file found in this repo"
+            return 1
+        fi
+    fi
+
+    echo "git pull ..."
+    if git pull; then
+       echo "successfully git pull"
+    else
+       echo "failed to git pull"
+       return 1
+    fi
+
+    local commit_string=""
+   
+    if [[ $(git status | grep -c modified) -gt 1 ]];then
+        files_list=$(git status | grep modified | awk -F: '{ print $2 }' | tr '\n' ',' | sed 's/^\s*//' | sed 's/  / /g')
+        commit_string="UPDATE: Refactor $files_list from $HOSTNAME"
+    elif [[  $(git status | grep -c modified) -eq 1  ]];then
+        files_list=$(git status | grep modified | awk -F: '{ print $2 }' | sed 's/^\s*//' | sed 's/  / /g')
+        commit_string="UPDATE: Refactor $files_list from $HOSTNAME"
+    else
+        :
+    fi
+
+    if [[ $(git status | grep -c "new file") -gt 1 ]];then
+        files_list=$(git status | grep "new file" | awk -F: '{ print $2 }' | tr '\n' ',' | sed 's/^\s*//' | sed 's/  / /g')
+        if [[ -n "$commit_string" ]];then
+            commit_string="${commit_string}"$'\n'"NEW: Create new script $files_list from $HOSTNAME"
+        else
+            commit_string="NEW: Create new script $files_list from $HOSTNAME"
+        fi
+    elif [[ $(git status | grep -c "new file") -eq 1 ]];then
+        files_list=$(git status | grep "new file" | awk -F: '{ print $2 }' | sed 's/^\s*//' | sed 's/  / /g')
+        if [[ -n "$commit_string" ]];then
+            commit_string="${commit_string}"$'\n'"NEW: Create new script $files_list from $HOSTNAME" 
+        else
+            commit_string="NEW: Create new script $files_list from $HOSTNAME"
+        fi
+    else
+        :
+    fi
+
+    git commit -am "${commit_string}"
+
+    echo "git push ..."
+    if git remote | xargs -L1 git push ;then
+       echo "successfully git push"
+       return 0
+    else
+       echo "failed to git push"
+       return 1
+    fi
+}
+
+function wincopy()
+{
+    # FIXME can not access clipboard remotely
+    # ssh mianb@10.0.0.3 "Powershell -File D:\Batch\Get-ClipBoard.ps1"
+    # ssh mianb@10.0.0.3 "D:\Batch\Get-ClipBoard.bat"
+    # ssh mianb@10.0.0.3 "powershell -command \"Get-ClipBoard > R:\Temp\clipboard.txt\""
+    # ssh mianb@10.0.0.3 "type R:\Temp\clipboard.txt"
+    :
+    # | DISPLAY=:0 xclip -selection clipboard
+}
+
+
+
+_set_history
+_set_env
+_set_alias
+_set_miscs
+_set_PS1
