@@ -12,12 +12,12 @@ else
 fi
 
 function PINFO() {
-    echo  -e "${GREEN}INFO ($BASH_LINENO): $* ${NORMAL}"
+    echo  -e "${GREEN}INFO ($(basename $0):$BASH_LINENO): $* ${NORMAL}"
     return 0
 }
 
 function PERROR() {
-    echo  -e "${RED}ERROR ($BASH_LINENO): $* ${NORMAL}"
+    echo  -e "${RED}ERROR ($(basename $0):$BASH_LINENO): $* ${NORMAL}"
     return 0
 }
 
@@ -111,12 +111,14 @@ if [[ ! -d "${workdir}" ]];then
     exit 1
 fi
 
+pushd "${workdir}" &>/dev/null || exit 1
 PINFO "git pull ..."
 if ! git pull &>/dev/null;then
     PERROR "git pull failed"
 else
     PINFO "successfully git pull"
 fi
+popd &>/dev/null || exit 1
 
 
 PINFO "check if _bashrc need to updated"
