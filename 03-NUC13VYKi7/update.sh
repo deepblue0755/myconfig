@@ -39,6 +39,70 @@ function list_vim_plugins()
     popd &>/dev/null || exit 1
 }
 
+function autocommit()
+{
+    if ! git rev-parse --is-inside-work-tree &>/dev/null;then
+        echo not a git repo
+        return 1
+    fi
+
+    if ! git status | grep -q modified;then
+        if ! git status | grep -q "new file";then
+            echo "no modification or new file found in this repo"
+            return 1
+        fi
+    fi
+
+    echo "git pull ..."
+    if git pull; then
+       echo "successfully git pull"
+    else
+       echo "failed to git pull"
+       return 1
+    fi
+
+    local commit_string=""
+   
+    if [[ $(git status | grep -c modified) -gt 1 ]];then
+        files_list=$(git status | grep modified | awk -F: '{ print $2 }' | tr '\n' ',' | sed 's/^\s*//' | sed 's/  / /g')
+        commit_string="UPDATE: Refactor $files_list from $HOSTNAME"
+    elif [[  $(git status | grep -c modified) -eq 1  ]];then
+        files_list=$(git status | grep modified | awk -F: '{ print $2 }' | sed 's/^\s*//' | sed 's/  / /g')
+        commit_string="UPDATE: Refactor $files_list from $HOSTNAME"
+    else
+        :
+    fi
+
+    if [[ $(git status | grep -c "new file") -gt 1 ]];then
+        files_list=$(git status | grep "new file" | awk -F: '{ print $2 }' | tr '\n' ',' | sed 's/^\s*//' | sed 's/  / /g')
+        if [[ -n "$commit_string" ]];then
+            commit_string="${commit_string}"$'\n'"NEW: Create new script $files_list from $HOSTNAME"
+        else
+            commit_string="NEW: Create new script $files_list from $HOSTNAME"
+        fi
+    elif [[ $(git status | grep -c "new file") -eq 1 ]];then
+        files_list=$(git status | grep "new file" | awk -F: '{ print $2 }' | sed 's/^\s*//' | sed 's/  / /g')
+        if [[ -n "$commit_string" ]];then
+            commit_string="${commit_string}"$'\n'"NEW: Create new script $files_list from $HOSTNAME" 
+        else
+            commit_string="NEW: Create new script $files_list from $HOSTNAME"
+        fi
+    else
+        :
+    fi
+
+    git commit -am "${commit_string}"
+
+    echo "git push ..."
+    if git remote | xargs -L1 git push ;then
+       echo "successfully git push"
+       return 0
+    else
+       echo "failed to git push"
+       return 1
+    fi
+}
+
 
 workdir="/home/$(id -nu 1000)/documents/11-configs-from-github/03-NUC13VYKi7/"
 
@@ -85,3 +149,8 @@ PINFO "update vim plugin list ..."
 else
     PINFO "no need to update vim plugin list"
 fi
+
+PINFO "git commit and push the change ..."
+pushd ${workdir} &>/dev/null || exit 1
+autocommit
+popd &>/dev/null || exit 1
