@@ -1,5 +1,7 @@
 #!/bin/bash
 
+workdir="/home/$(id -nu 1000)/documents/11-configs-from-github/03-NUC13VYKi7/"
+
 if [ -t 1 ];then
     GREEN="\033[0;32m"
     RED="\033[0;31m"
@@ -103,9 +105,6 @@ function autocommit()
     fi
 }
 
-
-workdir="/home/$(id -nu 1000)/documents/11-configs-from-github/03-NUC13VYKi7/"
-
 if [[ ! -d "${workdir}" ]];then
     PERROR "can not find work directory ${workdir}"
     exit 1
@@ -126,7 +125,7 @@ if diff -q ${workdir}/_bashrc /home/$(id -nu 1000)/.bashrc;then
     PINFO "no need to update _bashrc ..."
 else
     PINFO "update _bashrc ..."
-    cp -fv /home/$(id -nu 1000)/.bashrc _bashrc
+    cp -fv /home/$(id -nu 1000)/.bashrc ${workdir}/_bashrc
 fi
 
 
