@@ -156,6 +156,8 @@ function _set_alias()
     alias rmmod='sudo /sbin/rmmod'
     alias modinfo='sudo /sbin/modinfo'
     alias server='ssh huangmianbo@192.168.212.30'
+    alias mount='sudo mount'
+    alias umount='sudo umount'
 }
 
 function _set_history()
