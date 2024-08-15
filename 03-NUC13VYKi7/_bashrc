@@ -138,6 +138,11 @@ function _set_env()
     fi
 }
 
+function _grep_fn() 
+{
+    find ./ -type f -print0 | xargs -0 \grep --color=auto -n -i "$@"
+}
+
 function _set_alias()
 {
 	alias rm='rm -iv --preserve-root'
@@ -158,6 +163,9 @@ function _set_alias()
     alias server='ssh huangmianbo@192.168.212.30'
     alias mount='sudo mount'
     alias umount='sudo umount'
+    alias fdisk='/sbin/fdisk'
+    alias grep='grep --color=auto --exclude-dir=.git'
+    alias diff='colordiff'
 }
 
 function _set_history()

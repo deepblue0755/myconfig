@@ -287,6 +287,7 @@ ii  fortune-mod                            1:1.99.1-7.3                         
 ii  fortunes-min                           1:1.99.1-7.3                            all          Data files containing selected fortune cookies
 ii  fragmaster                             1.7-11                                  all          use of psfrag constructs with pdflatex
 ii  fuse3                                  3.14.0-4                                amd64        Filesystem in Userspace (3.x version)
+ii  fuseiso                                20070708-3.2+b1                         amd64        FUSE module to mount ISO filesystem images
 ii  g++                                    4:12.2.0-3                              amd64        GNU C++ compiler
 ii  g++-12                                 12.2.0-14                               amd64        GNU C++ compiler
 ii  g++-12-arm-linux-gnueabi               12.2.0-14cross1                         amd64        GNU C++ compiler (cross compiler for armel architecture)
