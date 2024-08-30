@@ -688,6 +688,7 @@ ii  libbrotli-dev:amd64                    1.0.9-2+b6                           
 ii  libbrotli1:amd64                       1.0.9-2+b6                              amd64        library implementing brotli encoder and decoder (shared libraries)
 ii  libbrotli1:i386                        1.0.9-2+b6                              i386         library implementing brotli encoder and decoder (shared libraries)
 ii  libbs2b0:amd64                         3.1.0+dfsg-7                            amd64        Bauer stereophonic-to-binaural DSP library
+ii  libbsd-dev:amd64                       0.11.7-2                                amd64        utility functions from BSD systems - development files
 ii  libbsd0:amd64                          0.11.7-2                                amd64        utility functions from BSD systems - shared library
 ii  libbsd0:i386                           0.11.7-2                                i386         utility functions from BSD systems - shared library
 ii  libbtparse2                            0.89-1                                  amd64        C library to parse BibTeX files
@@ -1268,6 +1269,7 @@ ii  libmbedcrypto7:amd64                   2.28.3-1                             
 ii  libmbim-glib4:amd64                    1.28.2-1                                amd64        Support library to use the MBIM protocol
 ii  libmbim-proxy                          1.28.2-1                                amd64        Proxy to communicate with MBIM ports
 ii  libmbim-utils                          1.28.2-1                                amd64        Utilities to use the MBIM protocol from the command line
+ii  libmd-dev:amd64                        1.0.4-2                                 amd64        message digest functions from BSD systems - development files
 ii  libmd0:amd64                           1.0.4-2                                 amd64        message digest functions from BSD systems - shared library
 ii  libmd0:i386                            1.0.4-2                                 i386         message digest functions from BSD systems - shared library
 ii  libmd4c0:amd64                         0.4.8-1                                 amd64        Markdown for C
@@ -2034,6 +2036,7 @@ ii  libz3-4:i386                           4.8.12-3.1                           
 ii  libz3-dev:amd64                        4.8.12-3.1                              amd64        theorem prover from Microsoft Research - development files
 ii  libzbar0:amd64                         0.23.92-7+deb12u1                       amd64        QR code / bar code scanner and decoder (library)
 ii  libzimg2:amd64                         3.0.4+ds1-1                             amd64        scaling, colorspace, depth conversion library (shared library)
+ii  libzip-dev:amd64                       1.7.3-1+b1                              amd64        library for reading, creating, and modifying zip archives (development)
 ii  libzip4:amd64                          1.7.3-1+b1                              amd64        library for reading, creating, and modifying zip archives (runtime)
 ii  libzmf-0.0-0:amd64                     0.0.2-1+b5                              amd64        Zoner Draw/Zebra file reading/converting library
 ii  libzmq5:amd64                          4.3.4-6                                 amd64        lightweight messaging kernel (shared library)
