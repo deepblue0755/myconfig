@@ -2106,6 +2106,9 @@ ii  mousepad                               0.5.10-2                             
 ii  mpi-default-bin                        1.14                                    amd64        Standard MPI runtime programs (metapackage)
 ii  mpi-default-dev                        1.14                                    amd64        Standard MPI development files (metapackage)
 ii  mupdf-tools                            1.21.1+ds2-1+b4                         amd64        command line tools for the MuPDF viewer
+ii  musl:amd64                             1.2.3-1                                 amd64        standard C library
+ii  musl-dev:amd64                         1.2.3-1                                 amd64        standard C library development files
+ii  musl-tools                             1.2.3-1                                 amd64        standard C library tools
 ii  mysql-common                           5.8+1.1.0                               all          MySQL database common files, e.g. /etc/mysql/my.cnf
 ii  mythes-en-us                           1:7.5.0-1                               all          English (USA) Thesaurus for LibreOffice
 ii  nano                                   7.2-1+deb12u1                           amd64        small, friendly text editor inspired by Pico
