@@ -335,7 +335,7 @@ ii  gir1.2-gdkpixbuf-2.0:amd64             2.42.10+dfsg-1+deb12u1               
 ii  gir1.2-glib-2.0:amd64                  1.74.0-3                                amd64        Introspection data for GLib, GObject, Gio and GModule
 ii  gir1.2-gst-plugins-base-1.0:amd64      1.22.0-3+deb12u2                        amd64        GObject introspection data for the GStreamer Plugins Base library
 ii  gir1.2-gstreamer-1.0:amd64             1.22.0-2                                amd64        GObject introspection data for the GStreamer library
-ii  gir1.2-gtk-3.0:amd64                   3.24.38-2~deb12u1                       amd64        GTK graphical user interface library -- gir bindings
+ii  gir1.2-gtk-3.0:amd64                   3.24.38-2~deb12u2                       amd64        GTK graphical user interface library -- gir bindings
 ii  gir1.2-gtksource-3.0:amd64             3.24.11-2+b1                            amd64        gir files for the GTK+ syntax highlighting widget
 ii  gir1.2-handy-1:amd64                   1.8.1-1                                 amd64        GObject introspection files for libhandy
 ii  gir1.2-harfbuzz-0.0:amd64              6.0.0+dfsg-3                            amd64        OpenType text shaping engine (GObject introspection data)
@@ -392,7 +392,7 @@ ii  gstreamer1.0-plugins-base:i386         1.22.0-3+deb12u2                     
 ii  gstreamer1.0-plugins-good:amd64        1.22.0-5+deb12u1                        amd64        GStreamer plugins from the "good" set
 ii  gstreamer1.0-plugins-ugly:amd64        1.22.0-2+deb12u1                        amd64        GStreamer plugins from the "ugly" set
 ii  gstreamer1.0-x:amd64                   1.22.0-3+deb12u2                        amd64        GStreamer plugins for X11 and Pango
-ii  gtk-update-icon-cache                  3.24.38-2~deb12u1                       amd64        icon theme caching utility
+ii  gtk-update-icon-cache                  3.24.38-2~deb12u2                       amd64        icon theme caching utility
 ii  gtk2-engines-pixbuf:amd64              2.24.33-2                               amd64        pixbuf-based theme for GTK 2
 ii  gvfs:amd64                             1.50.3-1                                amd64        userspace virtual filesystem - GIO module
 ii  gvfs-common                            1.50.3-1                                all          userspace virtual filesystem - common data files
@@ -1076,10 +1076,10 @@ ii  libgstreamer-plugins-base1.0-0:amd64   1.22.0-3+deb12u2                     
 ii  libgstreamer-plugins-base1.0-0:i386    1.22.0-3+deb12u2                        i386         GStreamer libraries from the "base" set
 ii  libgstreamer1.0-0:amd64                1.22.0-2                                amd64        Core GStreamer libraries and elements
 ii  libgstreamer1.0-0:i386                 1.22.0-2                                i386         Core GStreamer libraries and elements
-ii  libgtk-3-0:amd64                       3.24.38-2~deb12u1                       amd64        GTK graphical user interface library
-ii  libgtk-3-bin                           3.24.38-2~deb12u1                       amd64        programs for the GTK graphical user interface library
-ii  libgtk-3-common                        3.24.38-2~deb12u1                       all          common files for the GTK graphical user interface library
-ii  libgtk-3-dev:amd64                     3.24.38-2~deb12u1                       amd64        development files for the GTK library
+ii  libgtk-3-0:amd64                       3.24.38-2~deb12u2                       amd64        GTK graphical user interface library
+ii  libgtk-3-bin                           3.24.38-2~deb12u2                       amd64        programs for the GTK graphical user interface library
+ii  libgtk-3-common                        3.24.38-2~deb12u2                       all          common files for the GTK graphical user interface library
+ii  libgtk-3-dev:amd64                     3.24.38-2~deb12u2                       amd64        development files for the GTK library
 ii  libgtk2.0-0:amd64                      2.24.33-2                               amd64        GTK graphical user interface library - old version
 ii  libgtk2.0-bin                          2.24.33-2                               amd64        programs for the GTK graphical user interface library
 ii  libgtk2.0-common                       2.24.33-2                               all          common files for the GTK graphical user interface library
