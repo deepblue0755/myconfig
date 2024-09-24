@@ -272,7 +272,7 @@ function autocommit()
         :
     fi
 
-    git commit -am "${commit_string}"
+    git commit -s -am "${commit_string}"
 
     echo "git push ..."
     if git remote | xargs -L1 git push ;then
