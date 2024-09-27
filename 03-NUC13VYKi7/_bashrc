@@ -143,6 +143,14 @@ function _grep_fn()
     find ./ -type f -print0 | xargs -0 \grep --color=auto -n -i "$@"
 }
 
+function _rmkh()
+{
+    if [[ -z "$1" ]];then
+        echo "ERROR: please input ip address"
+    fi
+    ssh-keygen -f "$HOME/.ssh/known_hosts" -R "$1"
+}
+
 function _set_alias()
 {
 	alias rm='rm -iv --preserve-root'
@@ -166,6 +174,7 @@ function _set_alias()
     alias fdisk='/sbin/fdisk'
     alias grep='grep --color=auto --exclude-dir=.git'
     alias diff='colordiff'
+    alias rmkh='_rmkh'
     alias motton='shuf -n 1 ~/documents/11-configs-from-github/03-NUC13VYKi7/mottos.txt'
 }
 
@@ -177,6 +186,8 @@ function _set_history()
 	HISTCONTROL=ignoredups:erasedups
 	HISTIGNORE="&:ls:[bf]g:exit:clear"
 }
+
+
 
 function _set_miscs()
 {
