@@ -2171,19 +2171,19 @@ ii  light-locker                           1.8.0-3                              
 ii  lightdm                                1.26.0-8                                amd64        simple display manager
 ii  lightdm-gtk-greeter                    2.0.8-2+b1                              amd64        simple display manager (GTK+ greeter)
 ii  linux-base                             4.9                                     all          Linux image base package
-ii  linux-compiler-gcc-12-x86              6.1.99-1                                amd64        Compiler for Linux on x86 (meta-package)
-ii  linux-headers-6.1.0-23-amd64           6.1.99-1                                amd64        Header files for Linux 6.1.0-23-amd64
-ii  linux-headers-6.1.0-23-common          6.1.99-1                                all          Common header files for Linux 6.1.0-23
-ii  linux-headers-amd64                    6.1.99-1                                amd64        Header files for Linux amd64 configuration (meta-package)
-ii  linux-image-6.1.0-23-amd64             6.1.99-1                                amd64        Linux 6.1 for 64-bit PCs (signed)
-ii  linux-image-amd64                      6.1.99-1                                amd64        Linux for 64-bit PCs (meta-package)
-ii  linux-kbuild-6.1                       6.1.99-1                                amd64        Kbuild infrastructure for Linux 6.1
-ii  linux-libc-dev:amd64                   6.1.99-1                                amd64        Linux support headers for userspace development
+ii  linux-compiler-gcc-12-x86              6.1.106-3                               amd64        Compiler for Linux on x86 (meta-package)
+ii  linux-headers-6.1.0-25-amd64           6.1.106-3                               amd64        Header files for Linux 6.1.0-25-amd64
+ii  linux-headers-6.1.0-25-common          6.1.106-3                               all          Common header files for Linux 6.1.0-25
+ii  linux-headers-amd64                    6.1.106-3                               amd64        Header files for Linux amd64 configuration (meta-package)
+ii  linux-image-6.1.0-25-amd64             6.1.106-3                               amd64        Linux 6.1 for 64-bit PCs (signed)
+ii  linux-image-amd64                      6.1.106-3                               amd64        Linux for 64-bit PCs (meta-package)
+ii  linux-kbuild-6.1                       6.1.106-3                               amd64        Kbuild infrastructure for Linux 6.1
+ii  linux-libc-dev:amd64                   6.1.106-3                               amd64        Linux support headers for userspace development
 ii  linux-libc-dev-arm64-cross             6.1.4-1cross1                           all          Linux Kernel Headers for development (for cross-compiling)
 ii  linux-libc-dev-armel-cross             6.1.4-1cross1                           all          Linux Kernel Headers for development (for cross-compiling)
 ii  linux-libc-dev-armhf-cross             6.1.4-1cross1                           all          Linux Kernel Headers for development (for cross-compiling)
 ii  linux-libc-dev-i386-cross              6.1.4-1cross1                           all          Linux Kernel Headers for development (for cross-compiling)
-ii  linux-perf                             6.1.99-1                                amd64        Performance analysis tools for Linux
+ii  linux-perf                             6.1.106-3                               amd64        Performance analysis tools for Linux
 ii  llvm-14                                1:14.0.6-12                             amd64        Modular compiler and toolchain technologies
 ii  llvm-14-dev                            1:14.0.6-12                             amd64        Modular compiler and toolchain technologies, libraries and headers
 ii  llvm-14-linker-tools                   1:14.0.6-12                             amd64        Modular compiler and toolchain technologies - Plugins
