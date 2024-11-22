@@ -187,8 +187,6 @@ function _set_history()
 	HISTIGNORE="&:ls:[bf]g:exit:clear"
 }
 
-
-
 function _set_miscs()
 {
 	set -o vi
@@ -293,6 +291,16 @@ function autocommit()
        echo "failed to git push"
        return 1
     fi
+}
+
+function namegen()
+{
+    for app in curl jq;
+    do
+        which $app  &>/dev/null || return 1
+    done
+    curl -s https://randomuser.me/api/ | jq '.results[0].name | .first + " " + .last'
+    return 0
 }
 
 function wincopy()
