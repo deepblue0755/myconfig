@@ -309,8 +309,6 @@ function enamegen()
     fi
 }
 
-
-
 function namegen()
 {
     for app in curl jq;
@@ -320,6 +318,23 @@ function namegen()
     curl -s https://randomuser.me/api/ | jq '.results[0].name | .first + " " + .last'
     return 0
 }
+
+function surnamegen()
+{
+    local namefile="/home/$(id -nu 1000)/documents/10-github-documents/NUC13RNGi9/English-surname.txt"
+
+    if [[ ! -f "${namefile}" ]];then
+        echo "ERROR: can not find the file $namefile"
+        return 1
+    fi
+
+    if [[ -z "$1" ]];then
+        shuf -n 1 "${namefile}"
+    else
+        shuf -n 1 <(grep -i "^$1" "${namefile}")
+    fi
+}
+
 
 function wordgen()
 {
