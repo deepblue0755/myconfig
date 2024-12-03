@@ -175,9 +175,10 @@ ii  exo-utils                              4.18.0-1                             
 ii  fakeroot                               1.31-1.2                                amd64        tool for simulating superuser privileges
 ii  fdisk                                  2.38.1-5+deb12u2                        amd64        collection of partitioning utilities
 ii  feynmf                                 1.08-14                                 all          set of LaTeX macros for creating Feynman diagrams
+ii  ffmpeg                                 7:5.1.6-0+deb12u1                       amd64        Tools for transcoding, streaming and playing of multimedia files
 ii  file                                   1:5.44-3                                amd64        Recognize the type of data in a file using "magic" numbers
 ii  findutils                              4.9.0-4                                 amd64        utilities for finding files--find, xargs
-ii  firefox-esr                            128.4.0esr-1~deb12u1                    amd64        Mozilla Firefox web browser - Extended Support Release (ESR)
+ii  firefox-esr                            128.5.0esr-1~deb12u1                    amd64        Mozilla Firefox web browser - Extended Support Release (ESR)
 ii  firmware-iwlwifi                       20230210-5                              all          Binary firmware for Intel Wireless cards
 ii  firmware-linux-free                    20200122-1                              all          Binary firmware for various drivers in the Linux kernel
 ii  firmware-misc-nonfree                  20230210-5                              all          Binary firmware for various drivers in the Linux kernel
@@ -341,7 +342,7 @@ ii  gir1.2-gtk-3.0:amd64                   3.24.38-2~deb12u3                    
 ii  gir1.2-gtksource-3.0:amd64             3.24.11-2+b1                            amd64        gir files for the GTK+ syntax highlighting widget
 ii  gir1.2-handy-1:amd64                   1.8.1-1                                 amd64        GObject introspection files for libhandy
 ii  gir1.2-harfbuzz-0.0:amd64              6.0.0+dfsg-3                            amd64        OpenType text shaping engine (GObject introspection data)
-ii  gir1.2-javascriptcoregtk-4.0:amd64     2.46.3-1~deb12u1                        amd64        JavaScript engine library from WebKitGTK - GObject introspection data
+ii  gir1.2-javascriptcoregtk-4.0:amd64     2.46.4-1~deb12u1                        amd64        JavaScript engine library from WebKitGTK - GObject introspection data
 ii  gir1.2-keybinder-3.0                   0.3.2-1.1                               amd64        registers global key bindings for applications - Gtk+3 - typelib
 ii  gir1.2-notify-0.7:amd64                0.8.1-1                                 amd64        sends desktop notifications to a notification daemon (Introspection files)
 ii  gir1.2-packagekitglib-1.0              1.2.6-5                                 amd64        GObject introspection data for the PackageKit GLib library
@@ -349,7 +350,7 @@ ii  gir1.2-pango-1.0:amd64                 1.50.12+ds-1                         
 ii  gir1.2-polkit-1.0                      122-3                                   amd64        GObject introspection data for polkit
 ii  gir1.2-secret-1:amd64                  0.20.5-3                                amd64        Secret store (GObject-Introspection)
 ii  gir1.2-soup-2.4:amd64                  2.74.3-1                                amd64        GObject introspection data for the libsoup HTTP library
-ii  gir1.2-webkit2-4.0:amd64               2.46.3-1~deb12u1                        amd64        Web content engine library for GTK - GObject introspection data
+ii  gir1.2-webkit2-4.0:amd64               2.46.4-1~deb12u1                        amd64        Web content engine library for GTK - GObject introspection data
 ii  gir1.2-wnck-3.0:amd64                  43.0-3                                  amd64        GObject introspection data for the WNCK library
 ii  git                                    1:2.39.5-0+deb12u1                      amd64        fast, scalable, distributed revision control system
 ii  git-man                                1:2.39.5-0+deb12u1                      all          fast, scalable, distributed revision control system (manual pages)
@@ -375,6 +376,7 @@ ii  gpg-wks-server                         2.2.40-1.1                           
 ii  gpgconf                                2.2.40-1.1                              amd64        GNU privacy guard - core configuration utilities
 ii  gpgsm                                  2.2.40-1.1                              amd64        GNU privacy guard - S/MIME version
 ii  gpgv                                   2.2.40-1.1                              amd64        GNU privacy guard - signature verification tool
+ii  graphicsmagick                         1.4+really1.3.40-4                      amd64        collection of image processing tools
 ii  grep                                   3.8-5                                   amd64        GNU grep, egrep and fgrep
 ii  groff-base                             1.22.4-10                               amd64        GNU troff text-formatting system (base system components)
 ii  grub-common                            2.06-13+deb12u1                         amd64        GRand Unified Bootloader (common files)
@@ -572,6 +574,7 @@ ii  libavahi-core7:amd64                   0.8-10                               
 ii  libavahi-glib1:amd64                   0.8-10                                  amd64        Avahi GLib integration library
 ii  libavc1394-0:amd64                     0.5.4-5                                 amd64        control IEEE 1394 audio/video devices
 ii  libavcodec59:amd64                     7:5.1.6-0+deb12u1                       amd64        FFmpeg library with de/encoders for audio/video codecs - runtime files
+ii  libavdevice59:amd64                    7:5.1.6-0+deb12u1                       amd64        FFmpeg library for handling input and output devices - runtime files
 ii  libavfilter8:amd64                     7:5.1.6-0+deb12u1                       amd64        FFmpeg library containing media filters - runtime files
 ii  libavformat59:amd64                    7:5.1.6-0+deb12u1                       amd64        FFmpeg library with (de)muxers for multimedia containers - runtime files
 ii  libavif15:amd64                        0.11.1-1                                amd64        Library for handling .avif files
@@ -767,6 +770,8 @@ ii  libcarp-clan-perl                      6.08-2                               
 ii  libcbor0.8:amd64                       0.8.0-2+b1                              amd64        library for parsing and generating CBOR (RFC 7049)
 ii  libcc1-0:amd64                         12.2.0-14                               amd64        GCC cc1 plugin for GDB
 ii  libccolamd2:amd64                      1:5.12.0+dfsg-2                         amd64        constrained column approximate library for sparse matrices
+ii  libcdio-cdda2:amd64                    10.2+2.0.1-1                            amd64        library to read and control digital audio CDs
+ii  libcdio-paranoia2:amd64                10.2+2.0.1-1                            amd64        library to read digital audio CDs with error correction
 ii  libcdio19:amd64                        2.1.0-4                                 amd64        library to read and control CD-ROM
 ii  libcdparanoia0:amd64                   3.10.2+debian-14                        amd64        audio extraction tool for sampling CDs (library)
 ii  libcdparanoia0:i386                    3.10.2+debian-14                        i386         audio extraction tool for sampling CDs (library)
@@ -1100,6 +1105,7 @@ ii  libgphoto2-port12:amd64                2.5.30-1                             
 ii  libgpm2:amd64                          1.20.7-10+b1                            amd64        General Purpose Mouse - shared library
 ii  libgprofng0:amd64                      2.40-2                                  amd64        GNU Next Generation profiler (runtime library)
 ii  libgraphene-1.0-0:amd64                1.10.8-1                                amd64        library of graphic data types
+ii  libgraphicsmagick-q16-3                1.4+really1.3.40-4                      amd64        format-independent image processing - C shared library
 ii  libgraphite2-3:amd64                   1.3.14-1                                amd64        Font rendering engine for Complex Scripts -- library
 ii  libgraphite2-3:i386                    1.3.14-1                                i386         Font rendering engine for Complex Scripts -- library
 ii  libgraphite2-dev:amd64                 1.3.14-1                                amd64        Development files for libgraphite2
@@ -1211,8 +1217,8 @@ ii  libitm1-arm64-cross                    12.2.0-14cross1                      
 ii  libitm1-i386-cross                     12.2.0-14cross1                         all          GNU Transactional Memory Library
 ii  libjack-jackd2-0:amd64                 1.9.21~dfsg-3                           amd64        JACK Audio Connection Kit (libraries)
 ii  libjansson4:amd64                      2.14-2                                  amd64        C library for encoding, decoding and manipulating JSON data
-ii  libjavascriptcoregtk-4.0-18:amd64      2.46.3-1~deb12u1                        amd64        JavaScript engine library from WebKitGTK
-ii  libjavascriptcoregtk-4.1-0:amd64       2.46.3-1~deb12u1                        amd64        JavaScript engine library from WebKitGTK
+ii  libjavascriptcoregtk-4.0-18:amd64      2.46.4-1~deb12u1                        amd64        JavaScript engine library from WebKitGTK
+ii  libjavascriptcoregtk-4.1-0:amd64       2.46.4-1~deb12u1                        amd64        JavaScript engine library from WebKitGTK
 ii  libjbig-dev:amd64                      2.1-6.1                                 amd64        JBIGkit development files
 ii  libjbig0:amd64                         2.1-6.1                                 amd64        JBIGkit libraries
 ii  libjbig0:i386                          2.1-6.1                                 i386         JBIGkit libraries
@@ -1911,8 +1917,8 @@ ii  libwayland-egl1:i386                   1.21.0-1                             
 ii  libwayland-server0:amd64               1.21.0-1                                amd64        wayland compositor infrastructure - server library
 ii  libwayland-server0:i386                1.21.0-1                                i386         wayland compositor infrastructure - server library
 ii  libwbclient0:amd64                     2:4.17.12+dfsg-0+deb12u1                amd64        Samba winbind client library
-ii  libwebkit2gtk-4.0-37:amd64             2.46.3-1~deb12u1                        amd64        Web content engine library for GTK
-ii  libwebkit2gtk-4.1-0:amd64              2.46.3-1~deb12u1                        amd64        Web content engine library for GTK
+ii  libwebkit2gtk-4.0-37:amd64             2.46.4-1~deb12u1                        amd64        Web content engine library for GTK
+ii  libwebkit2gtk-4.1-0:amd64              2.46.4-1~deb12u1                        amd64        Web content engine library for GTK
 ii  libwebp-dev:amd64                      1.2.4-0.2+deb12u1                       amd64        Lossy compression of digital photographic images
 ii  libwebp7:amd64                         1.2.4-0.2+deb12u1                       amd64        Lossy compression of digital photographic images
 ii  libwebp7:i386                          1.2.4-0.2+deb12u1                       i386         Lossy compression of digital photographic images
@@ -2233,6 +2239,7 @@ ii  musl-tools                             1.2.3-1                              
 ii  mysql-common                           5.8+1.1.0                               all          MySQL database common files, e.g. /etc/mysql/my.cnf
 ii  mythes-en-us                           1:7.5.0-1                               all          English (USA) Thesaurus for LibreOffice
 ii  nano                                   7.2-1+deb12u1                           amd64        small, friendly text editor inspired by Pico
+ii  nasm                                   2.16.01-1                               amd64        General-purpose x86 assembler
 ii  ncal                                   12.1.8                                  amd64        display a calendar and the date of Easter
 ii  ncurses-base                           6.4-4                                   all          basic terminal type definitions
 ii  ncurses-bin                            6.4-4                                   amd64        terminal-related programs and man pages
@@ -2632,7 +2639,7 @@ ii  traceroute                             1:2.1.2-1                            
 ii  tree                                   2.1.0-1                                 amd64        displays an indented directory tree, in color
 ii  tumbler:amd64                          4.18.0-1                                amd64        D-Bus thumbnailing service
 ii  tumbler-common                         4.18.0-1                                all          D-Bus thumbnailing service (common files)
-ii  tzdata                                 2024a-0+deb12u1                         all          time zone and daylight-saving time data
+ii  tzdata                                 2024b-0+deb12u1                         all          time zone and daylight-saving time data
 ii  u-boot-tools                           2023.01+dfsg-2+deb12u1                  amd64        companion tools for Das U-Boot bootloader
 ii  ucf                                    3.0043+nmu1                             all          Update Configuration File(s): preserve user changes to config files
 ii  udev                                   252.31-1~deb12u1                        amd64        /dev/ and hotplug management daemon
