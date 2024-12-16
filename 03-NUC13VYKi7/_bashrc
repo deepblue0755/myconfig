@@ -335,6 +335,19 @@ function surnamegen()
     fi
 }
 
+function anamegen()
+{
+    # generate random account name
+    local first_name=$(enamegen)
+    local last_name=$(surnamegen)
+    local account_name="${first_name}_${last_name}_$(uuidgen -r | cut -c1-4)"
+    account_name="${first_name}-${last_name}"
+    echo $account_name
+    echo "First Name: ${first_name}"
+    echo "Last Name: ${last_name}"
+    echo "Account Name: $account_name"
+}
+
 
 function wordgen()
 {
