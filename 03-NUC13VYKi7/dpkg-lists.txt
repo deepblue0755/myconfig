@@ -1513,6 +1513,7 @@ ii  libpcap-dev:amd64                      1.10.3-1                             
 ii  libpcap0.8:amd64                       1.10.3-1                                amd64        system interface for user-level packet capture
 ii  libpcap0.8-dev:amd64                   1.10.3-1                                amd64        development library and header files for libpcap0.8
 ii  libpcaudio0:amd64                      1.2-2                                   amd64        C API to different audio devices - shared library
+ii  libpci-dev:amd64                       1:3.9.0-4                               amd64        PCI utilities (development files)
 ii  libpci3:amd64                          1:3.9.0-4                               amd64        PCI utilities (shared library)
 ii  libpciaccess0:amd64                    0.17-2                                  amd64        Generic PCI access library for X
 ii  libpciaccess0:i386                     0.17-2                                  i386         Generic PCI access library for X
@@ -1849,6 +1850,7 @@ ii  libubsan1-armhf-cross                  12.2.0-14cross1                      
 ii  libubsan1-i386-cross                   12.2.0-14cross1                         all          UBSan -- undefined behaviour sanitizer (runtime)
 ii  libuchardet0:amd64                     0.0.7-1                                 amd64        universal charset detection library - shared library
 ii  libucx0:amd64                          1.13.1-1                                amd64        Unified Communication X libraries
+ii  libudev-dev:amd64                      252.31-1~deb12u1                        amd64        libudev development files
 ii  libudev1:amd64                         252.31-1~deb12u1                        amd64        libudev shared library
 ii  libudev1:i386                          252.31-1~deb12u1                        i386         libudev shared library
 ii  libudfread0:amd64                      1.1.2-1                                 amd64        UDF reader library
