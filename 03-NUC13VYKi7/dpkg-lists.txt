@@ -164,6 +164,7 @@ ii  e2fsprogs                              1.47.0-2                             
 ii  efibootmgr                             17-2                                    amd64        Interact with the EFI Boot Manager
 ii  eject                                  2.38.1-5+deb12u2                        amd64        ejects CDs and operates CD-Changers under Linux
 ii  emacsen-common                         3.0.5                                   all          Common facilities for all emacsen
+ii  enca                                   1.19-1.1                                amd64        Extremely Naive Charset Analyser - binaries
 ii  enchant-2                              2.3.3-2                                 amd64        Wrapper for various spell checker engines (binary programs)
 ii  espeak-ng-data:amd64                   1.51+dfsg-10+deb12u1                    amd64        Multi-lingual software speech synthesizer: speech data files
 ii  ethtool                                1:6.1-1                                 amd64        display or change Ethernet device settings
@@ -916,6 +917,7 @@ ii  libelf1:amd64                          0.188-2.1                            
 ii  libelf1:i386                           0.188-2.1                               i386         library to read and write ELF files
 ii  libemail-date-format-perl              1.008-1                                 all          Module to generate RFC-2822-valid date strings
 ii  libemf1:amd64                          1.0.13-5                                amd64        Enhanced Metafile library (run-time)
+ii  libenca0:amd64                         1.19-1.1                                amd64        Extremely Naive Charset Analyser - shared library files
 ii  libenchant-2-2:amd64                   2.3.3-2                                 amd64        Wrapper library for various spell checker engines (runtime libs)
 ii  libencode-eucjpascii-perl              0.03-1+b2                               amd64        Perl module supporting eucJP-ascii character encoding
 ii  libencode-eucjpms-perl                 0.07-3+b11                              amd64        Perl library for Microsoft Compatible Japanese Encodings
