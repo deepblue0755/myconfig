@@ -583,7 +583,7 @@ function start()
             return 1 \
             ;}
             print_infor "start default virtual box machine \"Ubuntu1404\" ... "
-            VBoxManage startvm "Ubuntu1404-192.168.56.120" --type headless 2>&1 > /dev/null &
+            VBoxManage startvm "Ubuntu1405-192.168.56.120" --type headless 2>&1 > /dev/null &
         ;;
         rsync | sync)
             _sudo net start rsyncserver
