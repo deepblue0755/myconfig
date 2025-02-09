@@ -1,0 +1,20 @@
+iabbr hte the
+cabbr NCCE NeoComplCacheEnable
+cabbr NCE  NeoCompleteEnable
+cabbr NCD  NeoCompleteDisable
+cabbr NT   NERDTreeToggle
+cabbr NTT  NERDTreeToggle
+cabbr WT   WMToggle
+cabbr WMT  WMToggle
+cabbr TT   TlistToggle
+cabbr MT   TMiniBufExplorer
+cabbr MBT   TMiniBufExplorer
+cabbr MBET TMiniBufExplorer 
+cabbr nce  NeoCompleteEnable
+cabbr ncd  NeoCompleteDisable
+cabbr SC   SyntasticCheck
+cabbr sc   SyntasticCheck
+cabbr SynChk SyasticCheck
+cabbr synchk SyasticCheck
+cabbr syntastic_check SyntasticCheck
+cabbr loadycm source D:\Vim\vim80\abbreviation\load_ycm_plugin.vim
