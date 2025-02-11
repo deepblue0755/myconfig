@@ -2206,6 +2206,8 @@ ii  lightdm                                1.26.0-8                             
 ii  lightdm-gtk-greeter                    2.0.8-2+b1                              amd64        simple display manager (GTK+ greeter)
 ii  linux-base                             4.9                                     all          Linux image base package
 ii  linux-compiler-gcc-12-x86              6.1.128-1                               amd64        Compiler for Linux on x86 (meta-package)
+ii  linux-headers-6.1.0-25-amd64           6.1.106-3                               amd64        Header files for Linux 6.1.0-25-amd64
+ii  linux-headers-6.1.0-25-common          6.1.106-3                               all          Common header files for Linux 6.1.0-25
 ii  linux-headers-6.1.0-28-amd64           6.1.119-1                               amd64        Header files for Linux 6.1.0-28-amd64
 ii  linux-headers-6.1.0-28-common          6.1.119-1                               all          Common header files for Linux 6.1.0-28
 ii  linux-headers-6.1.0-28-common-rt       6.1.119-1                               all          Common header files for Linux 6.1.0-28-rt
