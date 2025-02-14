@@ -2617,6 +2617,7 @@ ii  task-ssh-server                        3.73                                 
 ii  task-xfce-desktop                      3.73                                    all          Xfce
 ii  tasksel                                3.73                                    all          tool for selecting tasks for installation on Debian systems
 ii  tasksel-data                           3.73                                    all          official tasks used for installation of Debian systems
+ii  taskwarrior                            2.6.2+dfsg-1                            amd64        feature-rich console based todo list manager
 ii  tcl                                    8.6.13                                  amd64        Tool Command Language (default version) - shell
 ii  tcl8.6                                 8.6.13+dfsg-2                           amd64        Tcl (the Tool Command Language) v8.6 - shell
 ii  tcl8.6-dev:amd64                       8.6.13+dfsg-2                           amd64        Tcl (the Tool Command Language) v8.6 - development files
