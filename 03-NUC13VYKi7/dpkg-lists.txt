@@ -16,6 +16,7 @@ ii  apparmor                               3.0.8-3                              
 ii  apt                                    2.6.1                                   amd64        commandline package manager
 ii  apt-file                               3.3                                     all          search for files within Debian packages (command-line interface)
 ii  apt-listchanges                        3.24                                    all          package change history notification tool
+ii  apt-transport-https                    2.6.1                                   all          transitional package for https support
 ii  apt-utils                              2.6.1                                   amd64        package management related utility programs
 ii  arp-scan                               1.10.0-2                                amd64        arp scanning and fingerprinting tool
 ii  aspell                                 0.60.8-4+b1                             amd64        GNU Aspell spell-checker
@@ -80,6 +81,7 @@ ii  colord-data                            1.4.6-2.2                            
 ii  colordiff                              1.0.20-1                                all          tool to colorize 'diff' output
 ii  console-setup                          1.221                                   all          console font and keymap setup program
 ii  console-setup-linux                    1.221                                   all          Linux specific part of console-setup
+ii  containerd.io                          1.7.25-1                                amd64        An open and reliable container runtime
 ii  context                                2021.03.05.20230120+dfsg-1+deb12u1      all          powerful TeX format
 ii  context-modules                        20220508-2                              all          additional ConTeXt modules
 ii  coreutils                              9.1-1                                   amd64        GNU core utilities
@@ -152,6 +154,11 @@ ii  docbook-dsssl                          1.79-10                              
 ii  docbook-utils                          0.6.14-4                                all          Convert DocBook files to other formats (HTML, RTF, PS, man, PDF)
 ii  docbook-xml                            4.5-12                                  all          standard XML documentation system for software and systems
 ii  docbook-xsl                            1.79.2+dfsg-2                           all          stylesheets for processing DocBook XML to various output formats
+ii  docker-buildx-plugin                   0.21.0-1~debian.12~bookworm             amd64        Docker Buildx cli plugin.
+ii  docker-ce                              5:28.0.0-1~debian.12~bookworm           amd64        Docker: the open-source application container engine
+ii  docker-ce-cli                          5:28.0.0-1~debian.12~bookworm           amd64        Docker CLI: the open-source application container engine
+ii  docker-ce-rootless-extras              5:28.0.0-1~debian.12~bookworm           amd64        Rootless support for Docker.
+ii  docker-compose-plugin                  2.33.0-1~debian.12~bookworm             amd64        Docker Compose (V2) plugin for the Docker CLI.
 ii  dos2unix                               7.4.3-1                                 amd64        convert text file line endings between CRLF and LF
 ii  dosfstools                             4.2-1                                   amd64        utilities for making and checking MS-DOS FAT filesystems
 ii  dpkg                                   1.21.22                                 amd64        Debian package management system
@@ -437,6 +444,7 @@ ii  intel-media-va-driver:amd64            23.1.1+dfsg1-1                       
 ii  intel-microcode                        3.20241112.1~deb12u1                    amd64        Processor microcode firmware for Intel CPUs
 ii  ipp-usb                                0.9.23-1+b4                             amd64        Daemon for IPP over USB printer support
 ii  iproute2                               6.1.0-3                                 amd64        networking and traffic control tools
+ii  iptables                               1.8.9-2                                 amd64        administration tools for packet filtering and NAT
 ii  iputils-arping                         3:20221126-1+deb12u1                    amd64        Tool to send ICMP echo requests to an ARP address
 ii  iputils-ping                           3:20221126-1+deb12u1                    amd64        Tools to test the reachability of network hosts
 ii  isc-dhcp-client                        4.4.3-P1-2                              amd64        DHCP client for automatically obtaining an IP address
@@ -1093,8 +1101,10 @@ ii  libglx-mesa0:i386                      22.3.6-1+deb12u1                     
 ii  libglx0:amd64                          1.6.0-1                                 amd64        Vendor neutral GL dispatch library -- GLX support
 ii  libglx0:i386                           1.6.0-1                                 i386         Vendor neutral GL dispatch library -- GLX support
 ii  libgme0:amd64                          0.6.3-6                                 amd64        Playback library for video game music files - shared library
+ii  libgmp-dev:amd64                       2:6.2.1+dfsg1-1.1                       amd64        Multiprecision arithmetic library developers tools
 ii  libgmp10:amd64                         2:6.2.1+dfsg1-1.1                       amd64        Multiprecision arithmetic library
 ii  libgmp10:i386                          2:6.2.1+dfsg1-1.1                       i386         Multiprecision arithmetic library
+ii  libgmpxx4ldbl:amd64                    2:6.2.1+dfsg1-1.1                       amd64        Multiprecision arithmetic library (C++ bindings)
 ii  libgnome-desktop-3-20:amd64            43.2-2                                  amd64        Utility library for the GNOME desktop - GTK 3 version
 ii  libgnutls-openssl27:amd64              3.7.9-2+deb12u3                         amd64        GNU TLS library - OpenSSL wrapper
 ii  libgnutls30:amd64                      3.7.9-2+deb12u3                         amd64        GNU TLS library - main runtime library
@@ -1218,6 +1228,7 @@ ii  libio-html-perl                        1.004-3                              
 ii  libio-socket-ssl-perl                  2.081-2                                 all          Perl module implementing object oriented interface to SSL sockets
 ii  libio-stringy-perl                     2.111-3                                 all          modules for I/O on in-core objects (strings/arrays)
 ii  libip4tc2:amd64                        1.8.9-2                                 amd64        netfilter libip4tc library
+ii  libip6tc2:amd64                        1.8.9-2                                 amd64        netfilter libip6tc library
 ii  libipc-run3-perl                       0.048-3                                 all          run a subprocess with input/output redirection
 ii  libipc-shareable-perl                  1.13-1                                  all          module to access IPC shared memory segments through perl
 ii  libipc-system-simple-perl              1.30-2                                  all          Perl module to run commands simply, with detailed diagnostics
@@ -1370,10 +1381,12 @@ ii  libmount1:amd64                        2.38.1-5+deb12u3                     
 ii  libmount1:i386                         2.38.1-5+deb12u3                        i386         device mounting library
 ii  libmousepad0:amd64                     0.5.10-2                                amd64        mousepad plugins library
 ii  libmp3lame0:amd64                      3.100-6                                 amd64        MP3 encoding library
+ii  libmpc-dev:amd64                       1.3.1-1                                 amd64        multiple precision complex floating-point library development package
 ii  libmpc3:amd64                          1.3.1-1                                 amd64        multiple precision complex floating-point library
 ii  libmpcdec6:amd64                       2:0.1~r495-2                            amd64        MusePack decoder - library
 ii  libmpeg2-4:amd64                       0.5.1-9                                 amd64        MPEG1 and MPEG2 video decoder library
 ii  libmpeg2encpp-2.1-0:amd64              1:2.1.0+debian-7                        amd64        MJPEG capture/editing/replay and MPEG encoding toolset (library)
+ii  libmpfr-dev:amd64                      4.2.0-1                                 amd64        multiple precision floating-point computation developers tools
 ii  libmpfr6:amd64                         4.2.0-1                                 amd64        multiple precision floating-point computation
 ii  libmpg123-0:amd64                      1.31.2-1+deb12u1                        amd64        MPEG layer 1/2/3 audio decoder (shared library)
 ii  libmplex2-2.1-0:amd64                  1:2.1.0+debian-7                        amd64        MJPEG capture/editing/replay and MPEG encoding toolset (library)
@@ -1570,6 +1583,7 @@ ii  libpoppler-cpp0v5:amd64                22.12.0-2+b1                         
 ii  libpoppler-glib8:amd64                 22.12.0-2+b1                            amd64        PDF rendering library (GLib-based shared library)
 ii  libpoppler-qt5-1:amd64                 22.12.0-2+b1                            amd64        PDF rendering library (Qt 5 based shared library)
 ii  libpoppler126:amd64                    22.12.0-2+b1                            amd64        PDF rendering library
+ii  libpopt-dev:amd64                      1.19+dfsg-1                             amd64        lib for parsing cmdline parameters - development files
 ii  libpopt0:amd64                         1.19+dfsg-1                             amd64        lib for parsing cmdline parameters
 ii  libpostproc56:amd64                    7:5.1.6-0+deb12u1                       amd64        FFmpeg library for post processing - runtime files
 ii  libpotrace0:amd64                      1.16-2                                  amd64        library for tracing bitmaps
@@ -1722,6 +1736,7 @@ ii  libsigc++-2.0-0v5:amd64                2.12.0-1                             
 ii  libsigsegv2:amd64                      2.14-1                                  amd64        Library for handling page faults in a portable way
 ii  libslang2:amd64                        2.3.3-3                                 amd64        S-Lang programming library - runtime version
 ii  libslang2-dev:amd64                    2.3.3-3                                 amd64        S-Lang programming library, development version
+ii  libslirp0:amd64                        4.7.0-1                                 amd64        General purpose TCP-IP emulator library
 ii  libsm-dev:amd64                        2:1.2.3-1                               amd64        X11 Session Management library (development headers)
 ii  libsm6:amd64                           2:1.2.3-1                               amd64        X11 Session Management library
 ii  libsm6:i386                            2:1.2.3-1                               i386         X11 Session Management library
@@ -2591,6 +2606,7 @@ ii  shim-helpers-amd64-signed              1+15.8+1~deb12u1                     
 ii  shim-signed:amd64                      1.44~1+deb12u1+15.8-1~deb12u1           amd64        Secure Boot chain-loading bootloader (Microsoft-signed binary)
 ii  shim-signed-common                     1.44~1+deb12u1+15.8-1~deb12u1           all          Secure Boot chain-loading bootloader (common helper scripts)
 ii  shim-unsigned:amd64                    15.8-1~deb12u1                          amd64        boot loader to chain-load signed boot loaders under Secure Boot
+ii  slirp4netns                            1.2.0-1                                 amd64        User-mode networking for unprivileged network namespaces
 ii  smbclient                              2:4.17.12+dfsg-0+deb12u1                amd64        command-line SMB/CIFS clients for Unix
 ii  sound-icons                            0.1-8                                   all          Sounds for speech enabled applications
 ii  sound-theme-freedesktop                0.8-2                                   all          freedesktop.org sound theme
