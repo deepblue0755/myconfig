@@ -338,6 +338,7 @@ ii  gettext                                0.21-12                              
 ii  gettext-base                           0.21-12                                 amd64        GNU Internationalization utilities for the base system
 ii  gfortran                               4:12.2.0-3                              amd64        GNU Fortran 95 compiler
 ii  gfortran-12                            12.2.0-14                               amd64        GNU Fortran compiler
+ii  gh                                     2.23.0+dfsg1-1                          amd64        GitHub CLI, GitHub’s official command line tool
 ii  ghostscript                            10.0.0~dfsg-11+deb12u6                  amd64        interpreter for the PostScript language and for PDF
 ii  gimp-data                              2.10.34-1+deb12u2                       all          Data files for GIMP
 ii  gir1.2-atk-1.0:amd64                   2.46.0-5                                amd64        ATK accessibility toolkit (GObject introspection)
