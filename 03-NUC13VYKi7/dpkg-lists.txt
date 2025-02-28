@@ -352,7 +352,7 @@ ii  gir1.2-gtk-3.0:amd64                   3.24.38-2~deb12u3                    
 ii  gir1.2-gtksource-3.0:amd64             3.24.11-2+b1                            amd64        gir files for the GTK+ syntax highlighting widget
 ii  gir1.2-handy-1:amd64                   1.8.1-1                                 amd64        GObject introspection files for libhandy
 ii  gir1.2-harfbuzz-0.0:amd64              6.0.0+dfsg-3                            amd64        OpenType text shaping engine (GObject introspection data)
-ii  gir1.2-javascriptcoregtk-4.0:amd64     2.46.5-1~deb12u1                        amd64        JavaScript engine library from WebKitGTK - GObject introspection data
+ii  gir1.2-javascriptcoregtk-4.0:amd64     2.46.6-1~deb12u1                        amd64        JavaScript engine library from WebKitGTK - GObject introspection data
 ii  gir1.2-keybinder-3.0                   0.3.2-1.1                               amd64        registers global key bindings for applications - Gtk+3 - typelib
 ii  gir1.2-notify-0.7:amd64                0.8.1-1                                 amd64        sends desktop notifications to a notification daemon (Introspection files)
 ii  gir1.2-packagekitglib-1.0              1.2.6-5                                 amd64        GObject introspection data for the PackageKit GLib library
@@ -360,7 +360,7 @@ ii  gir1.2-pango-1.0:amd64                 1.50.12+ds-1                         
 ii  gir1.2-polkit-1.0                      122-3                                   amd64        GObject introspection data for polkit
 ii  gir1.2-secret-1:amd64                  0.20.5-3                                amd64        Secret store (GObject-Introspection)
 ii  gir1.2-soup-2.4:amd64                  2.74.3-1+deb12u1                        amd64        GObject introspection data for the libsoup HTTP library
-ii  gir1.2-webkit2-4.0:amd64               2.46.5-1~deb12u1                        amd64        Web content engine library for GTK - GObject introspection data
+ii  gir1.2-webkit2-4.0:amd64               2.46.6-1~deb12u1                        amd64        Web content engine library for GTK - GObject introspection data
 ii  gir1.2-wnck-3.0:amd64                  43.0-3                                  amd64        GObject introspection data for the WNCK library
 ii  git                                    1:2.39.5-0+deb12u2                      amd64        fast, scalable, distributed revision control system
 ii  git-man                                1:2.39.5-0+deb12u2                      all          fast, scalable, distributed revision control system (manual pages)
@@ -1107,9 +1107,9 @@ ii  libgmp10:amd64                         2:6.2.1+dfsg1-1.1                    
 ii  libgmp10:i386                          2:6.2.1+dfsg1-1.1                       i386         Multiprecision arithmetic library
 ii  libgmpxx4ldbl:amd64                    2:6.2.1+dfsg1-1.1                       amd64        Multiprecision arithmetic library (C++ bindings)
 ii  libgnome-desktop-3-20:amd64            43.2-2                                  amd64        Utility library for the GNOME desktop - GTK 3 version
-ii  libgnutls-openssl27:amd64              3.7.9-2+deb12u3                         amd64        GNU TLS library - OpenSSL wrapper
-ii  libgnutls30:amd64                      3.7.9-2+deb12u3                         amd64        GNU TLS library - main runtime library
-ii  libgnutls30:i386                       3.7.9-2+deb12u3                         i386         GNU TLS library - main runtime library
+ii  libgnutls-openssl27:amd64              3.7.9-2+deb12u4                         amd64        GNU TLS library - OpenSSL wrapper
+ii  libgnutls30:amd64                      3.7.9-2+deb12u4                         amd64        GNU TLS library - main runtime library
+ii  libgnutls30:i386                       3.7.9-2+deb12u4                         i386         GNU TLS library - main runtime library
 ii  libgomp1:amd64                         12.2.0-14                               amd64        GCC OpenMP (GOMP) support library
 ii  libgomp1:i386                          12.2.0-14                               i386         GCC OpenMP (GOMP) support library
 ii  libgomp1-arm64-cross                   12.2.0-14cross1                         all          GCC OpenMP (GOMP) support library
@@ -1242,8 +1242,8 @@ ii  libitm1-arm64-cross                    12.2.0-14cross1                      
 ii  libitm1-i386-cross                     12.2.0-14cross1                         all          GNU Transactional Memory Library
 ii  libjack-jackd2-0:amd64                 1.9.21~dfsg-3                           amd64        JACK Audio Connection Kit (libraries)
 ii  libjansson4:amd64                      2.14-2                                  amd64        C library for encoding, decoding and manipulating JSON data
-ii  libjavascriptcoregtk-4.0-18:amd64      2.46.5-1~deb12u1                        amd64        JavaScript engine library from WebKitGTK
-ii  libjavascriptcoregtk-4.1-0:amd64       2.46.5-1~deb12u1                        amd64        JavaScript engine library from WebKitGTK
+ii  libjavascriptcoregtk-4.0-18:amd64      2.46.6-1~deb12u1                        amd64        JavaScript engine library from WebKitGTK
+ii  libjavascriptcoregtk-4.1-0:amd64       2.46.6-1~deb12u1                        amd64        JavaScript engine library from WebKitGTK
 ii  libjbig-dev:amd64                      2.1-6.1                                 amd64        JBIGkit development files
 ii  libjbig0:amd64                         2.1-6.1                                 amd64        JBIGkit libraries
 ii  libjbig0:i386                          2.1-6.1                                 i386         JBIGkit libraries
@@ -1822,8 +1822,8 @@ ii  libtag1v5:amd64                        1.13-2                               
 ii  libtag1v5-vanilla:amd64                1.13-2                                  amd64        audio meta-data library - vanilla flavour
 ii  libtagc0:amd64                         1.13-2                                  amd64        audio meta-data library - C bindings
 ii  libtalloc2:amd64                       2.4.0-f2                                amd64        hierarchical pool based memory allocator
-ii  libtasn1-6:amd64                       4.19.0-2                                amd64        Manage ASN.1 structures (runtime)
-ii  libtasn1-6:i386                        4.19.0-2                                i386         Manage ASN.1 structures (runtime)
+ii  libtasn1-6:amd64                       4.19.0-2+deb12u1                        amd64        Manage ASN.1 structures (runtime)
+ii  libtasn1-6:i386                        4.19.0-2+deb12u1                        i386         Manage ASN.1 structures (runtime)
 ii  libtbb12:amd64                         2021.8.0-2                              amd64        parallelism library for C++ - runtime files
 ii  libtbbbind-2-5:amd64                   2021.8.0-2                              amd64        parallelism library for C++ - runtime files
 ii  libtbbmalloc2:amd64                    2021.8.0-2                              amd64        parallelism helper library for C++ - runtime files
@@ -1960,8 +1960,8 @@ ii  libwayland-egl1:i386                   1.21.0-1                             
 ii  libwayland-server0:amd64               1.21.0-1                                amd64        wayland compositor infrastructure - server library
 ii  libwayland-server0:i386                1.21.0-1                                i386         wayland compositor infrastructure - server library
 ii  libwbclient0:amd64                     2:4.17.12+dfsg-0+deb12u1                amd64        Samba winbind client library
-ii  libwebkit2gtk-4.0-37:amd64             2.46.5-1~deb12u1                        amd64        Web content engine library for GTK
-ii  libwebkit2gtk-4.1-0:amd64              2.46.5-1~deb12u1                        amd64        Web content engine library for GTK
+ii  libwebkit2gtk-4.0-37:amd64             2.46.6-1~deb12u1                        amd64        Web content engine library for GTK
+ii  libwebkit2gtk-4.1-0:amd64              2.46.6-1~deb12u1                        amd64        Web content engine library for GTK
 ii  libwebp-dev:amd64                      1.2.4-0.2+deb12u1                       amd64        Lossy compression of digital photographic images
 ii  libwebp7:amd64                         1.2.4-0.2+deb12u1                       amd64        Lossy compression of digital photographic images
 ii  libwebp7:i386                          1.2.4-0.2+deb12u1                       i386         Lossy compression of digital photographic images
@@ -2329,9 +2329,9 @@ ii  openjdk-17-jre-headless:amd64          17.0.14+7-1~deb12u1                  
 ii  openmpi-bin                            4.1.4-3+b1                              amd64        high performance message passing library -- binaries
 ii  openmpi-common                         4.1.4-3                                 all          high performance message passing library -- common files
 ii  opensp                                 1.5.2-13+b2                             amd64        OpenJade group's SGML parsing tools
-ii  openssh-client                         1:9.2p1-2+deb12u4                       amd64        secure shell (SSH) client, for secure access to remote machines
-ii  openssh-server                         1:9.2p1-2+deb12u4                       amd64        secure shell (SSH) server, for secure access from remote machines
-ii  openssh-sftp-server                    1:9.2p1-2+deb12u4                       amd64        secure shell (SSH) sftp server module, for SFTP access from remote machines
+ii  openssh-client                         1:9.2p1-2+deb12u5                       amd64        secure shell (SSH) client, for secure access to remote machines
+ii  openssh-server                         1:9.2p1-2+deb12u5                       amd64        secure shell (SSH) server, for secure access from remote machines
+ii  openssh-sftp-server                    1:9.2p1-2+deb12u5                       amd64        secure shell (SSH) sftp server module, for SFTP access from remote machines
 ii  openssl                                3.0.15-1~deb12u1                        amd64        Secure Sockets Layer toolkit - cryptographic utility
 ii  orca                                   43.1-1                                  all          Scriptable screen reader
 ii  os-prober                              1.81                                    amd64        utility to detect other OSes on a set of drives
