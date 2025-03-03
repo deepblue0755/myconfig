@@ -810,7 +810,7 @@ function _set_alias()
     alias am335x-host='ssh root@10.0.0.130'
     alias zed='ssh root@10.0.0.15'
     alias jenkins='ssh -XY googoltech@192.168.201.73'
-    alias hometask='TASKDATA=/home/mianb/documents/10-github-documents/NUC13RNGi9/hometask task'
+    alias hometask='TASKDATA=/home/mianb/documents/10-github-documents/NUC13RNGi9/hometasks task'
 
     alias ~='cd ~'
 }
