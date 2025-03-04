@@ -2259,6 +2259,7 @@ ii  lp-solve                               5.5.2.5-2                            
 ii  lrzsz                                  0.12.21-10+b1                           amd64        Tools for zmodem/xmodem/ymodem file transfer
 ii  lsb-release                            12.0-1                                  all          Linux Standard Base version reporting utility (minimal implementation)
 ii  lsof                                   4.95.0-1                                amd64        utility to list open files
+ii  lsscsi                                 0.31-1+b1                               amd64        list all SCSI devices (or hosts) currently on system
 ii  lua-lpeg:amd64                         1.0.2-2                                 amd64        LPeg library for the Lua language
 ii  lua-luv:amd64                          1.44.2-0-1                              amd64        libuv bindings for Lua
 ii  lynx                                   2.9.0dev.12-1                           amd64        classic non-graphical (text-mode) web browser
