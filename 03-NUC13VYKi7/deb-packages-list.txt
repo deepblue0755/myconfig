@@ -2230,7 +2230,6 @@ linux-headers-6.1.0-31-common/stable-security,stable-security,now 6.1.128-1 all 
 linux-headers-6.1.0-31-rt-amd64/stable-security,now 6.1.128-1 amd64 [installed]
 linux-headers-amd64/stable-security,now 6.1.128-1 amd64 [installed]
 linux-image-6.1.0-31-amd64/stable-security,now 6.1.128-1 amd64 [installed,automatic]
-linux-image-6.1.0-31-rt-amd64/stable-security,now 6.1.128-1 amd64 [installed]
 linux-image-amd64/stable-security,now 6.1.128-1 amd64 [installed]
 linux-kbuild-6.1/stable-security,now 6.1.128-1 amd64 [installed,automatic]
 linux-libc-dev-arm64-cross/stable,stable,now 6.1.4-1cross1 all [installed,automatic]
