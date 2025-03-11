@@ -300,10 +300,12 @@ ii  fuse3                                  3.14.0-4                             
 ii  fuseiso                                20070708-3.2+b1                         amd64        FUSE module to mount ISO filesystem images
 ii  g++                                    4:12.2.0-3                              amd64        GNU C++ compiler
 ii  g++-12                                 12.2.0-14                               amd64        GNU C++ compiler
+ii  g++-12-aarch64-linux-gnu               12.2.0-14cross1                         amd64        GNU C++ compiler (cross compiler for arm64 architecture)
 ii  g++-12-arm-linux-gnueabi               12.2.0-14cross1                         amd64        GNU C++ compiler (cross compiler for armel architecture)
 ii  g++-12-arm-linux-gnueabihf             12.2.0-14cross1                         amd64        GNU C++ compiler (cross compiler for armhf architecture)
 ii  g++-12-i686-linux-gnu                  12.2.0-14cross1                         amd64        GNU C++ compiler (cross compiler for i386 architecture)
 ii  g++-12-multilib                        12.2.0-14                               amd64        GNU C++ compiler (multilib support)
+ii  g++-aarch64-linux-gnu                  4:12.2.0-3                              amd64        GNU C++ compiler for the arm64 architecture
 ii  g++-arm-linux-gnueabi                  4:12.2.0-3                              amd64        GNU C++ compiler for the armel architecture
 ii  g++-arm-linux-gnueabihf                4:12.2.0-3                              amd64        GNU C++ compiler for the armhf architecture
 ii  g++-i686-linux-gnu                     4:12.2.0-3                              amd64        GNU C++ compiler for the i386 architecture
@@ -1790,6 +1792,7 @@ ii  libstaroffice-0.0-0:amd64              0.0.7-1                              
 ii  libstartup-notification0:amd64         0.12-6+b1                               amd64        library for program launch feedback (shared library)
 ii  libstdc++-12-dev:amd64                 12.2.0-14                               amd64        GNU Standard C++ Library v3 (development files)
 ii  libstdc++-12-dev:i386                  12.2.0-14                               i386         GNU Standard C++ Library v3 (development files)
+ii  libstdc++-12-dev-arm64-cross           12.2.0-14cross1                         all          GNU Standard C++ Library v3 (development files) (arm64)
 ii  libstdc++-12-dev-armel-cross           12.2.0-14cross1                         all          GNU Standard C++ Library v3 (development files) (armel)
 ii  libstdc++-12-dev-armhf-cross           12.2.0-14cross1                         all          GNU Standard C++ Library v3 (development files) (armhf)
 ii  libstdc++-12-dev-i386-cross            12.2.0-14cross1                         all          GNU Standard C++ Library v3 (development files) (i386)
