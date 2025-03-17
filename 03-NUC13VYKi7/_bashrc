@@ -177,6 +177,7 @@ function _set_alias()
     alias rmkh='_rmkh'
     alias motton='shuf -n 1 ~/documents/11-configs-from-github/03-NUC13VYKi7/mottos.txt'
     alias hometask='TASKRC=~/documents/10-github-documents/NUC13RNGi9/hometasks.taskrc task'
+    alias hyctask='TASKRC=~/documents/10-github-documents/NUC13RNGi9/hyctasks.taskrc task'
 }
 
 function _set_history()
