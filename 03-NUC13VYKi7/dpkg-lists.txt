@@ -2238,7 +2238,6 @@ ii  linux-headers-6.1.0-31-rt-amd64        6.1.128-1                            
 ii  linux-headers-6.1.0-32-amd64           6.1.129-1                               amd64        Header files for Linux 6.1.0-32-amd64
 ii  linux-headers-6.1.0-32-common          6.1.129-1                               all          Common header files for Linux 6.1.0-32
 ii  linux-headers-amd64                    6.1.129-1                               amd64        Header files for Linux amd64 configuration (meta-package)
-ii  linux-image-6.1.0-31-amd64             6.1.128-1                               amd64        Linux 6.1 for 64-bit PCs (signed)
 ii  linux-image-6.1.0-32-amd64             6.1.129-1                               amd64        Linux 6.1 for 64-bit PCs (signed)
 ii  linux-image-amd64                      6.1.129-1                               amd64        Linux for 64-bit PCs (meta-package)
 ii  linux-kbuild-6.1                       6.1.129-1                               amd64        Kbuild infrastructure for Linux 6.1
