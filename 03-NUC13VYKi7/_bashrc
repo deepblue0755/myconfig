@@ -129,6 +129,7 @@ function _set_env()
 	fi
 
     export PATH=$PATH:~/scripts/
+    export PATH=$PATH:/usr/local/bashdb/5.2/bin
 
     export EDITOR=vim
 
