@@ -23,8 +23,8 @@ function _bash_default()
     shopt -s histappend
 
     # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-    HISTSIZE=1000000
-    HISTFILESIZE=100000
+    HISTSIZE=10000000
+    HISTFILESIZE=1000000
 
     # check the window size after each command and, if necessary,
     # update the values of LINES and COLUMNS.
@@ -222,10 +222,11 @@ function _export_environ_var()
     export CSCOPE_DB=~/documents/26-c-programming/.cscope.out
     export TASKDATA=~/documents/12-cygwin64-config-t580/.task
     export REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/git/git-repo/' 
-    # export CROSS_COMPILE=i686-linux-gnu-
+    export CROSS_COMPILE=i686-linux-gnu-
     # export KERNELDIR=~/nfs_share/kernel_headers/4.9.146-rt125-20210126-05+/usr/src/linux-headers-4.9.146-rt125-20210126-05+/
     # export KERNELDIR=~/nfs_share/kernel_headers/linux-headers-6.1.38-rt11-20230831-01+_6.1.38-1_amd64/usr/src/linux-headers-6.1.38-rt11-20230831-01+
-    export KERNELDIR=~/nfs_share/kernel_headers/linux-headers-6.1.38-rt11-20231122-01+/usr/src/linux-headers-6.1.38-rt11-20231122-01+/
+    # export KERNELDIR=~/nfs_share/kernel_headers/linux-headers-6.1.38-rt11-20231122-01+/usr/src/linux-headers-6.1.38-rt11-20231122-01+/
+    export KERNELDIR=~/src/16-linux-6.1.69-rt-i386/linux-6.1.90/
     export QT_SELECT=5
     export DISPLAY=localhost:10.0
     export NVM_DIR="$HOME/.nvm"
@@ -274,8 +275,8 @@ function _set_alias()
     alias ctags='ctags -f .tags --output-format=e-ctags'
     alias ctags++='\ctags -f .tags --c++-kinds=+px --fields=+iaS --extras=+q --languages=c++ --sort=foldcase --output-format=e-ctags'
     alias checkpatch='~/src/09-IDB3/linux-4.9.208/scripts/checkpatch.pl --codespell'
-    alias make='make -j40 CC=gcc-11'
-    alias make32='make CC=/usr/bin/i686-linux-gnu-gcc -j40'
+    # alias make='make -j40 CC=gcc-11'
+    # alias make32='make CC=/usr/bin/i686-linux-gnu-gcc -j40'
     alias vbm='vboxmanage'
     alias diff='colordiff --exclude=*\.git* -X ~/.diff_exclude_pat'
     alias mv='_savemv'
@@ -323,7 +324,9 @@ function _savemv()
 function _set_path()
 {
     PATH=$(echo $PATH | sed 's#:/sbin:#:#g')
-	PATH=/usr/local/vim/9.0.0891/bin:$PATH
+    vim_path_prefix=$(find /usr/local/vim -maxdepth 1 -mindepth 1  -type d  | sort -u | tail -n 1)
+	PATH="${vim_path_prefix}/bin":$PATH
+	# PATH=/usr/local/vim/9.0.0891/bin:$PATH
 	# PATH=/usr/local/vim/8.2.4794/bin:$PATH
 	PATH=/usr/local/llvm/10.0.0/bin:$PATH
 	PATH=/usr/local/clang/10.0.0/bin:$PATH
@@ -562,6 +565,70 @@ function ask_gpt_git_commit() {
     sed -i  "1s/^/in this git commit ... \nplease help me to write the git commit message base on the context i had provided above and the  git diff output below: \n/" ${tempfile}
 }
 
+function autocommit()
+{
+    if ! git rev-parse --is-inside-work-tree &>/dev/null;then
+        echo not a git repo
+        return 1
+    fi
+
+    if ! git status | grep -q modified;then
+        if ! git status | grep -q "new file";then
+            echo "no modification or new file found in this repo"
+            return 1
+        fi
+    fi
+
+    echo "git pull ..."
+    if git pull; then
+       echo "successfully git pull"
+    else
+       echo "failed to git pull"
+       return 1
+    fi
+
+    local commit_string=""
+
+    if [[ $(git status | grep -c modified) -gt 1 ]];then
+        files_list=$(git status | grep modified | awk -F: '{ print $2 }' | tr '\n' ',' | sed 's/^\s*//' | sed 's/  / /g')
+        commit_string="UPDATE: Refactor $files_list from $HOSTNAME"
+    elif [[  $(git status | grep -c modified) -eq 1  ]];then
+        files_list=$(git status | grep modified | awk -F: '{ print $2 }' | sed 's/^\s*//' | sed 's/  / /g')
+        commit_string="UPDATE: Refactor $files_list from $HOSTNAME"
+    else
+        :
+    fi
+
+    if [[ $(git status | grep -c "new file") -gt 1 ]];then
+        files_list=$(git status | grep "new file" | awk -F: '{ print $2 }' | tr '\n' ',' | sed 's/^\s*//' | sed 's/  / /g')
+        if [[ -n "$commit_string" ]];then
+            commit_string="${commit_string}"$'\n'"NEW: Create new script $files_list from $HOSTNAME"
+        else
+            commit_string="NEW: Create new script $files_list from $HOSTNAME"
+        fi
+    elif [[ $(git status | grep -c "new file") -eq 1 ]];then
+        files_list=$(git status | grep "new file" | awk -F: '{ print $2 }' | sed 's/^\s*//' | sed 's/  / /g')
+        if [[ -n "$commit_string" ]];then
+            commit_string="${commit_string}"$'\n'"NEW: Create new script $files_list from $HOSTNAME"
+        else
+            commit_string="NEW: Create new script $files_list from $HOSTNAME"
+        fi
+    else
+        :
+    fi
+
+    git commit -am "${commit_string}"
+
+    echo "git push ..."
+    if git remote | xargs -L1 git push ;then
+       echo "successfully git push"
+       return 0
+    else
+       echo "failed to git push"
+       return 1
+    fi
+}
+
 function main()
 {
     _bash_default
@@ -573,16 +640,15 @@ function main()
     lesspipe &>/dev/null
     test -f ~/share/WARNING_BOOT_FOLDER_IS_MODIFIED && print_warning "BOOT FOLDER IS MODIFIED!!" 
     # test -f ~/NEED_TO_UPGRADE_GITLAB_CE && print_warning "please upgrade gitlab-ce" 
-
     set -o vi
 }
 
 main "$@"
-###!###>>>>>>>>>>>oebuild_complete>>>>>>>>>>>>>>> 
-if pip list | grep oebuild &> /dev/null ; then
-    export oebuild_sh=$(pip show oebuild | grep Location | awk -F" " '{print $2}')/oebuild/app/conf/oebuild.sh
-    if [ -f $oebuild_sh ] ; then
-            . $oebuild_sh
-    fi
-fi
-###!###<<<<<<<<<<<oebuild_complete<<<<<<<<<<<<<<<
+####!###>>>>>>>>>>>oebuild_complete>>>>>>>>>>>>>>> 
+#if pip list | grep oebuild &> /dev/null ; then
+#    export oebuild_sh=$(pip show oebuild | grep Location | awk -F" " '{print $2}')/oebuild/app/conf/oebuild.sh
+#    if [ -f $oebuild_sh ] ; then
+#            . $oebuild_sh
+#    fi
+#fi
+####!###<<<<<<<<<<<oebuild_complete<<<<<<<<<<<<<<<
