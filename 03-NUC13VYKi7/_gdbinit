@@ -1,0 +1,36 @@
+define cls
+    shell clear
+end
+
+define hookpost-next
+    refresh
+end
+
+define hookpost-step
+    refresh
+end
+
+set confirm no
+set verbose off
+set disassembly-flavor intel
+set startup-with-shell off
+# set key ctrl-a = key ctrl-t
+
+# ------------------------------------------------------------------- #
+# Command History Settings
+# ------------------------------------------------------------------- #
+set history save on
+set history filename ~/.gdb_history
+set history size 10000
+
+set logging enabled on
+set confirm no
+
+# ------------------------------------------------------------------- #
+# TUI Settings
+# ------------------------------------------------------------------- #
+tui enable
+set pagination off
+layout src
+layout asm
+focus cmd
