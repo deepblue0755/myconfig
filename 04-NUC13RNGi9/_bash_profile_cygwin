@@ -1,0 +1,139 @@
+# To the extent possible under law, the author(s) have dedicated all 
+# copyright and related and neighboring rights to this software to the 
+# public domain worldwide. This software is distributed without any warranty. 
+# You should have received a copy of the CC0 Public Domain Dedication along 
+# with this software. 
+# If not, see <http://creativecommons.org/publicdomain/zero/1.0/>. 
+
+# base-files version 4.3-3
+
+# ~/.bash_profile: executed by bash(1) for login shells.
+
+# The latest version as installed by the Cygwin Setup program can
+# always be found at /etc/defaults/etc/skel/.bash_profile
+
+# Modifying /etc/skel/.bash_profile directly will prevent
+# setup from updating it.
+
+# The copy in your home directory (~/.bash_profile) is yours, please
+# feel free to customise it to create a shell
+# environment to your liking.  If you feel a change
+# would be benifitial to all, please feel free to send
+# a patch to the cygwin mailing list.
+
+# User dependent .bash_profile file
+
+# source the users bashrc if it exists
+if [ -f "${HOME}/.bashrc" ] ; then
+  source "${HOME}/.bashrc"
+fi
+
+# Set PATH so it includes user's private bin if it exists
+# if [ -d "${HOME}/bin" ] ; then
+#   PATH="${HOME}/bin:${PATH}"
+# fi
+
+# Set MANPATH so it includes users' private man if it exists
+# if [ -d "${HOME}/man" ]; then
+#   MANPATH="${HOME}/man:${MANPATH}"
+# fi
+
+# Set INFOPATH so it includes users' private info if it exists
+# if [ -d "${HOME}/info" ]; then
+#   INFOPATH="${HOME}/info:${INFOPATH}"
+# fi
+# -----------------------------------------------------------------
+# Customer Setting
+# -----------------------------------------------------------------
+if [ -t 1 ];then
+    GREEN="\033[0;32m"
+    RED="\033[0;31m"
+    YELLOW="\033[0;33m"
+    NORMAL="\033[0m"
+else
+    GREEN=""
+    RED=""
+    NORMAL=""
+fi
+function print_info()
+{
+    echo -e "$GREEN INFO: $@ $NORMAL"
+}
+
+function print_error()
+{
+    echo -e "$RED ERROR: $@ $NORMAL"
+}
+function _tmux_new()
+{
+    let tmux_cnt=`tmux list-sessions 2>&1 | grep -v "no server running" | grep ":" | wc -l`
+    let tmux_cnt=$tmux_cnt+1
+
+    case $1 in 
+        1)
+        tmux new -s session-$tmux_cnt -n cygwin
+        ;;
+        *)
+        tmux new-session -d -s session-$tmux_cnt -n cygwin
+        tmux new-window -d -n vmware
+        tmux new-window -d -n cbpos
+        tmux attach-session -d -t session-$tmux_cnt
+        ;;
+    esac
+}
+
+function _set_alias()
+{
+	alias ..='cd ../'
+	alias ...='cd ../../'
+	alias ....='cd ../../../'
+	alias t='_tmux_new'
+	alias doc='cd /cygdrive/d/documents'
+	alias debian12='ssh -Y huangmianbo@192.168.56.102'
+	alias reload='source ~/.bash_profile'
+    alias config='vim ~/.bash_profile'
+    alias hometask='TASKDATA=/d/documents/10-github-documents/NUC13RNGi9/hometasks/ task'
+    alias hyctask='TASKDATA=/d/documents/10-github-documents/NUC13RNGi9/hyctasks/ task'
+}
+
+function _set_env()
+{
+	export HOME=/d/cygwin64/home/mianb
+
+    export PATH="/cygdrive/c/Program Files/Oracle/VirtualBox":$PATH
+}
+
+
+function start() 
+{
+    case $1 in 
+        debian12)
+            if VBoxManage list runningvms | grep  -q "debian12";then
+                print_error "vbox machine debian12 has already been running"
+                return 1
+            fi
+            vboxmachine=$(VBoxManage list vms | grep -i "debian12" | sed -n 1p | awk '{ print $1 }' | sed 's/"//g')
+
+            if [[ -z "$vboxmachine" ]];then
+                print_error "can not find vbox machine debian12"
+                return 0
+            fi
+                
+            print_info "start vbox machine $vboxmachine ..."
+            VBoxManage startvm "${vboxmachine}" --type headless 2>&1 > /dev/null &
+        ;;
+        *)
+            print_error "unknown start items"
+        ;;
+    esac
+}
+
+function stop()
+{
+    :
+}
+
+set -o vi
+_set_alias
+_set_env
+
