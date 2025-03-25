@@ -120,15 +120,6 @@ fi
 popd &>/dev/null || exit 1
 
 
-PINFO "check if _bashrc need to updated"
-if diff -q ${workdir}/_bashrc /home/$(id -nu 1000)/.bashrc;then
-    PINFO "no need to update _bashrc ..."
-else
-    PINFO "update _bashrc ..."
-    cp -fv /home/$(id -nu 1000)/.bashrc ${workdir}/_bashrc
-fi
-
-
 if ! diff -q <(dpkg -l) ${workdir}/dpkg-lists.txt;then
     PINFO "dpkg -l > ${workdir}/dpkg-lists.txt"
     dpkg -l > "${workdir}/dpkg-lists.txt"
