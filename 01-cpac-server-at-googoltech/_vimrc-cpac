@@ -632,6 +632,8 @@ nmap <F3>t :cs find t <C-R>=expand("<cword>")<CR><CR>
 nmap <F3>e :cs find e <C-R>=expand("<cword>")<CR><CR>  
 nmap <F3>f :cs find f <C-R>=expand("<cfile>")<CR><CR>  
 nmap <F3>i :cs find i <C-R>=expand("<cfile>")<CR><CR>  
+
+highlight Visual ctermbg=yellow ctermfg=blue guibg=yellow guifg=blue
 " -----------------------------------------------------------------------------
 "  < end of vim config file >
 " -----------------------------------------------------------------------------
