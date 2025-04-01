@@ -1,0 +1,141 @@
+# To the extent possible under law, the author(s) have dedicated all 
+# copyright and related and neighboring rights to this software to the 
+# public domain worldwide. This software is distributed without any warranty. 
+# You should have received a copy of the CC0 Public Domain Dedication along 
+# with this software. 
+# If not, see <http://creativecommons.org/publicdomain/zero/1.0/>. 
+
+# base-files version 4.3-3
+
+# ~/.bash_profile: executed by bash(1) for login shells.
+
+# The latest version as installed by the Cygwin Setup program can
+# always be found at /etc/defaults/etc/skel/.bash_profile
+
+# Modifying /etc/skel/.bash_profile directly will prevent
+# setup from updating it.
+
+# The copy in your home directory (~/.bash_profile) is yours, please
+# feel free to customise it to create a shell
+# environment to your liking.  If you feel a change
+# would be benifitial to all, please feel free to send
+# a patch to the cygwin mailing list.
+
+# User dependent .bash_profile file
+
+# source the users bashrc if it exists
+if [ -f "${HOME}/.bashrc" ] ; then
+  source "${HOME}/.bashrc"
+fi
+
+# Set PATH so it includes user's private bin if it exists
+# if [ -d "${HOME}/bin" ] ; then
+#   PATH="${HOME}/bin:${PATH}"
+# fi
+
+# Set MANPATH so it includes users' private man if it exists
+# if [ -d "${HOME}/man" ]; then
+#   MANPATH="${HOME}/man:${MANPATH}"
+# fi
+
+# Set INFOPATH so it includes users' private info if it exists
+# if [ -d "${HOME}/info" ]; then
+#   INFOPATH="${HOME}/info:${INFOPATH}"
+# fi
+
+# -------------------- CUSTOMER SETTING ---------------------------- #
+export TERM=xterm-256color
+export OUTPUT_CHARSET="cp936"
+if [ "$SHELL" == "/bin/bash" ];then
+    export dir=/cygdrive
+else
+    export dir=
+fi
+
+function _set_env()
+{
+    export VIM=/usr/share/vim
+    export VIMRUNTIME=/usr/share/vim/vim82
+    export DISPLAY=:0.0
+    export PATH=$dir/d/Git/bin:$PATH
+    export PATH=$dir/d/Profinet/V47/Installed_tools/Mingw/bin:$PATH
+    export PATH=$dir/d/Pandoc/:$PATH
+    export PATH=$dir/D/CTEX/MiKTeX/miktex/bin:$PATH
+}
+
+function _git-branch-prompt
+{
+    local branch=$(git symbolic-ref --short -q HEAD 2>/dev/null)
+    test -n "$branch" &&  printf " [%s]" $branch
+}
+
+function _set_PS1()
+{
+    PS1="\u@\h \[\033[0;36m\]\W\[\033[0m\]\[\033[0;32m\]\$(_git-branch-prompt)\[\033[0m\] \$ "
+}
+
+function _set_alias()
+{
+    alias ..='cd ../'
+    alias ...='cd ../../'
+    alias ....='cd ../../../'
+    alias batch='cd /cygdrive/d/batch'
+    alias call='cmd /c '
+    alias cp='cp -iv'
+    alias ctags='ctags -f .tags --output-format=e-ctags'
+    alias conemu='/cygdrive/d/ConEmu/ConEmu64.exe'
+    alias debian9='ssh googol@192.168.56.121'
+    alias mv='mv -iv'
+    alias rm='rm -iv'
+    alias doc='cd /d/documents'
+    alias ubuntu1204='ssh googol@192.168.56.133'
+    alias ubuntu1404='ssh huangmianbo@192.168.56.120'
+    alias reload='source ~/.bash_profile'
+    alias config='vim ~/.bash_profile'
+    alias vim='vim -u $HOME/.vimrc.cygwin'
+    alias t='_tmux'
+    alias grep='grep --color=auto --exclude=.git --exclude=.tags'
+    alias server='ssh huangmianbo@192.168.212.30'
+    alias gvim='VIM=D:\\Vim\\ VIMRUNTIME=D:\\Vim\\Vim82 /d/Vim/vim82/gvim -u D:\\Vim\\_vimrc'
+    alias zynq-host='ssh huangmianbo@192.168.56.136'
+    alias nuc13='ssh huangmianbo@nuc13vyki7'
+    alias hometask='TASKDATA=/d/documents//hometasks task'
+}
+
+function _tmux()
+{
+    case $1 in
+        [0-9])
+            tmux select-window -t "$1"
+        ;;
+        c)
+            tmux new-window -d -n "$2"
+        ;;
+        *)
+            let tmux_cnt=$(tmux list-session | wc -l)
+            let tmux_cnt=$((tmux_cnt+1))
+            tmux new-session -d -s session-${tmux_cnt}  -n NUC-1
+            tmux new-window -d -n NUC-2
+            tmux new-window -d -n NUC-3
+            tmux new-window -d -n NUC-4
+            tmux attach-session -d -t session-${tmux_cnt}
+        ;;
+    esac
+}
+
+rmkh ()
+{
+    pushd ~/.ssh &> /dev/null;
+    sed -i "/$1/d" known_hosts;
+    popd &> /dev/null
+}
+
+main()
+{
+    _set_alias 
+    _set_env
+    _set_PS1
+    set -o vi
+}
+
+main $@
