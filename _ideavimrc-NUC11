@@ -1,6 +1,7 @@
 set number
 set relativenumber
 set commentary
+" Map g] to Go to Implementation (equivalent to Alt+Ctrl+B)
 nmap g] :action GotoImplementation<CR>
 nmap <c-o> :action Back<CR>
 nmap <c-i> :action Forward<CR>
