@@ -1,0 +1,6 @@
+set number
+set relativenumber
+set commentary
+nmap g] :action GotoImplementation<CR>
+nmap <c-o> :action Back<CR>
+nmap <c-i> :action Forward<CR>
