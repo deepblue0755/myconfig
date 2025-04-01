@@ -1,0 +1,41 @@
+[credential]
+        helper = store
+[alias]
+    br = branch
+    st = status
+    ct = commit
+    ls = ls-tree -r master --name-only
+    wdiff = diff --word-diff=color --unified=1
+[http]
+        proxy = http://127.0.0.1:7890
+[user]
+        name = mianbo.huang.nuc11
+        email = mianbo.huang@hotmail.com
+[core]
+    autocrlf = false
+	filemode = false
+	safecrlf = false
+    sparsecheckout = true
+    editor = vim
+[winUpdater]
+        recentlySeenVersion = 2.25.0.windows.1
+[color]
+        interactive = auto
+        diff = auto
+        status = auto
+        branch = auto
+        ui = true
+        pager = true
+[filter "lfs"]
+        smudge = git-lfs smudge -- %f
+        process = git-lfs filter-process
+        required = true
+        clean = git-lfs clean -- %f
+[log]
+        date = default
+[diff]
+        tool = bc3
+[difftool]
+        prompt = false
+[difftool "bc3"]
+        path = D:/Beyond Compare 3/BCompare.exe
