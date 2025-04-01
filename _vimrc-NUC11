@@ -1,0 +1,693 @@
+"=============================================================================
+"=============================================================================
+"=============================================================================
+"                        << vim setting for windows >>
+"=============================================================================
+"=============================================================================
+"=============================================================================
+
+
+" -----------------------------------------------------------------------------
+"  < Global Option Setting ? >
+" -----------------------------------------------------------------------------
+let g:MyHiSyntax=1
+let g:no_load_youcompleteme=1
+ 
+
+" -----------------------------------------------------------------------------
+"  < Is Vim a Terminal or Gvim >
+" -----------------------------------------------------------------------------
+if has("gui_running")
+    let g:isGUI = 1
+else
+    let g:isGUI = 0
+endif
+
+
+" -----------------------------------------------------------------------------
+"  < Windows GVim 8.0 Default Setting >
+" -----------------------------------------------------------------------------
+source $VIMRUNTIME/vimrc_example.vim
+source $VIMRUNTIME/mswin.vim
+behave mswin
+
+" Use the internal diff if available.
+" Otherwise use the special 'diffexpr' for Windows.
+if &diffopt !~# 'internal'
+  set diffexpr=MyDiff()
+endif
+function MyDiff()
+  let opt = '-a --binary '
+  if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
+  if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
+  let arg1 = v:fname_in
+  if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
+  let arg1 = substitute(arg1, '!', '\!', 'g')
+  let arg2 = v:fname_new
+  if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
+  let arg2 = substitute(arg2, '!', '\!', 'g')
+  let arg3 = v:fname_out
+  if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
+  let arg3 = substitute(arg3, '!', '\!', 'g')
+  if $VIMRUNTIME =~ ' '
+    if &sh =~ '\<cmd'
+      if empty(&shellxquote)
+    let l:shxq_sav = ''
+    set shellxquote&
+      endif
+      let cmd = '"' . $VIMRUNTIME . '\diff"'
+    else
+      let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
+    endif
+  else
+    let cmd = $VIMRUNTIME . '\diff'
+  endif
+  let cmd = substitute(cmd, '!', '\!', 'g')
+  silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3
+  if exists('l:shxq_sav')
+    let &shellxquote=l:shxq_sav
+  endif
+endfunction
+
+
+" =============================================================================
+" =============================================================================
+" =============================================================================
+"                          << User Setting >>
+" =============================================================================
+" =============================================================================
+" =============================================================================
+
+
+
+set nocompatible    " do not use vi mode
+filetype on         " detect type of file 
+filetype indent on
+set showcmd         " display incomplete commands 
+set showmode        " display current modes
+set t_Co=256
+"set nobackup 
+"set magic
+"set noerrorbells
+"set novisualvell
+"set history = 300
+set scrolloff=3
+set tags+=./.tags;,.tags
+
+" -----------------------------------------------------------------------------
+"  < Set the Menu Language >
+" -----------------------------------------------------------------------------
+if(g:isGUI)
+    set langmenu=en_US "set the menu & the message to English
+    let $LANG= 'en_US'
+endif
+
+
+" -----------------------------------------------------------------------------
+"  < Enable displaying line number >
+" -----------------------------------------------------------------------------
+set number                  " show line number 
+set relativenumber
+set ruler                   " show the current row and column
+set hidden
+ 
+
+" -----------------------------------------------------------------------------
+"  < Color Schemen Setting >
+" -----------------------------------------------------------------------------
+set background=dark
+colorscheme murphy
+
+" -----------------------------------------------------------------------------
+"  < Mouse Setting >
+" -----------------------------------------------------------------------------
+"set mouse-=a
+set mouse=a
+set autochdir
+
+
+" -----------------------------------------------------------------------------
+"  < file save setting >
+" -----------------------------------------------------------------------------
+set autoread "Set to auto read when a file is changed from the outside 
+set encoding=utf-8 
+set modifiable "set file modifiable by default
+
+
+" -----------------------------------------------------------------------------
+"  < Search Setting >
+" -----------------------------------------------------------------------------
+set hlsearch            " highlight searches
+set incsearch           " do incremental searching
+" set ingnorecase       " ignore case when searching
+set matchtime=1
+set smartcase           "do not ignorecase if uppercase char present
+
+
+" -----------------------------------------------------------------------------
+"  < Indent Setting >
+" -----------------------------------------------------------------------------
+set tabstop=4     " tab width = 4 space:
+set expandtab     " Turn Tab into blank
+set autoindent    " enable auto indent,when edit in a new line,indent is same with the previous one
+set shiftwidth=4  " 
+set smarttab      " 
+set smartindent   " 
+set cindent
+
+
+" -----------------------------------------------------------------------------
+"  < Undo Setting>
+" -----------------------------------------------------------------------------
+
+" --------------------------------------------------------------------------------   
+" undo file directory
+set undofile
+set undodir=d:\backup\vim
+set undolevels=100
+set undoreload=10000 "number of lines to save for undo
+
+" --------------------------------------------------------------------------------   
+" backup file directory
+set backup
+set backupext=.bak
+set backupdir=d:\backup\vim
+
+" --------------------------------------------------------------------------------   
+" swap file directory 
+set directory=d:\backup\vim
+
+
+" -----------------------------------------------------------------------------
+"  < Code Fold Setting >
+" -----------------------------------------------------------------------------
+"code fold method setting:
+"set foldmethod=1-manual,2-indent,3-expr,4-syntax,5-diff,6-marker
+"save on exit mkview open loadview
+set foldmethod=manual   
+set foldlevel=3
+set foldcolumn=2 
+" set nofoldenable
+set foldenable
+
+
+" -----------------------------------------------------------------------------
+"  < Syntax Setting >
+" -----------------------------------------------------------------------------
+syntax enable
+syntax on
+set syntax=c
+
+
+" -----------------------------------------------------------------------------
+"  < The Ctags Setting >
+" -----------------------------------------------------------------------------
+" autocmd Filetype c,cpp set tags=F:\src\linux-2.6.32.63\tags
+
+
+" -----------------------------------------------------------------------------
+"  < remove some gui feature>
+" -----------------------------------------------------------------------------
+"  stop blinking cursor
+set gcr=a:block-blinkon0
+
+"  disable rolling bar
+set guioptions-=l
+set guioptions-=L
+set guioptions-=r
+set guioptions-=L
+
+" disable menu and tool box 
+set guioptions-=m
+set guioptions-=T
+
+" column and line num display setting
+"set cursorline
+"set cursorcolumn
+
+
+" -----------------------------------------------------------------------------
+"  < abbreviation setting >
+" -----------------------------------------------------------------------------
+source D:\Vim\vimfiles\abbreviation\abbreviation.vim
+
+
+
+" -----------------------------------------------------------------------------
+"  < spell checking set  >
+" -----------------------------------------------------------------------------
+set nospell
+"set spell
+set spelllang=en_us
+
+" -----------------------------------------------------------------------------
+"  < short key mapping >
+" -----------------------------------------------------------------------------
+nnoremap <silent> <F12> :A<CR>
+nmap wm :WMToggle<cr>
+nnoremap <silent> <F3> :Grep<CR>
+set pastetoggle=<F5>
+nmap <F6> <ESC>:NeoCompleteToggle<RETURN>
+imap <F6> <ESC>:NeoCompleteToggle<RETURN><ESC><i>
+nmap <F7> <ESC>:NERDTreeToggle<RETURN>
+nmap <F8> <ESC>:TlistToggle<RETURN>
+nmap <F9> <ESC>:WMToggle<RETURN>
+nmap <F5> <ESC>:!make <RETURN>
+noremap <Up> <Nop>
+noremap <Down> <Nop>
+noremap <Left> <Nop>
+noremap <Right> <Nop>
+noremap <C-tab> <ESC>:bn<RETURN>
+nmap <Space> :<Cr>
+nmap <C-c> :qa!<RETURN>
+nmap <C-a> <Nop>
+
+
+" -----------------------------------------------------------------------------
+"  < Set Python3 as python310 >
+" -----------------------------------------------------------------------------
+set pythonthreedll=python310.dll
+
+
+
+"=============================================================================
+"=============================================================================
+"=============================================================================
+"                       Plugin Setting
+"=============================================================================
+"=============================================================================
+"=============================================================================
+" -----------------------------------------------------------------------------
+"  < Pathogen Setting >
+" -----------------------------------------------------------------------------
+call pathogen#infect()  
+syntax on  
+filetype plugin indent on 
+
+
+" -----------------------------------------------------------------------------
+"  < Vundle Setting >
+" -----------------------------------------------------------------------------
+set nocompatible                                      "
+filetype off                                          "
+filetype plugin indent on
+
+
+" -----------------------------------------------------------------------------
+"  < The TagList Plugin Setting >
+" -----------------------------------------------------------------------------
+let Tlist_Auto_Open=0 
+let Tlist_Show_One_File=1                   
+" let Tlist_Enable_Fold_Column=0            
+let Tlist_Exit_OnlyWindow=1                 
+let Tlist_File_Fold_Auto_Close=1            
+let Tlist_WinWidth=30                       
+let Tlist_Use_Right_Window=0                
+let Tlist_Sort_Type = "name"                
+let Tlist_Compart_Format = 1                
+let Tlist_File_Fold_Auto_Close = 0          
+let Tlist_Enable_Fold_Column = 1           
+let Tlist_Ctags_Cmd="ctags.exe"
+let Tlist_Use_SingleClick=1
+let Tlist_GainFocus_On_ToggleOpen = 1     "when open taglist set focus to it
+let Tlist_Close_On_Select = 0             "close taglist after selecting tag or file
+let Tlist_Auto_Update = 1                 "auto update after adding file or modifying file
+let Tlist_Auto_Highlight_tag = 1
+let Tlist_Highlight_Tag_On_Buffer = 0    
+let Tlist_Show_Menu = 1                   "display the tags menu 
+let Tlist_Display_Tag_Scope = 1           "show tag scope next to the tag name
+let Tlist_Process_File_Alway = 0
+
+
+" -----------------------------------------------------------------------------
+"  < The NerdTree Plugin Setting >
+" -----------------------------------------------------------------------------
+" let NERDTreeWinPos = "right"
+" let NERDTreeWinSize = 31
+" let NERDChristmasTree=0
+" let NERDTreeWinSize=30
+" let NERDTreeChDirMode=2
+  let NERDTreeIgnore=['\~$', '\.pyc$', '\.swp$']
+" let NERDTreeSortOrder=['^__\.py$', '\/$', '*', '\.swp$',  '\~$']
+" let NERDTreeShowBookmarks=1
+
+
+" -----------------------------------------------------------------------------
+"  < The NerdCommenter Plugin Setting >
+" -----------------------------------------------------------------------------
+let NERDSpaceDelims = 1                         "  
+let NERDRemoveExtraSpaces = 1  
+
+" -----------------------------------------------------------------------------
+"  < C.vim Plugin Setting >
+" -----------------------------------------------------------------------------
+ let g:C_GlobalTemplateFile='D:\Vim\vimfiles\bundle\c-support\c-support\templates\Templates'     
+ let g:C_LocalTemplateFile='D:\Vim\vimfiles\bundle\c-support\c-support\templates\Templates'     
+" let g:C_GlobalTemplateFile='D:\Vim\vimfiles\templates\c.templates'     
+" let g:C_LocalTemplateFile='D:\Vim\vimfiles\templates\c.templates'     
+
+
+
+
+" -----------------------------------------------------------------------------
+"  < The omnicppcomplete Plugin Setting >
+" -----------------------------------------------------------------------------
+filetype plugin indent on
+" set completeopt=menu                        
+" let OmniCpp_GlobalScopeSearch
+" let OmniCpp_NamespaceSearch
+" let OmniCpp_DisplayMode = 1
+" let OmniCpp_ShowScopeInAbbr
+" let OmniCpp_ShowPrototypeInAbbr
+" let OmniCpp_ShowAccess
+" let OmniCpp_DefaultNamespaces
+  let OmniCpp_MayCompleteDot=1    
+  let OmniCpp_MayCompleteArray=1  
+  let OmniCpp_MayCompleteScope=1   
+" let OmniCpp_SelectFirstItem
+" let OmniCpp_LocalSearchDecl
+
+
+" -----------------------------------------------------------------------------
+"  < The SupperTab Plugin Setting >
+" -----------------------------------------------------------------------------
+"  let g:SuperTabDefaultCompletionType="context"   
+"  let g:SuperTabRetainCompletionType=2
+"  let g:SuperTabDefaultCompletionType="<C-X><C-O>"
+
+
+" -----------------------------------------------------------------------------
+"  < The winManager Plugin Setting>
+" -----------------------------------------------------------------------------
+let g:winManagerWindowLayout='FileExplorer|TagList'
+let g:winManagerWidth = 25
+let g:defaultExplorer = 0 
+
+
+" -----------------------------------------------------------------------------
+"  < MiniBufExpl Setting >
+" -----------------------------------------------------------------------------
+let g:miniBufExplMapCTabSwitchBufs = 0
+let g:miniBufExplMapWindowNavVim = 0
+let g:miniBufExplMapWindowNavArrows = 0
+let g:miniBufExplorerMoreThanOne = 0
+let g:miniBufExplModSelTarget = 1   
+let g:miniBufExplMinSize=1 
+"value 0 mean the window gets as big as needed to fit to all your buffers
+let g:miniBufExplMaxSize=1 
+let g:miniBufExplUseSingleClick=1
+
+
+
+" -----------------------------------------------------------------------------
+"  < syntastic Setting >
+" -----------------------------------------------------------------------------
+set statusline+=%#warningmsg#
+" set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+let g:syntastic_error_symbol = ">>"	"set error or warning signs
+let g:syntastic_warning_symbol = ">"
+let syntastic_ignore_files =['.tex','_vimrc','.txt','.todo','.bat']
+let g:syntastic_enable_highlighting = 0
+let g:syntastic_loc_list_height = 5
+let g:syntastic_filetype_map = {
+        \ "latex": "tex",
+        \ "gentoo-metadata": "xml" }
+ let g:syntastic_quiet_messages = {
+        \ "!level":  "errors",
+        \ "type":    "style",
+        \ "regex":   '\m\[C03\d\d\]',
+        \ "file:p":  ['\m^/usr/include/', '\m\c\.h$'] }
+let g:syntastic_agrregate_errors = 0
+let g:syntastic_id_checkers = 0
+let g:syntastic_always_populate_loc_list = 0
+let g:syntastic_sort_aggregated_errors = 0
+let g:syntastic_echo_current_error = 1
+let g:syntastic_auto_jump = 0 
+let g:syntastic_cursor_columns = 0
+let g:syntastic_extra_filetypes = [ "make", "gitcommit" ]
+let g:syntastic_auto_loc_list = 0
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+let g:syntastic_enable_signs = 0
+let g:syntastic_stl_format = '[%E{Err: %fe #%e}%B{, }%W{Warn: %fw #%w}]'
+
+
+
+let b:syntastic_skip_checks = 0
+
+
+" -----------------------------------------------------------------------------
+"  < Vim-Latex-Suite Setting >
+" -----------------------------------------------------------------------------
+" REQUIRED. This makes vim invoke Latex-Suite when you open a tex file.
+filetype plugin on
+
+" IMPORTANT: win32 users will need to have 'shellslash' set so that latex
+" can be called correctly.
+set shellslash
+
+" IMPORTANT: grep will sometimes skip displaying the file name if you
+" search in a singe file. This will confuse Latex-Suite. Set your grep
+" program to always generate a file-name.
+set grepprg=grep\ -nH\ $*
+
+" OPTIONAL: This enables automatic indentation as you type.
+filetype indent on
+
+" OPTIONAL: Starting with Vim 7, the filetype of empty .tex files defaults to
+" 'plaintex' instead of 'tex', which results in vim-latex not being loaded.
+" The following changes the default filetype back to 'tex':
+let g:tex_flavor='latex'
+
+
+"--------------------------------------------------------------------------
+" < vim-airline >
+"--------------------------------------------------------------------------
+"let g:airline_theme="molokai" 
+let g:airline_powerline_fonts = 0   
+let g:airline#extensions#tabline#enabled = 0
+let g:airline#extensions#tabline#buffer_nr_show = 0
+let g:airline#extensions#tagbar#flags = 'f'
+
+nnoremap <C-tab> :bn<CR>
+nnoremap <C-s-tab> :bp<CR>
+ 
+let g:airline#extensions#whitespace#enabled = 0
+let g:airline#extensions#whitespace#symbol = '!'
+if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+endif
+let g:airline_left_sep = ' '
+let g:airline_left_alt_sep = ' '
+let g:airline_right_sep = ' '
+let g:airline_right_alt_sep = ' '
+let g:airline_symbols.branch = ' '
+let g:airline_symbols.readonly = ' '
+
+" show full tag hierarchy
+let g:airline#extensions#tagbar#flags = 'f'  
+
+"--------------------------------------------------------------------------
+" < NeoComplete setting >
+"--------------------------------------------------------------------------
+if(has('lua')) && (v:version<802)
+    let g:neocomplete#enable_at_startup=1 "enable list 
+    " disable list
+    autocmd FileType c,cpp let g:neocomplete#enable_at_startup=0 
+    autocmd FileType c,cpp let g:neocomplete#auto_completion_start_length=100
+    autocmd FileType text  let g:neocomplete#auto_completion_start_length=4
+    autocmd FileType tex   let g:neocomplete#auto_completion_start_length=2
+    autocmd FileType cmake let g:neocomplete#auto_completion_start_length=2
+    autocmd FileType vhdl  let g:neocomplete#auto_completion_start_length=2
+    let g:neocomplete#auto_completion_start_length=4
+    let g:neocomplete#sources#dictionary#dictionaries = {
+    \ 'text'  : '$VIM/vimfiles/dictionary/en_dictionary_tiny.dic',
+    \ 'tex'   : '$VIM/vimfiles/dictionary/latex_command_dictionary.dic',
+    \ 'cmake' : '$VIM/vimfiles/dictionary/cmake_keywords.dic',
+    \ 'vhdl'  : '$VIM/vimfiles/dictionary/vhdl_keywords.dic',
+    \ 'ps1'   : '$VIM/vimfiles/dictionary/powershell_keywords.dic',
+    \}
+    let g:loaded_completor_plugin = 1
+    let g:loaded_completor_dictionary_plugin = 1
+endif
+
+"--------------------------------------------------------------------------
+" < deoplete setting >
+"--------------------------------------------------------------------------
+if (v:version>801)
+let g:deoplete#enable_at_startup = 1
+let g:python3_host_prog = "Python"
+call deoplete#custom#option('sources', {
+\ 'c': ['buffer','.tags'],
+\ 'cpp': ['buffer', '.tag'],
+\ 'cmake': ['buffer', 'dictionary','file'],
+\ 'text': ['buffer', 'dictionary','file'],
+\ 'vimwiki': ['buffer', 'dictionary','file'],
+\})
+call deoplete#custom#option('num_processes', 4)
+call deoplete#custom#source(
+\ 'dictionary', 'min_pattern_length', 4)
+autocmd FileType text setlocal dictionary+=$VIM/vimfiles/dictionary/en_dictionary_mediate.dic
+autocmd FileType vimwiki setlocal dictionary+=$VIM/vimfiles/dictionary/en_dictionary_mediate.dic
+autocmd FileType cmake setlocal dictionary=$VIM/vimfiles/dictionary/cmake_keywords.dic
+autocmd FileType vhdl setlocal dictionary=$VIM/vimfiles/dictionary/vhdl_keywords.dic
+autocmd FileType ps1 setlocal dictionary=$VIM/vimfiles/dictionary/powershell_keywords.dic
+endif
+
+"--------------------------------------------------------------------------
+" < YCM setting >
+"--------------------------------------------------------------------------
+if (v:version>801)
+let g:ycm_python_binary_path='D:\\Python37-64\\python3.exe'
+let g:ycm_server_python_interpreter='D:\\Python37-64\\python3.exe'
+
+let g:ycm_autoclose_preview_window_after_insertion=1
+let g:ycm_auto_start_csharp_server=0
+let g:ycm_collect_identifiers_from_tags_files=1
+let g:ycm_filetype_whitelist={ 'c' : 1 , 'cpp' : 1 }
+let g:ycm_global_ycm_extra_conf='D:/Vim/vimfiles/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
+
+let g:ycm_add_preview_to_completeopt = 0
+let g:ycm_show_diagnostics_ui = 0
+let g:ycm_server_log_level = 'info'
+let g:ycm_min_num_identifier_candidate_chars = 2
+let g:ycm_collect_identifiers_from_comments_and_strings = 1
+let g:ycm_complete_in_strings=1
+let g:ycm_key_invoke_completion = '<c-z>'
+set completeopt=menu,menuone
+
+noremap <c-z> <NOP>
+
+let g:ycm_semantic_triggers =  {
+           \ 'c,cpp,python,java,go,erlang,perl': ['re!\w{2}'],
+           \ 'cs,lua,javascript': ['re!\w{2}'],
+           \ }
+
+let g:ycm_filetype_blacklist = {
+    \ 'tagbar': 1,
+    \ 'notes': 1,
+    \ 'markdown': 1,
+    \ 'netrw': 1,
+    \ 'unite': 1,
+    \ 'text': 1,
+    \ 'vimwiki': 1,
+    \ 'pandoc': 1,
+    \ 'infolog': 1,
+    \ 'leaderf': 1,
+    \ 'mail': 1,
+    \ 'help': 1
+    \}
+
+let g:ycm_filetype_whitelist = {
+            \ 'c': 1,
+            \ 'cpp': 1
+            \}
+let g:ycm_filetype_specific_completion_to_disable = {
+    \ 'gitcommit': 1,
+    \ 'help': 1,
+    \ 'vimwiki': 1,
+    \ 'markdown': 1
+    \}
+else
+let g:loaded_youcompleteme = 1
+endif
+
+autocmd FileType vimwiki let g:loaded_youcompleteme = 1
+
+"--------------------------------------------------------------------------
+" < vim-preview setting >
+"--------------------------------------------------------------------------
+autocmd Filetype tex setl updatetime=1
+" let g:loaded_vim_live_preview = 1
+let g:livepreview_previewer = 'D:\\SumatraPDF-3.1.2-64\\SumatraPDF.exe'
+
+"--------------------------------------------------------------------------
+" < ale setting >
+"--------------------------------------------------------------------------
+let g:ale_lint_on_enter = 0
+let g:ale_sign_column_always = 1
+let g:ale_set_highlights = 0
+let g:ale_sign_error= '✗'
+let g:ale_sign_warning = '⚡'
+let g:ale_statusline_format = ['✗ %d', '⚡ %d', '✔ OK']
+let g:ale_echo_msg_error_str= 'E'
+let g:ale_echo_msg_warning_str= 'W'
+let g:ale_echo_msg_format = '[%linter%] %code: %%s'
+let g:ale_lint_on_text_changed = 0
+" let g:ale_lint_on_text_changed = 'normal'
+let g:ale_linters_explicit = 1
+let g:ale_completion_delay = 500
+let g:ale_echo_delay = 20
+let g:ale_lint_delay = 500
+let g:ale_lint_on_insert_leave = 1
+let g:airline#extensions#ale#enabled = 1
+
+let g:ale_c_gcc_options = '-Wall -O2 -std=c99 -I../common_inc'
+let g:ale_cpp_gcc_options = '-Wall -O2 -std=c++14'
+let g:ale_c_cppcheck_options = ''
+let g:ale_cpp_cppcheck_options = ''
+let g:ale_linters = {
+            \ 'c++': ['clang'],
+            \ 'c': ['gcc'],
+            \ 'python': ['pylint'],
+            \ 'sh': ['D:\shellcheck\shellcheck'],
+            \}
+
+"--------------------------------------------------------------------------
+" < gutentags setting >
+"--------------------------------------------------------------------------
+
+" gutentags 
+let g:gutentags_project_root = ['.root', '.svn', '.git', '.hg', '.project']
+
+" data name
+let g:gutentags_ctags_tagfile = '.tags'
+
+" 
+let s:vim_tags = expand('~/.cache/tags')
+let g:gutentags_cache_dir = s:vim_tags
+
+" 
+let g:gutentags_ctags_extra_args = ['--fields=+niazS', '--extra=+q']
+let g:gutentags_ctags_extra_args += ['--c++-kinds=+px']
+let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
+" let g:gutentags_trace = 1
+" 
+if !isdirectory(s:vim_tags)
+   silent! call mkdir(s:vim_tags, 'p')
+endif
+
+"misc setting for gutentags plugin
+let g:gutentags_generate_on_write=0
+let g:gutentags_exclude_filetypes=['vim','dosbatch','bash','sh']
+"--------------------------------------------------------------------------
+" < vimwiki list setting >
+"--------------------------------------------------------------------------
+let g:vimwiki_list = [{'path': '~/vimwiki/',
+                      \ 'syntax': 'markdown', 'ext': '.md'}]
+
+" -----------------------------------------------------------------------------
+"  <  Setting Put At the End To Take Effect >
+" -----------------------------------------------------------------------------
+let g:miniBufExplorerMoreThanOne=0
+set guifont=Consolas:h14
+set fileformat=unix
+set ff=unix
+set lines=100
+set columns=180
+set clipboard+=unnamed
+autocmd Filetype text set dictionary+=$VIM/vimfiles/dictionary/en_dictionary_mediate.dic
+autocmd Filetype tex  set dictionary+=$VIM/vimfiles/dictionary/latex_command_dictionary.dic
+autocmd Filetype tex  set dictionary+=$VIM/vimfiles/dictionary/latex_keyword_dictionary.dic
+autocmd Filetype tex  set dictionary+=$VIM/vimfiles/dictionary/latex_symbol_list.dic
+autocmd Filetype tex  set dictionary+=$VIM/vimfiles/dictionary/en_dictionary_tiny.dic
+set magic
+set complete+=k
+set iskeyword+=_
+set iskeyword+=-
+set iskeyword+=\
+set nowrapscan
+" -----------------------------------------------------------------------------
+"  < end of vim config file >
+" -----------------------------------------------------------------------------
