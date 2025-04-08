@@ -132,6 +132,7 @@ ii  debconf-i18n                           1.5.82                               
 ii  debian-archive-keyring                 2023.3+deb12u1                          all          GnuPG archive keys of the Debian archive
 ii  debian-faq                             11.1                                    all          Debian Frequently Asked Questions
 ii  debianutils                            5.7-0.5~deb12u1                         amd64        Miscellaneous utilities specific to Debian
+ii  debsums                                3.0.2.1                                 all          tool for verification of installed package files against MD5 checksums
 ii  default-jre                            2:1.17-74                               amd64        Standard Java or Java compatible Runtime
 ii  default-jre-headless                   2:1.17-74                               amd64        Standard Java or Java compatible Runtime (headless)
 ii  desktop-base                           12.0.6+nmu1~deb12u1                     all          common files for the Debian Desktop
@@ -988,6 +989,7 @@ ii  libfile-basedir-perl                   0.09-2                               
 ii  libfile-desktopentry-perl              0.22-3                                  all          Perl module to handle freedesktop .desktop files
 ii  libfile-fcntllock-perl                 0.22-4+b1                               amd64        Perl module for file locking with fcntl(2)
 ii  libfile-find-rule-perl                 0.34-3                                  all          module to search for files based on rules
+ii  libfile-fnmatch-perl                   0.02-3+b1                               amd64        Perl module that provides simple filename and pathname matching
 ii  libfile-homedir-perl                   1.006-2                                 all          Perl module for finding user directories across platforms
 ii  libfile-listing-perl                   6.15-1                                  all          module to parse directory listings
 ii  libfile-mimeinfo-perl                  0.33-1                                  all          Perl module to determine file types
