@@ -66,6 +66,9 @@ ii  chrpath                                0.16-2+b1                            
 ii  cifs-utils                             2:7.0-2                                 amd64        Common Internet File System utilities
 ii  clang                                  1:14.0-55.7~deb12u1                     amd64        C, C++ and Objective-C compiler (LLVM based), clang binary
 ii  clang-14                               1:14.0.6-12                             amd64        C, C++ and Objective-C compiler
+ii  clang-tidy                             1:14.0-55.7~deb12u1                     amd64        clang-based C++ linter tool
+ii  clang-tidy-14                          1:14.0.6-12                             amd64        clang-based C++ linter tool
+ii  clang-tools-14                         1:14.0.6-12                             amd64        clang-based tools for C/C++ developments
 ii  cm-super                               0.3.4-17                                all          TeX font package (full version) with CM (EC) in Type1 in T1, T2*, TS1, X2 enc
 ii  cm-super-minimal                       0.3.4-17                                all          TeX font package (minimal version) with CM/EC in Type1 in T1, T2*, TS1, X2 enc
 ii  cmake                                  3.25.1-1                                amd64        cross-platform, open-source make system
